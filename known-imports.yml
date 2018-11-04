@@ -1,0 +1,13 @@
+flow: lodash/fp
+fmapValues:
+  module: lodash/fp
+  name: mapValues
+useState: react
+useEffect: react
+createFactory: react
+render: react-testing-library
+waitForElement: react-testing-library
+fireEvent: react-testing-library
+axios:
+  module: axios
+  default: true
