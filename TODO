@@ -1,0 +1,4 @@
+- support callback for addState() initial value (like withState())
+- support callback for addHandlers() initial value (like withHandlers())
+- support callback for addStateHandlers() initial value (like withStateHandlers())
+- support second argument to useEffect() (array of dependent values)
