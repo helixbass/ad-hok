@@ -2,7 +2,7 @@
 
 Ad-hok is a set of helpers that let you use React [hooks](https://reactjs.org/docs/hooks-intro.html) in a [functional pipeline](https://www.martinfowler.com/articles/collection-pipeline/) style. Its API and concept are inspired by [Recompose](https://github.com/acdlite/recompose)
 
-### [**Full API documentation**](#api)
+[**Full API documentation**](#api)
 
 ## Installation
 
@@ -49,6 +49,191 @@ const addCounting = compose(
 )
 
 const EnhancedComponent = addCounting(SomeComponent)
+```
+
+## API
+
+* [addState()](#addstate)
+* [addEffect()](#addeffect)
+* [addProps()](#addprops)
+* [addHandlers()](#addhandlers)
+* [addStateHandlers()](#addstatehandlers)
+* [addRef()](#addref)
+
+### `addState()`
+
+```js
+addState(
+  stateName: string,
+  stateUpdaterName: string,
+  initialState: any
+): Function
+```
+
+Adds two additional props: a state value, and a function to update that state value
+
+Wraps [`useState()`](https://reactjs.org/docs/hooks-reference.html#usestate) hook
+
+Comparable to Recompose's [`withState()`](https://github.com/acdlite/recompose/blob/master/docs/API.md#withstate)
+
+For example:
+
+```js
+const Counter = flow(
+  addState('count', 'setCount', 0),
+  ({count, setCount}) =>
+    <>
+      Count: {count}
+      <button onClick={() => setCount(0)}>Reset</button>
+      <button onClick={() => setCount(prevCount => prevCount + 1)}>+</button>
+    </>
+)
+```
+
+### `addEffect()`
+
+```js
+addEffect(
+  callback: (props: Object) => Function,
+): Function
+```
+
+Accepts a function of props that returns a function (which gets passed to [`useEffect()`](https://reactjs.org/docs/hooks-reference.html#useeffect)). Used for imperative, possibly effectful code
+
+For example:
+
+```js
+const Example = flow(
+  addState('count', 'setCount', 0),
+  addEffect(({count}) => () => {
+    document.title = `You clicked ${count} times`
+  }),
+  ({count, setCount}) =>
+    <>
+      Count: {count}
+      <button onClick={() => setCount(0)}>Reset</button>
+      <button onClick={() => setCount(prevCount => prevCount + 1)}>+</button>
+    </>
+)
+```
+
+### `addProps()`
+
+```js
+addProps(
+  createProps: (incomingProps: Object) => Object | Object,
+): Function
+```
+
+Accepts a function that returns additional props based on the incoming props. Or accepts an object of additional props. The additional props get merged with the incoming props
+
+Doesn't wrap any hooks, just a convenience helper comparable to Recompose's [`withProps()`](https://github.com/acdlite/recompose/blob/master/docs/API.md#withprops)
+
+For example:
+
+```js
+const Doubler = flow(
+  addProps(({num}) => ({num: num * 2})),
+  ({num}) =>
+    <div>Number: {num}</div>
+)
+
+const Outer = () =>
+  <Doubler num={3}> // renders "Number: 6"
+```
+
+### `addHandlers()`
+
+```js
+addHandlers(
+  handlerCreators: {
+    [handlerName: string]: (props: Object) => Function
+  }
+): Function
+```
+
+Takes an object map of handler creators. These are higher-order functions that accept a set of props and return a function handler.
+
+Doesn't wrap any hooks, just a convenience helper comparable to Recompose's [`withHandlers()`](https://github.com/acdlite/recompose/blob/master/docs/API.md#withhandlers)
+
+For example:
+
+```js
+const ClickLogger = flow(
+  addHandlers({
+    onClick: ({onClick}) => (...args) => {
+      console.log('click')
+      onClick(...args)
+    }
+  }),
+  ({onClick}) =>
+    <button onClick={onClick}>click me</button>
+)
+```
+
+### `addStateHandlers()`
+
+```js
+addStateHandlers(
+  initialState: Object,
+  stateUpdaters: {
+    [key: string]: (state: Object, props: Object) => (...payload: any[]) => Object
+  }
+): Function
+```
+
+Adds additional props for state object properties and immutable updater functions in a form of `(...payload: any[]) => Object`
+
+Wraps [`useState()`](https://reactjs.org/docs/hooks-reference.html#usestate) hook
+
+Comparable to Recompose's [`withStateHandlers()`](https://github.com/acdlite/recompose/blob/master/docs/API.md#withstatehandlers)
+
+For example:
+
+```js
+const Counter = flow(
+  addStateHandlers(
+    {count: 0},
+    {
+      increment: ({count}) => () => ({count: count + 1}),
+      decrement: ({count}) => () => ({count: count - 1}),
+      reset: () => () => ({count: 0}),
+    }
+  ),
+  ({count, increment, decrement, reset}) =>
+    <>
+      Count: {count}
+      <button onClick={reset}>Reset</button>
+      <button onClick={increment}>+</button>
+      <button onClick={decrement}>-</button>
+    </>
+)
+```
+
+### `addRef()`
+
+```js
+addRef(
+  refName: string,
+  initialValue: any
+): Function
+```
+
+Adds an additional prop of the given name whose value is a ref initialized to the given initial value
+
+Wraps [`useRef()`](https://reactjs.org/docs/hooks-reference.html#useref) hook
+
+For example:
+
+```js
+const Example = flow(
+  addRef('inputRef', null),
+  ({inputRef}) =>
+    <>
+      <input ref={inputRef} />
+      <button onClick={() => inputRef.current.focus()}>focus input</button>
+    </>
+)
 ```
 
 ## Motivation
@@ -111,191 +296,6 @@ const Counter = flow(
       <button onClick={reset}>Reset</button>
       <button onClick={increment}>+</button>
       <button onClick={decrement}>-</button>
-    </>
-)
-```
-
-## API
-
-* [addState()](#addstate)
-* [addEffect()](#addeffect)
-* [addProps()](#addprops)
-* [addHandlers()](#addhandlers)
-* [addStateHandlers()](#addstatehandlers)
-* [addRef()](#addref)
-
-### `addState()`
-
-```js
-addState(
-  stateName: string,
-  stateUpdaterName: string,
-  initialState: any
-): Function
-```
-
-Adds two additional props: a state value, and a function to update that state value
-
-Wraps (`useState()`)[https://reactjs.org/docs/hooks-reference.html#usestate] hook
-
-Comparable to Recompose's (`withState()`)[https://github.com/acdlite/recompose/blob/master/docs/API.md#withstate]
-
-For example:
-
-```js
-const Counter = flow(
-  addState('count', 'setCount', 0),
-  ({count, setCount}) =>
-    <>
-      Count: {count}
-      <button onClick={() => setCount(0)}>Reset</button>
-      <button onClick={() => setCount(prevCount => prevCount + 1)}>+</button>
-    </>
-)
-```
-
-### `addEffect()`
-
-```js
-addEffect(
-  callback: (props: Object) => Function,
-): Function
-```
-
-Accepts a function of props that returns a function (which gets passed to (`useEffect()`)[https://reactjs.org/docs/hooks-reference.html#useeffect]). Used for imperative, possibly effectful code
-
-For example:
-
-```js
-const Example = flow(
-  addState('count', 'setCount', 0),
-  addEffect(({count}) => () => {
-    document.title = `You clicked ${count} times`
-  }),
-  ({count, setCount}) =>
-    <>
-      Count: {count}
-      <button onClick={() => setCount(0)}>Reset</button>
-      <button onClick={() => setCount(prevCount => prevCount + 1)}>+</button>
-    </>
-)
-```
-
-### `addProps()`
-
-```js
-addProps(
-  createProps: (incomingProps: Object) => Object | Object,
-): Function
-```
-
-Accepts a function that returns additional props based on the incoming props. Or accepts an object of additional props. The additional props get merged with the incoming props
-
-Doesn't wrap any hooks, just a convenience helper comparable to Recompose's (`withProps()`)[https://github.com/acdlite/recompose/blob/master/docs/API.md#withprops]
-
-For example:
-
-```js
-const Doubler = flow(
-  addProps(({num}) => ({num: num * 2})),
-  ({num}) =>
-    <div>Number: {num}</div>
-)
-
-const Outer = () =>
-  <Doubler num={3}> // renders "Number: 6"
-```
-
-### `addHandlers()`
-
-```js
-addHandlers(
-  handlerCreators: {
-    [handlerName: string]: (props: Object) => Function
-  }
-): Function
-```
-
-Takes an object map of handler creators. These are higher-order functions that accept a set of props and return a function handler.
-
-Doesn't wrap any hooks, just a convenience helper comparable to Recompose's (`withHandlers()`)[https://github.com/acdlite/recompose/blob/master/docs/API.md#withhandlers]
-
-For example:
-
-```js
-const ClickLogger = flow(
-  addHandlers({
-    onClick: ({onClick}) => (...args) => {
-      console.log('click')
-      onClick(...args)
-    }
-  }),
-  ({onClick}) =>
-    <button onClick={onClick}>click me</button>
-)
-```
-
-### `addStateHandlers()`
-
-```js
-addStateHandlers(
-  initialState: Object,
-  stateUpdaters: {
-    [key: string]: (state: Object, props: Object) => (...payload: any[]) => Object
-  }
-): Function
-```
-
-Adds additional props for state object properties and immutable updater functions in a form of `(...payload: any[]) => Object`
-
-Wraps (`useState()`)[https://reactjs.org/docs/hooks-reference.html#usestate] hook
-
-Comparable to Recompose's (`withStateHandlers()`)[https://github.com/acdlite/recompose/blob/master/docs/API.md#withstatehandlers]
-
-For example:
-
-```js
-const Counter = flow(
-  addStateHandlers(
-    {count: 0},
-    {
-      increment: ({count}) => () => ({count: count + 1}),
-      decrement: ({count}) => () => ({count: count - 1}),
-      reset: () => () => ({count: 0}),
-    }
-  ),
-  ({count, increment, decrement, reset}) =>
-    <>
-      Count: {count}
-      <button onClick={reset}>Reset</button>
-      <button onClick={increment}>+</button>
-      <button onClick={decrement}>-</button>
-    </>
-)
-```
-
-### `addRef()`
-
-```js
-addRef(
-  refName: string,
-  initialValue: any
-): Function
-```
-
-Adds an additional prop of the given name whose value is a ref initialized to the given initial value
-
-Wraps (`useRef()`)[https://reactjs.org/docs/hooks-reference.html#useref] hook
-
-For example:
-
-```js
-const Example = flow(
-  addRef('inputRef', null),
-  ({inputRef}) =>
-    <>
-      <input ref={inputRef} />
-      <button onClick={() => inputRef.current.focus()}>focus input</button>
     </>
 )
 ```
