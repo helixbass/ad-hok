@@ -238,7 +238,11 @@ const Example = flow(
 
 ## Motivation
 
+#### Background
+
 Recompose's approach is an elegant, highly composable way of building up logic out of small "building blocks" (in its case, higher-order components). Once I saw how clearly it expressed the separation between different pieces of functionality and the dependencies between them, it made writing class components look like an unappealing structure where you just have a flat set of methods and have to work hard to trace the dependencies between them
+
+#### Enter hooks
 
 Now React hooks have entered the picture. And they're very interesting and the promise of only using function components is great!
 
@@ -254,7 +258,7 @@ Another thing you lose with typical hooks usage is the simple "display component
 
 #### Reuse
 
-In the simplest usage (as in the above example), the final step in your `flow()` is a rendering function. If you want that rendering function to be an actual "display" function component (for reuse and/or eg prop types validation), just use `React.createFactory()`:
+In the simplest usage (as in the initial example), the final step in your `flow()` is a rendering function. If you want that rendering function to be an actual "display" function component (for reuse and/or eg prop types validation), just use `React.createFactory()`:
 ```js
 import {createFactory} from 'react'
 
