@@ -2,7 +2,7 @@
 
 Ad-hok is a set of helpers that let you use React [hooks](https://reactjs.org/docs/hooks-intro.html) in a [functional pipeline](https://www.martinfowler.com/articles/collection-pipeline/) style. Its API and concept are inspired by [Recompose](https://github.com/acdlite/recompose)
 
-[**Full API documentation**](#api)
+### [**Full API documentation**](#api)
 
 ## Installation
 
@@ -12,22 +12,6 @@ $ npm install ad-hok
 
 ## Basic usage
 
-Composing Ad-hok helpers is comparable to using Recompose's [`compose()`](https://github.com/acdlite/recompose/blob/master/docs/API.md#compose) to compose a chain of higher-order components, eg using Recompose:
-```js
-import {compose, withState, withHandlers} from 'recompose'
-
-const addCounting = compose(
-  withState('count', 'setCount', 0),
-  withHandlers({
-    increment: ({ setCount }) => () => setCount(n => n + 1),
-    decrement: ({ setCount }) => () =>  setCount(n => n - 1),
-    reset: ({ setCount }) => () => setCount(0)
-  })
-)
-
-const EnhancedComponent = addCounting(SomeComponent)
-```
-Whereas using Ad-hok, a simple function composition utility like [`lodash/fp`](https://github.com/lodash/lodash/wiki/FP-Guide)'s [`flow()`](https://simonsmith.io/dipping-a-toe-into-functional-js-with-lodash-fp/) takes the place of `compose()`:
 ```
 import {flow} from 'lodash/fp'
 import {addState, addHandlers} from 'ad-hok'
@@ -47,6 +31,24 @@ const Counter = flow(
       <button onClick={decrement}>-</button>
     </>
 )
+```
+
+Ad-hok helpers can be composed using a simple function composition utility like [`lodash/fp`](https://github.com/lodash/lodash/wiki/FP-Guide)'s [`flow()`](https://simonsmith.io/dipping-a-toe-into-functional-js-with-lodash-fp/)
+
+Compare this to using Recompose's [`compose()`](https://github.com/acdlite/recompose/blob/master/docs/API.md#compose) to compose a chain of higher-order components:
+```js
+import {compose, withState, withHandlers} from 'recompose'
+
+const addCounting = compose(
+  withState('count', 'setCount', 0),
+  withHandlers({
+    increment: ({ setCount }) => () => setCount(n => n + 1),
+    decrement: ({ setCount }) => () =>  setCount(n => n - 1),
+    reset: ({ setCount }) => () => setCount(0)
+  })
+)
+
+const EnhancedComponent = addCounting(SomeComponent)
 ```
 
 ## Motivation
