@@ -6,7 +6,7 @@ addHandlers = (handlers) -> (props) ->
     ...fmapValues((createHandler) ->
       (...args) ->
         handler = createHandler props
-        handler args
+        handler ...args
     )(handlers)
   }
 

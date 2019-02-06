@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "watch": "coffee -o lib/ -wc src/",
-    "build": "coffee -o lib/ -c src/",
+    "build": "coffee --transpile -o lib/ -c src/",
     "prepublish": "npm run build",
     "lint": "eslint src/*.coffee src/*/*.coffee",
     "test": "jest"
