@@ -31,6 +31,19 @@ Comp2 = flow(
     </div>
 )
 
+Comp3 = flow(
+  addStateHandlers(
+    ({initialX}) -> x: initialX
+    incrementX: ({x}) -> ({by: amount = 1} = {}) -> x: x + amount
+  )
+  ({x, incrementX}) ->
+    <div>
+      <div data-testid="c">{x}</div>
+      <button onClick={incrementX}>increment</button>
+      <button onClick={-> incrementX by: 2}>two</button>
+    </div>
+)
+
 describe 'addStateHandlers', ->
   test 'initial state', ->
     {getByTestId} = render <Comp />
@@ -51,3 +64,7 @@ describe 'addStateHandlers', ->
 
     fireEvent.click getByText /two more/
     expect(getByTestId 'b').toHaveTextContent '17'
+
+  test 'initial state based on props', ->
+    {getByTestId} = render <Comp3 initialX={9} />
+    expect(getByTestId 'c').toHaveTextContent '9'

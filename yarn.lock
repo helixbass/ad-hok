@@ -1253,9 +1253,9 @@ code-point-at@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
 
-"coffeescript@github:helixbass/coffeescript#6374abc":
-  version "2.3.1"
-  resolved "https://codeload.github.com/helixbass/coffeescript/tar.gz/6374abc7a78c59e8ddf5fd0464a0126c9830a7ab"
+"coffeescript@github:helixbass/coffeescript#cbaf4303":
+  version "2.3.2"
+  resolved "https://codeload.github.com/helixbass/coffeescript/tar.gz/cbaf43033006f4920bdc350b716f7722a5bf69c9"
   dependencies:
     babel-eslint "^7.2.2"
     babylon "^7.0.0-beta.44"
@@ -1680,13 +1680,14 @@ eslint-module-utils@^2.2.0:
     debug "^2.6.8"
     pkg-dir "^1.0.0"
 
-eslint-plugin-coffee@0.0.9:
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-coffee/-/eslint-plugin-coffee-0.0.9.tgz#a7edf418f2f5065480dc236d839f6a84996febc9"
+eslint-plugin-coffee@^0.0.10:
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-coffee/-/eslint-plugin-coffee-0.0.10.tgz#35f7d01c1b7622d1515e804a1a037441042ae3ed"
+  integrity sha512-xIbu5bb1Nf226b5RAcck0LTxr1SoZ4V2n6p7/kPVHZ6LQf0GFodJOt6oQcpeNcI14KnCYhtZBfyOJDDbw7+QDQ==
   dependencies:
     babel-eslint "^7.2.2"
     babylon "^7.0.0-beta.44"
-    coffeescript "github:helixbass/coffeescript#6374abc"
+    coffeescript "github:helixbass/coffeescript#cbaf4303"
     doctrine "^2.1.0"
     eslint-scope "~3.7.3"
     eslint-utils "^1.3.1"
