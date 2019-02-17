@@ -2,7 +2,7 @@ import {mapValues as fmapValues} from 'lodash/fp'
 
 addHandlers = (handlers) -> (props) ->
   {
-    ...props,
+    ...props
     ...fmapValues((createHandler) ->
       (...args) ->
         handler = createHandler props

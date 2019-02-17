@@ -6,10 +6,9 @@ import {flow} from 'lodash/fp'
 import addHandlers from '../addHandlers'
 
 Comp = flow(
-  addHandlers({
+  addHandlers
     onClick: ({onClick}) -> (num) ->
       onClick num * 2
-  }),
   ({onClick}) ->
     <div>
       <button onClick={-> onClick 3}>update</button>

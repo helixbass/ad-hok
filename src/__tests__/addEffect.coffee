@@ -6,6 +6,7 @@ import {flow} from 'lodash/fp'
 import addState from '../addState'
 import addEffect from '../addEffect'
 
+# eslint-disable-next-line coffee/prop-types
 DisplayComp = ({x}) ->
   <div>
     <div data-testid="a">{x}</div>

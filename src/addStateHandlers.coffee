@@ -5,7 +5,7 @@ import {isFunction} from 'lodash'
 addStateHandlers = (initial, handlers) -> (props) ->
   state = {}
   setters = {}
-  initial = initial(props) if isFunction initial
+  initial ###:### = initial props if isFunction initial
   for key, val of initial
     [stateVal, setter] = useState val
     state[key] = stateVal
