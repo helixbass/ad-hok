@@ -18,8 +18,18 @@ Comp = flow(
     ->
       # axios.get.mockResolvedValueOnce data: greeting: 'ddd'
       # {data: {greeting}} = await axios.get 'SOME_URL'
-      greeting = 'ddd'
-      setX greeting
+      setX 'ddd'
+  createFactory DisplayComp
+)
+
+Comp2 = flow(
+  addState 'x', 'setX', 0
+  addEffect(
+    ({x, setX}) ->
+      ->
+        setX x + 1
+    []
+  )
   createFactory DisplayComp
 )
 
@@ -29,3 +39,10 @@ describe 'addEffect', ->
     rerender <Comp />
     updatedEl = await waitForElement -> getByText 'ddd'
     expect(updatedEl).toHaveTextContent 'ddd'
+
+  test 'passes changed-props arg to useEffect()', ->
+    {queryByText, getByText, rerender} = render <Comp2 />
+    getByText '1'
+    rerender <Comp2 />
+    getByText '1'
+    expect(queryByText '2').toBeNull()

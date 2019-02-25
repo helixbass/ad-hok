@@ -1,7 +1,7 @@
 import {useEffect} from 'react'
 
-addEffect = (callback) -> (props) ->
-  useEffect callback props
+addEffect = (callback, changeProps) -> (props) ->
+  useEffect callback(props), changeProps
 
   props
 
