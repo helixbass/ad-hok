@@ -2,3 +2,4 @@
 - support callback for addHandlers() initial value (like withHandlers())
 - support second argument to useEffect() (array of dependent values)
 - update docs for callback for addStateHandlers() initial value
+- set displayName (eg addPropTypes(<prevDisplayName>)) in addPropTypes()
