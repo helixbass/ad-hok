@@ -11,3 +11,6 @@ fireEvent: react-testing-library
 axios:
   module: axios
   default: true
+PropTypes:
+  module: prop-types
+  default: true

@@ -14,7 +14,6 @@ rules:
   coffee/prefer-destructuring: [error, {object: true}]
   coffee/no-unused-vars: off
   known-imports/no-unused-vars: [error, {varsIgnorePattern: ^_+$}]
-  require-jsdoc: error
   prefer-rest-params: error
   # no-else-return: error
   # id-length: error
@@ -41,6 +40,11 @@ rules:
   coffee/no-anonymous-default-export: off
   coffee/guard-for-in: off
   no-sparse-arrays: off
+  coffee/no-invalid-this: off
+  require-jsdoc: off
+  coffee/require-jsdoc: off
+  coffee/display-name: off
+  coffee/no-empty-function: off
 env:
   node: true
   es6: true
