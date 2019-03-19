@@ -1,8 +1,11 @@
 import {useState} from 'react'
+import {isFunction} from 'lodash'
 
-addState = (name, setterName, initialValue) ->
+addState = (name, setterName, initial) ->
   (props) ->
-    [state, setter] = useState initialValue
+    [state, setter] = useState(
+      if isFunction initial then initial props else initial
+    )
     {...props, [name]: state, [setterName]: setter}
 
 export default addState
