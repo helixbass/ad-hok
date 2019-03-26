@@ -6,6 +6,8 @@ import addRef from './addRef'
 import addHandlers from './addHandlers'
 import addPropTypes from './addPropTypes'
 import flowMax from './flowMax'
+import renderNothing from './renderNothing'
+import branch from './branch'
 
 export {
   addState
@@ -16,4 +18,6 @@ export {
   addHandlers
   addPropTypes
   flowMax
+  renderNothing
+  branch
 }
