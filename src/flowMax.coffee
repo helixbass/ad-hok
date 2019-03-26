@@ -12,6 +12,7 @@ flowMax = (...funcs) ->
         funcs[0] ...args
       else
         args[0]
+    return null if isRenderNothing props
     while ++index < flowLength
       func = funcs[index]
       if isAddPropTypes func
