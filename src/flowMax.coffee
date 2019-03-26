@@ -1,4 +1,5 @@
 import {isAddPropTypes} from './addPropTypes'
+import {isRenderNothing} from './renderNothing'
 
 flowMax = (...funcs) ->
   flowLength = funcs?.length ? 0
@@ -16,6 +17,7 @@ flowMax = (...funcs) ->
       if isAddPropTypes func
         return func(flowMax ...funcs[(index + 1)..]) props
       props = func props
+      return null if isRenderNothing props
     props
 
 export default flowMax
