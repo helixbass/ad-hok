@@ -5,6 +5,7 @@ import addProps from './addProps'
 import addRef from './addRef'
 import addHandlers from './addHandlers'
 import addPropTypes from './addPropTypes'
+import addContext from './addContext'
 import flowMax from './flowMax'
 import renderNothing from './renderNothing'
 import branch from './branch'
@@ -17,6 +18,7 @@ export {
   addRef
   addHandlers
   addPropTypes
+  addContext
   flowMax
   renderNothing
   branch
