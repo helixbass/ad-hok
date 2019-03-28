@@ -9,6 +9,7 @@ import addContext from './addContext'
 import flowMax from './flowMax'
 import renderNothing from './renderNothing'
 import branch from './branch'
+import returns from './returns'
 
 export {
   addState
@@ -22,4 +23,5 @@ export {
   flowMax
   renderNothing
   branch
+  returns
 }
