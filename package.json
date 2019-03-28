@@ -1,6 +1,6 @@
 {
   "name": "ad-hok",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "Recompose-style React hooks",
   "main": "lib/index.js",
   "scripts": {
