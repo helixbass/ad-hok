@@ -4,10 +4,16 @@ import {isReturns} from './returns'
 
 flowMax = (...funcs) ->
   flowLength = funcs?.length ? 0
+  if flowLength
+    for func, funcIndex in funcs when isAddPropTypes(func)
+      precedingFuncs =
+        if funcIndex is 0
+          []
+        else
+          funcs[0...funcIndex]
+      return flowMax ...precedingFuncs, func flowMax ...funcs[(funcIndex + 1)..]
   (...args) ->
     index = 0
-    if flowLength and isAddPropTypes funcs[0]
-      return funcs[0](flowMax ...funcs[(index + 1)..]) ...args
     props =
       if flowLength
         funcs[0] ...args
@@ -16,9 +22,7 @@ flowMax = (...funcs) ->
     return null if isRenderNothing props
     return returnsVal[1] if (returnsVal = isReturns props)
     while ++index < flowLength
-      func = funcs[index]
-      if isAddPropTypes func
-        return func(flowMax ...funcs[(index + 1)..]) props
+      func ###:### = funcs[index]
       props = func props
       return null if isRenderNothing props
       return returnsVal[1] if (returnsVal = isReturns props)
