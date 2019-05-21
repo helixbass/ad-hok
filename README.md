@@ -66,7 +66,7 @@ const EnhancedComponent = addCounting(SomeComponent)
 addState(
   stateName: string,
   stateUpdaterName: string,
-  initialState: any
+  initialState: any | (props: Object) => any
 ): Function
 ```
 
@@ -95,10 +95,13 @@ const Counter = flow(
 ```js
 addEffect(
   callback: (props: Object) => Function,
+  dependencies: Array<any>
 ): Function
 ```
 
 Accepts a function of props that returns a function (which gets passed to [`useEffect()`](https://reactjs.org/docs/hooks-reference.html#useeffect)). Used for imperative, possibly effectful code
+
+The optional second argument is an array of values that the effect depends on. It corresponds to the [second argument to `useEffect()`](https://reactjs.org/docs/hooks-reference.html#conditionally-firing-an-effect)
 
 For example:
 
@@ -175,7 +178,7 @@ const ClickLogger = flow(
 
 ```js
 addStateHandlers(
-  initialState: Object,
+  initialState: Object | (props: Object) => any
   stateUpdaters: {
     [key: string]: (state: Object, props: Object) => (...payload: any[]) => Object
   }
@@ -277,7 +280,7 @@ const Counter = flow(
     decrement: ({ setCount }) => () =>  setCount(n => n - 1),
     reset: ({ setCount }) => () => setCount(0)
   }),
-  createFactory(DisplayCounter)
+  createFactory(DisplayCounter) // or equivalently:   props => <DisplayCounter {...props} />
 )
 ```
 
