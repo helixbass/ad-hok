@@ -59,6 +59,7 @@ const EnhancedComponent = addCounting(SomeComponent)
 * [addHandlers()](#addhandlers)
 * [addStateHandlers()](#addstatehandlers)
 * [addRef()](#addref)
+* [addContext()](#addcontext)
 
 ### `addState()`
 
@@ -237,6 +238,38 @@ const Example = flow(
       <button onClick={() => inputRef.current.focus()}>focus input</button>
     </>
 )
+```
+
+### `addContext()`
+
+```js
+addContext(
+  context: ReactContextObject,
+  contextName: string,
+): Function
+```
+
+Adds an additional prop of the given name whose value is the current value of the given React context object
+
+Wraps [`useContext()`](https://reactjs.org/docs/hooks-reference.html#usecontext) hook
+
+For example:
+
+```js
+const ColorContext = React.createContext()
+
+const Example = flow(
+  addContext(ColorContext, 'color'),
+  ({color}) =>
+    <span>
+      The current color is {color}
+    </span>
+)
+
+const Outer = () =>
+  <ColorContext.Provider value="red">
+    <Example />
+  </ColorContext.Provider>
 ```
 
 ## Motivation
