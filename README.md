@@ -51,6 +51,22 @@ const addCounting = compose(
 const EnhancedComponent = addCounting(SomeComponent)
 ```
 
+## Get "magic" with `flowMax()`
+
+While `flow()` is great for composing most hooks-related functionality, there are some use cases (and corresponding Recompose
+helpers) that it can't support. For example, anything where you'd want to "bail out early" rather than always progressing through the whole `flow()` and rendering the typical display component at the end of the `flow()`
+
+So `ad-hok` provides a "magic" version of `flow()` called [`flowMax()`](#flowmax) that you use as your wrapper function when using any of the corresponding "magic" helpers:
+- [`addPropTypes()`](#addproptypes)
+- [`renderNothing()`](#rendernothing)
+- [`returns()`](#returns)
+
+##### `eslint-plugin-ad-hok`
+
+If you use [ESLint](https://github.com/eslint/eslint), you can use [`eslint-plugin-ad-hok`](https://github.com/helixbass/eslint-plugin-ad-hok) to catch cases where:
+- you forgot to use `flowMax()` when using a "magic" helper (`addPropTypes()`, `renderNothing()` or `returns()`)
+- you use `flowMax()` when a simple `flow()` would suffice
+
 ## API
 
 * [addState()](#addstate)
@@ -60,6 +76,11 @@ const EnhancedComponent = addCounting(SomeComponent)
 * [addStateHandlers()](#addstatehandlers)
 * [addRef()](#addref)
 * [addContext()](#addcontext)
+* [branch()](#branch)
+* [renderNothing()](#rendernothing)
+* [returns()](#returns)
+* [addPropTypes()](#addproptypes)
+* [flowMax()](#flowmax)
 
 ### `addState()`
 
@@ -270,6 +291,136 @@ const Outer = () =>
   <ColorContext.Provider value="red">
     <Example />
   </ColorContext.Provider>
+```
+
+### `branch()`
+
+```js
+branch(
+  test: (props: Object) => boolean,
+  left: (incomingProps: Object) => Object,
+  right: ?(incomingProps: Object) => Object
+): Function
+```
+
+Accepts a test function and two functions. The test function is passed the incoming props. If it returns true, the left function is called with the incoming props; otherwise, the right function is called. If the right is not supplied, it will by default pass through the incoming props.
+
+Doesn't wrap any hooks, just a convenience helper comparable to Recompose's [`branch()`](https://github.com/acdlite/recompose/blob/master/docs/API.md#branch)
+
+Typically used along with the "magic" helpers [`renderNothing()`](#rendernothing)/[`returns()`](#returns)
+
+For example:
+
+```js
+const Message = flowMax(
+  branch(({hideMe}) => hideMe, renderNothing()),
+  () =>
+    <span>I'm not hidden!</span>
+)
+
+<Message hideMe /> // doesn't render anything
+<Message /> // renders "I'm not hidden"
+```
+
+### `renderNothing()`
+
+```js
+renderNothing(): MagicReturnValue
+```
+
+A "magic" helper that always renders `null`
+
+Since it's magic, you must wrap with [`flowMax()`](#flowmax) instead of `flow()`
+
+Doesn't wrap any hooks, just a convenience helper comparable to Recompose's [`renderNothing()`](https://github.com/acdlite/recompose/blob/master/docs/API.md#rendernothing)
+
+Typically used inside of [`branch()`](#branch)
+
+For example:
+
+```js
+const Message = flowMax(
+  branch(({data}) => !data, renderNothing()),
+  ({data}) =>
+    <span>{data.message}</span>
+)
+```
+
+### `returns()`
+
+```js
+returns(
+  returnValue: any
+): MagicReturnValue
+```
+
+A "magic" helper that always returns the specified value (as the return value of the whole `flowMax()`)
+
+Since it's magic, you must wrap with [`flowMax()`](#flowmax) instead of `flow()`
+
+Doesn't wrap any hooks, just a convenience helper somewhat comparable to Recompose's [`renderComponent()`](https://github.com/acdlite/recompose/blob/master/docs/API.md#rendercomponent)
+
+Typically used inside of [`branch()`](#branch)
+
+For example:
+
+```js
+const Message = flowMax(
+  branch(({data}) => !data, returns(<Loading />)),
+  ({data}) =>
+    <span>{data.message}</span>
+)
+```
+
+### `addPropTypes()`
+
+```js
+addPropTypes(
+  propTypes: object
+): Function
+```
+
+A "magic" helper that assigns to the `propTypes` property of the current point in the `flowMax()`
+
+Since it's magic, you must wrap with [`flowMax()`](#flowmax) instead of `flow()`
+
+Doesn't wrap any hooks, just a convenience helper comparable to Recompose's [`setPropTypes()`](https://github.com/acdlite/recompose/blob/master/docs/API.md#setproptypes)
+
+For example:
+
+```js
+const Maybe = flowMax(
+  addProps(({isIt}) => ({message: isIt ? 'yup' : 'no'}),
+  addPropTypes({
+    isIt: PropTypes.bool,
+    message: PropTypes.string.isRequired
+  }),
+  ({message}) =>
+    <span>{message}</span>
+)
+
+<Maybe isIt={true} />
+```
+
+### `flowMax()`
+
+```js
+flowMax(
+  pipelineFunction: (incomingProps: Object) => Object,
+  ...
+): Function
+```
+
+A wrapper that replaces `flow()` when your pipeline uses a "magic" helper (`addPropTypes()`, `renderNothing()` or `returns()`)
+
+For example:
+
+```js
+const Message = flowMax(
+  branch(({data}) => !data, returns(<Loading />)),
+  ({data}) =>
+    <span>{data.message}</span>
+)
 ```
 
 ## Motivation
