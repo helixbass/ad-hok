@@ -1,3 +1,4 @@
 - support callback for addHandlers() initial value (like withHandlers())
 - set displayName (eg addPropTypes(<prevDisplayName>)) in addPropTypes()
 - add to README that you can use (eg `flowMax()`/`returns()`) in non-React contexts 
+- warn in README that with `branch()` you could violate hooks invariants (same hooks in same order) I think?
