@@ -3,7 +3,7 @@ import {render} from 'react-testing-library'
 import 'jest-dom/extend-expect'
 import {flow} from 'lodash/fp'
 
-import addContext from '../addContext'
+import {addContext} from '..'
 
 NumberContext = React.createContext()
 

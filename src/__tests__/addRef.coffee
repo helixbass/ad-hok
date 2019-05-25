@@ -3,7 +3,7 @@ import {render, fireEvent} from 'react-testing-library'
 import 'jest-dom/extend-expect'
 import {flow} from 'lodash/fp'
 
-import addRef from '../addRef'
+import {addRef} from '..'
 
 Comp = flow addRef('inputRef'), ({inputRef}) ->
   <div>

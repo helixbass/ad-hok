@@ -1,4 +1,4 @@
-import addProps from '../addProps'
+import {addProps} from '..'
 
 describe 'addProps', ->
   test 'adds object', ->

@@ -3,7 +3,7 @@ import {render, fireEvent} from 'react-testing-library'
 import 'jest-dom/extend-expect'
 import {flow} from 'lodash/fp'
 
-import addState from '../addState'
+import {addState} from '..'
 
 Comp = flow addState('x', 'setX', 'abcd'), ({x, setX}) ->
   <div>

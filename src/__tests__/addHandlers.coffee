@@ -3,7 +3,7 @@ import {render, fireEvent} from 'react-testing-library'
 import 'jest-dom/extend-expect'
 import {flow} from 'lodash/fp'
 
-import addHandlers from '../addHandlers'
+import {addHandlers} from '..'
 
 Comp = flow(
   addHandlers

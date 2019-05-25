@@ -2,8 +2,7 @@ import React from 'react'
 import {render} from 'react-testing-library'
 import 'jest-dom/extend-expect'
 
-import branch from '../branch'
-import flowMax from '../flowMax'
+import {branch, flowMax} from '..'
 
 Comp = flowMax(
   branch(

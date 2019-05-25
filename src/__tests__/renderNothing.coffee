@@ -2,9 +2,7 @@ import React from 'react'
 import {render} from 'react-testing-library'
 import 'jest-dom/extend-expect'
 
-import branch from '../branch'
-import flowMax from '../flowMax'
-import renderNothing from '../renderNothing'
+import {branch, flowMax, renderNothing} from '..'
 
 Comp = flowMax branch((({a}) -> a > 2), renderNothing), ({a, testId}) ->
   <div data-testid={testId}>{a}</div>
