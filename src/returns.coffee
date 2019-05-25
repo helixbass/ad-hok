@@ -8,5 +8,5 @@ export isReturns = (val) ->
   catch
     return no
 
-export default (val) -> ->
-  [key]: val
+export default (callback) -> (props) ->
+  [key]: callback props
