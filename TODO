@@ -1,4 +1,3 @@
 - support callback for addHandlers() initial value (like withHandlers())
 - set displayName (eg addPropTypes(<prevDisplayName>)) in addPropTypes()
-- let returns() accept a function of props that returns the return value?
 - add to README that you can use (eg `flowMax()`/`returns()`) in non-React contexts 
