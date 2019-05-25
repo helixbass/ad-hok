@@ -3,8 +3,7 @@ import {render, waitForElement} from 'react-testing-library'
 import 'jest-dom/extend-expect'
 import {flow} from 'lodash/fp'
 
-import addState from '../addState'
-import addEffect from '../addEffect'
+import {addState, addEffect} from '..'
 
 # eslint-disable-next-line coffee/prop-types
 DisplayComp = ({x}) ->

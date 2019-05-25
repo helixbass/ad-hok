@@ -4,9 +4,7 @@ import {render} from 'react-testing-library'
 import 'jest-dom/extend-expect'
 import PropTypes from 'prop-types'
 
-import addPropTypes from '../addPropTypes'
-import addProps from '../addProps'
-import flowMax from '../flowMax'
+import {addPropTypes, addProps, flowMax} from '..'
 
 Comp = flowMax addPropTypes(a: PropTypes.number.isRequired), ({a}) ->
   <div>

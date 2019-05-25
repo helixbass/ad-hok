@@ -58,13 +58,14 @@ helpers) that it can't support. For example, anything where you'd want to "bail 
 
 So `ad-hok` provides a "magic" version of `flow()` called [`flowMax()`](#flowmax) that you use as your wrapper function when using any of the corresponding "magic" helpers:
 - [`addPropTypes()`](#addproptypes)
+- [`addWrapper()`](#addwrapper)
 - [`renderNothing()`](#rendernothing)
 - [`returns()`](#returns)
 
 ##### `eslint-plugin-ad-hok`
 
 If you use [ESLint](https://github.com/eslint/eslint), you can use [`eslint-plugin-ad-hok`](https://github.com/helixbass/eslint-plugin-ad-hok) to catch cases where:
-- you forgot to use `flowMax()` when using a "magic" helper (`addPropTypes()`, `renderNothing()` or `returns()`)
+- you forgot to use `flowMax()` when using a "magic" helper (`addPropTypes()`, `addWrapper()`, `renderNothing()` or `returns()`)
 - you use `flowMax()` when a simple `flow()` would suffice
 
 ## API
@@ -80,6 +81,7 @@ If you use [ESLint](https://github.com/eslint/eslint), you can use [`eslint-plug
 * [renderNothing()](#rendernothing)
 * [returns()](#returns)
 * [addPropTypes()](#addproptypes)
+* [addWrapper()](#addwrapper)
 * [flowMax()](#flowmax)
 
 ### `addState()`
@@ -402,6 +404,47 @@ const Maybe = flowMax(
 <Maybe isIt={true} />
 ```
 
+### `addWrapper()`
+
+```js
+addWrapper(
+  ({
+    props: Object,
+    render: (additionalProps: ?Object) => any
+  }) => any
+): Function
+```
+
+A "magic" helper that allows taking control of the rendering of the rest of the `flowMax()`. Use cases could be to render additional JSX/markup wrapping or side-by-side with the JSX returned at the end of the `flowMax()`
+
+The supplied callback receives an object with `props` (the incoming props) and a `render` function. `render()` will render the rest of the `flowMax()`. It optionally accepts additional props to pass to the next step in the `flowMax()` (which will also get "forwarded" the incoming `props`. Additional props passed via `render()` take precedence over forwarded `props`)
+
+Since it's magic, you must wrap with [`flowMax()`](#flowmax) instead of `flow()`
+
+Doesn't wrap any hooks, just a convenience helper
+
+For example:
+
+```js
+const WrapInHeader = ({children, header}) =>
+  <div>
+    <h1>{header}</h1>
+    {children}
+  </div>
+
+const Outer = flowMax(
+  addWrapper(({props, render}) =>
+    <WrapInHeader header={props.header}>
+      {render({style: {color: 'red'}})}
+    </WrapInHeader>
+  ),
+  ({message, style}) =>
+    <span style={style}>{message}</span>
+)
+
+<Outer header="Topsy" message="Turvy"/>
+```
+
 ### `flowMax()`
 
 ```js
@@ -411,7 +454,7 @@ flowMax(
 ): Function
 ```
 
-A wrapper that replaces `flow()` when your pipeline uses a "magic" helper (`addPropTypes()`, `renderNothing()` or `returns()`)
+A wrapper that replaces `flow()` when your pipeline uses a "magic" helper (`addPropTypes()`, `addWrapper()`, `renderNothing()` or `returns()`)
 
 For example:
 

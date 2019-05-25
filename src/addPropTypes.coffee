@@ -1,6 +1,6 @@
 import React from 'react'
 
-markerPropertyName = '__isAddPropTypes'
+markerPropertyName = '__ad-hok-addPropTypes'
 
 # eslint-disable-next-line known-imports/no-unused-vars
 export isAddPropTypes = (func) ->

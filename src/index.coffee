@@ -10,6 +10,7 @@ import flowMax from './flowMax'
 import renderNothing from './renderNothing'
 import branch from './branch'
 import returns from './returns'
+import addWrapper from './addWrapper'
 
 export {
   addState
@@ -24,4 +25,5 @@ export {
   renderNothing
   branch
   returns
+  addWrapper
 }
