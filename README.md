@@ -350,11 +350,11 @@ const Message = flowMax(
 
 ```js
 returns(
-  returnValue: any
+  (props: Object) => returnValue: any
 ): MagicReturnValue
 ```
 
-A "magic" helper that always returns the specified value (as the return value of the whole `flowMax()`)
+A "magic" helper that always returns the return value of its argument (as the return value of the whole `flowMax()`)
 
 Since it's magic, you must wrap with [`flowMax()`](#flowmax) instead of `flow()`
 
@@ -366,7 +366,7 @@ For example:
 
 ```js
 const Message = flowMax(
-  branch(({data}) => !data, returns(<Loading />)),
+  branch(({data}) => !data, returns(() => <Loading />)),
   ({data}) =>
     <span>{data.message}</span>
 )
