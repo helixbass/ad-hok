@@ -324,6 +324,21 @@ const Message = flowMax(
 <Message /> // renders "I'm not hidden"
 ```
 
+**:warning: Warning :warning:** When using the "both forks continue" version of `branch()` (as opposed to the more typical pattern of using `branch()` with `renderNothing()`/`returns()` to "return early"), it's possible to violate the [hooks invariant](https://reactjs.org/docs/hooks-rules.html#explanation) that you must always call hooks in the same order
+
+For example:
+```
+const BreaksHookInvariants = flow(
+  // DON'T DO THIS
+  branch(
+    ({someCondition}) => someCondition,
+    addState('firstState', 'setFirstState'),
+  ),
+  ...
+)
+```
+So your rule of thumb should be: when using the "both forks continue" version of `branch()`, neither "branch" (ie the second/third arguments to `branch()`) should contain helpers that wrap any hooks
+
 ### `renderNothing()`
 
 ```js
