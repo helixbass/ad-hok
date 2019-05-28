@@ -11,6 +11,7 @@ import renderNothing from './renderNothing'
 import branch from './branch'
 import returns from './returns'
 import addWrapper from './addWrapper'
+import addWrapperHOC from './addWrapperHOC'
 
 export {
   addState
@@ -26,4 +27,5 @@ export {
   branch
   returns
   addWrapper
+  addWrapperHOC
 }
