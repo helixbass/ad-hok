@@ -16,27 +16,34 @@ flowMax = (...funcs) ->
       funcs[0...index]
   getFollowingFuncs = (index) ->
     funcs[(index + 1)..]
+  flowLength = funcs?.length ? 0
+  if flowLength
+    for func, funcIndex in funcs
+      if (getNestedFlowMaxArguments = isFlowMax func)
+        return flowMax(
+          ...getPrecedingFuncs(funcIndex)
+          ...getNestedFlowMaxArguments()
+          ...getFollowingFuncs(funcIndex)
+        )
+      if isAddPropTypes(func) or isAddWrapper func
+        newFlowMax = flowMax(
+          ...getPrecedingFuncs(funcIndex)
+          func flowMax ...getFollowingFuncs(funcIndex)
+        )
+        # Expose original arguments if we're nested
+        newFlowMax[getArgumentsPropertyName] = -> funcs
+        return newFlowMax
   ret = (...args) ->
     return args[0] unless funcs?.length
-    flowLength = funcs.length
     index = 0
     props = null
     while index < flowLength
       func ###:### = funcs[index]
-      if (getNestedFlowMaxArguments = isFlowMax func)
-        funcs ### : ### = [
-          ...getPrecedingFuncs(index)
-          ...getNestedFlowMaxArguments()
-          ...getFollowingFuncs(index)
-        ]
-        continue
       currentArgs =
         if index is 0
           args
         else
           [props]
-      if isAddPropTypes(func) or isAddWrapper func
-        return func(flowMax ...getFollowingFuncs(index)) ...currentArgs
       props = func ...currentArgs
       return null if isRenderNothing props
       return returnsVal[1] if (returnsVal = isReturns props)
