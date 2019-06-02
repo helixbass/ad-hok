@@ -4,5 +4,5 @@ nonce = {}
 export isRenderNothing = (val) ->
   val is nonce
 
-export default ->
+export default -> ->
   nonce
