@@ -1,4 +1,4 @@
-import {flowMax, returns, branch} from '..'
+import {flowMax, returns, branchPure} from '..'
 
 describe 'returns', ->
   test 'works as initial step', ->
@@ -11,9 +11,9 @@ describe 'returns', ->
 
     expect(ret).toBe 3
 
-  test 'works with branch()', ->
+  test 'works with branchPure()', ->
     returnThreeIfGreaterThanOne = flowMax(
-      branch ((x) -> x > 1), returns (val) -> val + 1
+      branchPure ((x) -> x > 1), returns (val) -> val + 1
       ->
         4
     )

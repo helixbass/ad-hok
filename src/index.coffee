@@ -9,6 +9,7 @@ import addContext from './addContext'
 import flowMax from './flowMax'
 import renderNothing from './renderNothing'
 import branch from './branch'
+import branchPure from './branchPure'
 import returns from './returns'
 import addWrapper from './addWrapper'
 import addWrapperHOC from './addWrapperHOC'
@@ -25,7 +26,9 @@ export {
   flowMax
   renderNothing
   branch
+  branchPure
   returns
   addWrapper
   addWrapperHOC
+  # addComponentBoundary
 }

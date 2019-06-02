@@ -3,6 +3,7 @@ import {isRenderNothing} from './renderNothing'
 import {isReturns} from './returns'
 import {isAddWrapper} from './addWrapper'
 import {isAddWrapperHOC} from './addWrapperHOC'
+import {isBranch} from './branch-avoid-circular-dependency'
 
 getArgumentsPropertyName = '__ad-hok-flowMax-getArguments'
 
@@ -26,7 +27,12 @@ flowMax = (...funcs) ->
           ...getNestedFlowMaxArguments()
           ...getFollowingFuncs(funcIndex)
         )
-      if isAddPropTypes(func) or isAddWrapper(func) or isAddWrapperHOC func
+      if (
+        isAddPropTypes(func) or
+        isAddWrapper(func) or
+        isAddWrapperHOC(func) or
+        isBranch func
+      )
         newFlowMax = flowMax(
           ...getPrecedingFuncs(funcIndex)
           func flowMax ...getFollowingFuncs(funcIndex)
