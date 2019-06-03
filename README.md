@@ -59,13 +59,14 @@ helpers) that it can't support. For example, anything where you'd want to "bail 
 So `ad-hok` provides a "magic" version of `flow()` called [`flowMax()`](#flowmax) that you use as your wrapper function when using any of the corresponding "magic" helpers:
 - [`addPropTypes()`](#addproptypes)
 - [`addWrapper()`](#addwrapper)
+- [`branch()`](#branch)
 - [`renderNothing()`](#rendernothing)
 - [`returns()`](#returns)
 
 ##### `eslint-plugin-ad-hok`
 
 If you use [ESLint](https://github.com/eslint/eslint), you can use [`eslint-plugin-ad-hok`](https://github.com/helixbass/eslint-plugin-ad-hok) to catch cases where:
-- you forgot to use `flowMax()` when using a "magic" helper (`addPropTypes()`, `addWrapper()`, `renderNothing()` or `returns()`)
+- you forgot to use `flowMax()` when using a "magic" helper (`addPropTypes()`, `addWrapper()`, `branch()`, `renderNothing()` or `returns()`)
 - you use `flowMax()` when a simple `flow()` would suffice
 
 ## API
@@ -78,6 +79,7 @@ If you use [ESLint](https://github.com/eslint/eslint), you can use [`eslint-plug
 * [addRef()](#addref)
 * [addContext()](#addcontext)
 * [branch()](#branch)
+* [branchPure()](#branchpure)
 * [renderNothing()](#rendernothing)
 * [returns()](#returns)
 * [addPropTypes()](#addproptypes)
@@ -305,9 +307,11 @@ branch(
 ): Function
 ```
 
-Accepts a test function and two functions. The test function is passed the incoming props. If it returns true, the left function is called with the incoming props; otherwise, the right function is called. If the right is not supplied, it will by default pass through the incoming props.
+A "magic" helper that accepts a test function and two functions. The test function is passed the incoming props. If it returns true, the left function is called with the incoming props; otherwise, the right function is called. If the right is not supplied, it will by default pass through the incoming props.
 
 Doesn't wrap any hooks, just a convenience helper comparable to Recompose's [`branch()`](https://github.com/acdlite/recompose/blob/master/docs/API.md#branch)
+
+Since it's magic, you must wrap with [`flowMax()`](#flowmax) instead of `flow()`
 
 Typically used along with the "magic" helpers [`renderNothing()`](#rendernothing)/[`returns()`](#returns)
 
@@ -324,20 +328,34 @@ const Message = flowMax(
 <Message /> // renders "I'm not hidden"
 ```
 
-**:warning: Warning :warning:** When using the "both forks continue" version of `branch()` (as opposed to the more typical pattern of using `branch()` with `renderNothing()`/`returns()` to "return early"), it's possible to violate the [hooks invariant](https://reactjs.org/docs/hooks-rules.html#explanation) that you must always call hooks in the same order
+In order to avoid violating hooks invariants, both branches are rendered as separate components from the preceding steps of the `flowMax()`
+
+If you don't want to have the branches rendered as components (eg when using `flowMax()` in a [non-React context](#bonususeadhokflowmaxoutsideofreact)), you can use [`branchPure()`](#branchpure) instead
+
+### `branchPure()`
+
+```js
+branchPure(
+  test: (props: Object) => boolean,
+  left: (incomingProps: Object) => Object,
+  right: ?(incomingProps: Object) => Object
+): Function
+```
+
+A helper that (like [`branch()`](#branch)) accepts a test function and two functions. The test function is passed the incoming props. If it returns true, the left function is called with the incoming props; otherwise, the right function is called. If the right is not supplied, it will by default pass through the incoming props.
+
+The difference from `branch()` is that the branches are not automatically rendered as React components. Typically, it's a good idea to use `branch()` when using `ad-hok` in a React setting (ie the typical usage where a `flowMax()` is a React component) in order to avoid violating hooks invariants. So your rule of thumb should be to only use `branchPure()` inside non-React-component `flowMax()`'s
 
 For example:
-```
-const BreaksHookInvariants = flow(
-  // DON'T DO THIS
-  branch(
-    ({someCondition}) => someCondition,
-    addState('firstState', 'setFirstState'),
-  ),
-  ...
+```js
+const returnsThreeSometimes = flowMax(
+  branchPure(x => x > 1, returns(3)),
+  x => x + 4
 )
+
+returnsThreeSometimes(2) // 3
+returnsThreeSometimes(1) // 5
 ```
-So your rule of thumb should be: when using the "both forks continue" version of `branch()`, neither "branch" (ie the second/third arguments to `branch()`) should contain helpers that wrap any hooks
 
 ### `renderNothing()`
 
@@ -478,6 +496,38 @@ const Message = flowMax(
   branch(({data}) => !data, returns(<Loading />)),
   ({data}) =>
     <span>{data.message}</span>
+)
+```
+
+## Bonus: use `ad-hok`/`flowMax()` in non-React contexts
+
+Once you get used to `ad-hok`'s helpers, you may find that some of them come in handy when writing typical non-React `flow()`s
+
+For example, `addProps()` is a nice shorthand for `obj => ({...obj, someAdditionalProps})`:
+```js
+flow(
+  ({a, ...obj}) => ({
+    ...obj,
+    a,
+    b: a + 2
+  })
+)
+// vs:
+flow(
+  addProps(({a}) => ({b: a + 2})
+)
+```
+And the "magic" helpers like `branchPure()`/`returns()` can be powerful:
+```js
+const maybeReturnsThree = x => {
+  if (x < 2) return 3
+  
+  return x + 4
+}
+// vs:
+const maybeReturnsThree = flowMax(
+  branchPure(x => x < 2, returns(3)),
+  x => x + 4
 )
 ```
 
