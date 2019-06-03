@@ -77,6 +77,7 @@ If you use [ESLint](https://github.com/eslint/eslint), you can use [`eslint-plug
 * [addHandlers()](#addhandlers)
 * [addStateHandlers()](#addstatehandlers)
 * [addRef()](#addref)
+* [addCallback()](#addcallback)
 * [addContext()](#addcontext)
 * [branch()](#branch)
 * [branchPure()](#branchpure)
@@ -261,6 +262,36 @@ const Example = flow(
     <>
       <input ref={inputRef} />
       <button onClick={() => inputRef.current.focus()}>focus input</button>
+    </>
+)
+```
+
+### `addCallback()`
+
+```js
+addCallback(
+  callbackName: string,
+  callback: (props: Object) => Function,
+  dependencies: Array<any>
+): Function
+```
+
+Adds an additional prop of the given name whose value is a memoized callback. The second argument is a callback creator. This is a higher-order function that accept a set of props and return a callback. The optional third argument is an array of values that the callback depends on. It corresponds to the [second argument to `useCallback()`](https://reactjs.org/docs/hooks-reference.html#usecallback)
+
+Wraps [`useCallback()`](https://reactjs.org/docs/hooks-reference.html#usecallback) hook
+
+For example:
+
+```js
+const Example = flow(
+  addState('inputNode', 'setInputNode'),
+  addCallback('inputCallbackRef', ({setInputNode}) => node => {
+    setInputNode(node)
+  }),
+  ({inputCallbackRef, inputNode}) =>
+    <>
+      <input ref={inputCallbackRef} />
+      <button onClick={() => inputNode.focus()}>focus input</button>
     </>
 )
 ```
