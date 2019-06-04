@@ -1,2 +1,5 @@
 - support callback for addHandlers() initial value (like withHandlers())
 - should addWrapper() accept displayName option? or should you put addDisplayName() first after addWrapper()?
+- add to README: addWrapperHOC()
+- add to README: addDisplayName()
+- add to README: babel-plugin-transform-react-display-name-pipe
