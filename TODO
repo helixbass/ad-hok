@@ -1,4 +1,5 @@
 - support callback for addHandlers() initial value (like withHandlers())
-- set displayName (eg addPropTypes(<prevDisplayName>)) in addPropTypes()
-- add addDisplayName()? Figure out how that works wrt babel plugin, things that cause "inner components" eg addWrapper()/branch()
-  - should addWrapper() accept displayName option? or should you put addDisplayName() first after addWrapper()?
+- should addWrapper() accept displayName option? or should you put addDisplayName() first after addWrapper()?
+- add to README: addWrapperHOC()
+- add to README: addDisplayName()
+- add to README: babel-plugin-transform-react-display-name-pipe

@@ -14,6 +14,7 @@ import returns from './returns'
 import addWrapper from './addWrapper'
 import addWrapperHOC from './addWrapperHOC'
 import addCallback from './addCallback'
+import addDisplayName from './addDisplayName'
 
 export {
   addState
@@ -32,5 +33,6 @@ export {
   addWrapper
   addWrapperHOC
   addCallback
+  addDisplayName
   # addComponentBoundary
 }
