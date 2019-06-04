@@ -6,9 +6,10 @@ markerPropertyName = '__ad-hok-addWrapperHOC'
 export isAddWrapperHOC = (func) ->
   func[markerPropertyName]
 
-export default (hoc) ->
+export default (hoc, {displayName = 'addWrapperHOC()'} = {}) ->
   ret = (Component) ->
     WrappedComponent = hoc Component
+    WrappedComponent.displayName = displayName
 
     (props) -> <WrappedComponent {...props} />
   ret[markerPropertyName] = yes

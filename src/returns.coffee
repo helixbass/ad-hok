@@ -4,7 +4,7 @@ key = '__ad-hok-returns'
 export isReturns = (val) ->
   try
     return no unless key of val
-    return [yes, val[key]]
+    return [val[key]]
   catch
     return no
 
