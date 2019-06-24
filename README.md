@@ -128,7 +128,7 @@ addEffect(
 
 Accepts a function of props that returns a function (which gets passed to [`useEffect()`](https://reactjs.org/docs/hooks-reference.html#useeffect)). Used for imperative, possibly effectful code
 
-The optional second argument is an array of values that the effect depends on. It corresponds to the [second argument to `useEffect()`](https://reactjs.org/docs/hooks-reference.html#conditionally-firing-an-effect)
+The optional second argument is an array of names of props that the effect depends on. It corresponds to the [second argument to `useEffect()`](https://reactjs.org/docs/hooks-reference.html#conditionally-firing-an-effect)
 
 For example:
 
@@ -137,7 +137,13 @@ const Example = flow(
   addState('count', 'setCount', 0),
   addEffect(({count}) => () => {
     document.title = `You clicked ${count} times`
+  }, ['count']),
+  addEffect(() => () => {
+    console.log("I get called on every re-render")
   }),
+  addEffect(() => () => {
+    console.log("I only get called once on mount")
+  }, []),
   ({count, setCount}) =>
     <>
       Count: {count}
