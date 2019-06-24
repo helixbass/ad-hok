@@ -29,7 +29,20 @@ Comp2 = flow(
         setX x + 1
     []
   )
-  createFactory DisplayComp
+  ({x, testId}) ->
+    <div data-testid={testId}>{x}</div>
+)
+
+Comp3 = flow(
+  addState 'x', 'setX', 0
+  addEffect(
+    ({x, setX}) ->
+      ->
+        setX x + 1
+    ['y']
+  )
+  ({x, testId}) ->
+    <div data-testid={testId}>{x}</div>
 )
 
 describe 'addEffect', ->
@@ -40,8 +53,16 @@ describe 'addEffect', ->
     expect(updatedEl).toHaveTextContent 'ddd'
 
   test 'passes changed-props arg to useEffect()', ->
-    {queryByText, getByText, rerender} = render <Comp2 />
-    getByText '1'
-    rerender <Comp2 />
-    getByText '1'
-    expect(queryByText '2').toBeNull()
+    testId = 'comp2'
+    {rerender, getByTestId} = render <Comp2 testId={testId} />
+    expect(getByTestId testId).toHaveTextContent '1'
+    rerender <Comp2 testId={testId} />
+    expect(getByTestId testId).toHaveTextContent '1'
+
+  test 'treats changed-props string arg as prop name', ->
+    testId = 'comp3'
+    {getByTestId, rerender} = render <Comp3 y={1} z={2} testId={testId} />
+    expect(getByTestId testId).toHaveTextContent '1'
+    rerender <Comp3 y={1} z={3} testId={testId} />
+    expect(getByTestId testId).toHaveTextContent '1'
+    rerender <Comp3 y={2} z={3} testId={testId} />
