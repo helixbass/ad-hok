@@ -122,7 +122,7 @@ const Counter = flow(
 ```js
 addEffect(
   callback: (props: Object) => Function,
-  dependencies: Array<any>
+  dependencies: Array<string>
 ): Function
 ```
 
