@@ -40,7 +40,7 @@ Deps = flow(
 Pure = React.memo ({onClick}) ->
   console.log 'Pure rerendered'
   <div>
-    <button onClick={onClick}>update</button>
+    <button onClick={onClick}>pure button</button>
   </div>
 
 describe 'addHandlers', ->
@@ -65,7 +65,7 @@ describe 'addHandlers', ->
     expect(console.log).not.toHaveBeenCalled()
     console.log.mockClear()
 
-    fireEvent.click getByText /update/
+    fireEvent.click getByText /pure button/
     expect(console.log).not.toHaveBeenCalled()
     console.log.mockClear()
     expect(getByTestId testId).toHaveTextContent '5'
@@ -75,7 +75,7 @@ describe 'addHandlers', ->
     expect(console.log).toHaveBeenCalledTimes 1
     console.log.mockClear()
 
-    fireEvent.click getByText /update/
+    fireEvent.click getByText /pure button/
     expect(console.log).not.toHaveBeenCalled()
     console.log.mockClear()
     expect(getByTestId testId).toHaveTextContent '7'
