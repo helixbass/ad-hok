@@ -29,10 +29,7 @@ Deps = flow(
     onClick: ({x, setY}) -> ->
       setY x + 1
   ,
-    [
-      'x'
-      # 'setY' TODO: this was changing identities across renders, which I though useState() setters weren't supposed to?
-    ]
+    ['x', 'setY']
   ({onClick, y, testId}) ->
     <div>
       <Pure onClick={onClick} />
@@ -40,11 +37,8 @@ Deps = flow(
     </div>
 )
 
-lastPureOnClick = null
 Pure = React.memo ({onClick}) ->
-  # TODO: why isn't React.memo() working?
-  console.log 'Pure rerendered' unless onClick is lastPureOnClick
-  lastPureOnClick = onClick
+  console.log 'Pure rerendered'
   <div>
     <button onClick={onClick}>update</button>
   </div>
