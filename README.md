@@ -227,11 +227,14 @@ addStateHandlers(
   initialState: Object | (props: Object) => any
   stateUpdaters: {
     [key: string]: (state: Object, props: Object) => (...payload: any[]) => Object
-  }
+  },
+  dependencies?: Array<string>
 ): Function
 ```
 
 Adds additional props for state object properties and immutable updater functions in a form of `(...payload: any[]) => Object`
+
+The optional third argument is an array of names of props that the handlers depend on. By providing this argument, the handlers' identities will stay stable across rerenders when neither the dependency props nor the state object has changed (allowing for downstream `shouldComponentUpdate()`/`React.memo()` optimizations that rely on prop equality)
 
 Wraps [`useState()`](https://reactjs.org/docs/hooks-reference.html#usestate) hook
 
@@ -255,6 +258,21 @@ const Counter = flow(
       <button onClick={reset}>Reset</button>
       <button onClick={increment}>+</button>
       <button onClick={decrement}>-</button>
+    </>
+)
+
+const IncrementByX = flow(
+  addStateHandlers(
+    {count: 0},
+    {
+      increment: ({count}, {x}) => () => ({count: count + x}),
+    },
+    ['x']
+  ),
+  ({count, increment}) =>
+    <>
+      Count: {count}
+      <ExpensiveToRender onClick={increment} />
     </>
 )
 ```
