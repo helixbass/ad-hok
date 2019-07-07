@@ -1,9 +1,9 @@
 flow: lodash/fp
-fmapValues:
-  module: lodash/fp
-  name: mapValues
+mapValues: lodash/fp
+map: lodash/fp
 useState: react
 useEffect: react
+useMemo: react
 createFactory: react
 render: react-testing-library
 waitForElement: react-testing-library
