@@ -1,3 +1,4 @@
+### eslint-disable no-console ###
 import React from 'react'
 import {render, fireEvent} from 'react-testing-library'
 import 'jest-dom/extend-expect'
@@ -44,6 +45,36 @@ Comp3 = flow(
     </div>
 )
 
+EmptyDeps = flow(
+  addStateHandlers {x: 1}, {incrementX: ({x}) -> -> x: x + 1}, []
+  ({incrementX, x, testId}) ->
+    <div>
+      <EmptyPure onClick={incrementX} />
+      <div data-testid={testId}>{x}</div>
+    </div>
+)
+
+EmptyPure = React.memo ({onClick}) ->
+  console.log 'Pure rerendered'
+  <div>
+    <button onClick={onClick}>empty pure button</button>
+  </div>
+
+PropDeps = flow(
+  addStateHandlers {x: 1}, {incrementXByY: ({x}, {y}) -> -> x: x + y}, ['y']
+  ({incrementXByY, x, testId}) ->
+    <div>
+      <PropPure onClick={incrementXByY} />
+      <div data-testid={testId}>{x}</div>
+    </div>
+)
+
+PropPure = React.memo ({onClick}) ->
+  console.log 'PropPure rerendered'
+  <div>
+    <button onClick={onClick}>prop pure button</button>
+  </div>
+
 describe 'addStateHandlers', ->
   test 'initial state', ->
     {getByTestId} = render <Comp />
@@ -68,3 +99,51 @@ describe 'addStateHandlers', ->
   test 'initial state based on props', ->
     {getByTestId} = render <Comp3 initialX={9} />
     expect(getByTestId 'c').toHaveTextContent '9'
+
+  test 'allows specifying empty dependencies', ->
+    jest
+    .spyOn console, 'log'
+    .mockImplementation ->
+
+    testId = 'empty-deps'
+    {
+      rerender
+      getByText
+      getByTestId
+    } = render <EmptyDeps randomProp={1} testId={testId} />
+    expect(console.log).toHaveBeenCalledTimes 1
+    console.log.mockClear()
+    expect(getByTestId testId).toHaveTextContent '1'
+
+    rerender <EmptyDeps randomProp={2} testId={testId} />
+    expect(console.log).not.toHaveBeenCalled()
+    console.log.mockClear()
+
+    fireEvent.click getByText /empty pure button/
+    expect(console.log).toHaveBeenCalledTimes 1
+    console.log.mockClear()
+    expect(getByTestId testId).toHaveTextContent '2'
+
+  test 'allows specifying prop dependencies', ->
+    jest
+    .spyOn console, 'log'
+    .mockImplementation ->
+
+    testId = 'prop-deps'
+    {
+      rerender
+      getByText
+      getByTestId
+    } = render <PropDeps y={1} testId={testId} />
+    expect(console.log).toHaveBeenCalledTimes 1
+    console.log.mockClear()
+    expect(getByTestId testId).toHaveTextContent '1'
+
+    rerender <PropDeps y={2} testId={testId} />
+    expect(console.log).toHaveBeenCalledTimes 1
+    console.log.mockClear()
+
+    fireEvent.click getByText /prop pure button/
+    expect(console.log).toHaveBeenCalledTimes 1
+    console.log.mockClear()
+    expect(getByTestId testId).toHaveTextContent '3'

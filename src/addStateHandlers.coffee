@@ -1,8 +1,8 @@
-import {useState} from 'react'
-import {mapValues as fmapValues} from 'lodash/fp'
+import {useState, useMemo} from 'react'
 import {isFunction} from 'lodash'
+import {mapValues} from 'lodash/fp'
 
-addStateHandlers = (initial, handlers) -> (props) ->
+addStateHandlers = (initial, handlers, dependencyNames) -> (props) ->
   state = {}
   setters = {}
   initial ###:### = initial props if isFunction initial
@@ -10,15 +10,27 @@ addStateHandlers = (initial, handlers) -> (props) ->
     [stateVal, setter] = useState val
     state[key] = stateVal
     setters[key] = setter
-  {
-    ...props
-    ...state
-    ...fmapValues((handler) ->
+
+  createHandlerProps = ->
+    mapValues((handler) ->
       (...args) ->
         updatedState = handler(state, props) ...args
         for stateKey, updatedValue of updatedState
           setters[stateKey] updatedValue
-    )(handlers)
+    ) handlers
+
+  handlerProps = if dependencyNames?
+    useMemo createHandlerProps, [
+      ...(state[key] for key of initial)
+      ...(props[dependencyName] for dependencyName in dependencyNames)
+    ]
+  else
+    createHandlerProps()
+
+  {
+    ...props
+    ...state
+    ...handlerProps
   }
 
 export default addStateHandlers
