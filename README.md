@@ -74,6 +74,7 @@ If you use [ESLint](https://github.com/eslint/eslint), you can use [`eslint-plug
 * [addState()](#addstate)
 * [addEffect()](#addeffect)
 * [addProps()](#addprops)
+* [addPropsOnChange()](#addpropsonchange)
 * [addHandlers()](#addhandlers)
 * [addStateHandlers()](#addstatehandlers)
 * [addRef()](#addref)
@@ -158,12 +159,15 @@ const Example = flow(
 ```js
 addProps(
   createProps: (incomingProps: Object) => Object | Object,
+  dependencies?: Array<string>
 ): Function
 ```
 
 Accepts a function that returns additional props based on the incoming props. Or accepts an object of additional props. The additional props get merged with the incoming props
 
-Doesn't wrap any hooks, just a convenience helper comparable to Recompose's [`withProps()`](https://github.com/acdlite/recompose/blob/master/docs/API.md#withprops)
+The optional second argument is an array of names of props that the added props depend on. The added props will only get re-created when one of the dependency props changes. This can be used to avoid expensive recomputation or to stabilize prop identity across rerenders (allowing for downstream `shouldComponentUpdate()`/`React.memo()` optimizations that rely on prop equality)
+
+Doesn't wrap any hooks (other than `useMemo()` for the dependency tracking), just a convenience helper comparable to Recompose's [`withProps()`](https://github.com/acdlite/recompose/blob/master/docs/API.md#withprops)
 
 For example:
 
@@ -176,6 +180,48 @@ const Doubler = flow(
 
 const Outer = () =>
   <Doubler num={3}> // renders "Number: 6"
+  
+const OptimizedDoubler = flow(
+  addProps(({num}) => ({num: num * 2}), ['num']),
+  ({num}) =>
+    <div>Number: {num}</div>
+)
+```
+
+### `addPropsOnChange()`
+
+```js
+addPropsOnChange(
+  dependenciesOrShouldMap: Array<string> | (props: Object, nextProps: Object) => boolean,
+  createProps: (incomingProps: Object) => Object,
+): Function
+```
+
+Like `addProps()`, except the new props are only created when one of the incoming props specified by `dependenciesOrShouldMap` changes. This can be used to avoid expensive recomputation or to stabilize prop identity across rerenders (allowing for downstream `shouldComponentUpdate()`/`React.memo()` optimizations that rely on prop equality)
+
+When `dependenciesOrShouldMap` is specified as an array of prop dependencies, this is equivalent to calling `addProps()` with a dependencies argument (eg `addPropsOnChange(['x'], ...)` is equivalent to `addProps(..., ['x'])`)
+
+Otherwise `dependenciesOrShouldMap` can be a function that returns a boolean, given the current props and the next props. This allows you to customize when `createProps()` should be called
+
+Doesn't wrap any hooks (other than `useMemo()` for the dependency tracking), just a convenience helper comparable to Recompose's [`withPropsOnChange()`](https://github.com/acdlite/recompose/blob/master/docs/API.md#withpropsonchange)
+
+For example:
+
+```js
+const Doubler = flow(
+  addPropsOnChange(['num'], ({num}) => ({num: num * 2})),
+  ({num}) =>
+    <div>Number: {num}</div>
+)
+
+const DoublerNums = flow(
+  addProps(
+    (prevProps, props) => prevProps.nums[0] !== props.nums[0],
+    ({nums}) => ({num: nums[0] * 2})
+  ),
+  ({num}) =>
+    <div>Number: {num}</div>
+)
 ```
 
 ### `addHandlers()`
