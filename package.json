@@ -30,7 +30,7 @@
   },
   "bugs": "https://github.com/helixbass/ad-hok/issues",
   "peerDependencies": {
-    "react": "^16.7.0-alpha.0"
+    "react": "^16.8.0"
   },
   "devDependencies": {
     "@babel/core": "^7.1.2",
@@ -38,7 +38,7 @@
     "@babel/preset-react": "^7.0.0",
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^23.6.0",
-    "coffeescript": "github:helixbass/coffeescript#7d82366b",
+    "coffeescript": "github:helixbass/coffeescript#811b4ba4",
     "eslint": "^5.8.0",
     "eslint-config-prettier": "^3.1.0",
     "eslint-plugin-coffee": "^0.0.11",
@@ -47,11 +47,11 @@
     "eslint-plugin-prettier": "^3.0.0",
     "jest": "^23.6.0",
     "jest-dom": "^2.1.0",
-    "prettier": "github:helixbass/prettier#395e5d5c",
-    "prettier-plugin-coffeescript": "^0.0.6",
+    "prettier": "github:helixbass/prettier#9105f5f1",
+    "prettier-plugin-coffeescript": "^0.0.9",
     "prop-types": "^15.7.2",
-    "react": "^16.7.0-alpha.0",
-    "react-dom": "^16.7.0-alpha.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
     "react-testing-library": "^5.2.3",
     "regenerator-runtime": "^0.12.1"
   },

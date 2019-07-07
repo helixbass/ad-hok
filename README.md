@@ -122,7 +122,7 @@ const Counter = flow(
 ```js
 addEffect(
   callback: (props: Object) => Function,
-  dependencies: Array<string>
+  dependencies?: Array<string>
 ): Function
 ```
 
@@ -184,13 +184,16 @@ const Outer = () =>
 addHandlers(
   handlerCreators: {
     [handlerName: string]: (props: Object) => Function
-  }
+  },
+  dependencies?: Array<string>
 ): Function
 ```
 
 Takes an object map of handler creators. These are higher-order functions that accept a set of props and return a function handler.
 
-Doesn't wrap any hooks, just a convenience helper comparable to Recompose's [`withHandlers()`](https://github.com/acdlite/recompose/blob/master/docs/API.md#withhandlers)
+The optional second argument is an array of names of props that the handlers depend on. By providing this argument, the handlers' identities will stay stable across rerenders when the dependency props haven't changed (allowing for downstream `shouldComponentUpdate()`/`React.memo()` optimizations that rely on prop equality)
+
+Doesn't wrap any hooks (other than `useMemo()` when passing the optional `dependencies` argument), just a convenience helper comparable to Recompose's [`withHandlers()`](https://github.com/acdlite/recompose/blob/master/docs/API.md#withhandlers)
 
 For example:
 
@@ -204,6 +207,16 @@ const ClickLogger = flow(
   }),
   ({onClick}) =>
     <button onClick={onClick}>click me</button>
+)
+
+const Fetcher = flow(
+  addHandlers({
+    onSubmit: ({someProp}) => () => {
+      fetchData({someProp})
+    },
+  }, ['someProp']),
+  ({onSubmit}) =>
+    <ExpensiveToRender onSubmit={onSubmit} />
 )
 ```
 
