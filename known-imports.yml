@@ -4,6 +4,7 @@ map: lodash/fp
 useState: react
 useEffect: react
 useMemo: react
+useRef: react
 createFactory: react
 render: react-testing-library
 waitForElement: react-testing-library
