@@ -1,6 +1,6 @@
 import {isArray} from 'lodash'
 
-import {addProps} from '.'
+import addProps from './addProps'
 import usePrevious from './util/usePrevious'
 
 addPropsOnChange = (didChange, getProps) ->
