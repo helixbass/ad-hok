@@ -1,5 +1,5 @@
 import {useState} from 'react'
-import {isFunction} from 'lodash'
+import {isFunction} from './util/helpers'
 
 addState = (name, setterName, initial) ->
   (props) ->

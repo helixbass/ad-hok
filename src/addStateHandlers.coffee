@@ -1,6 +1,5 @@
 import {useState, useMemo} from 'react'
-import {isFunction} from 'lodash'
-import {mapValues} from 'lodash/fp'
+import {isFunction, mapValues} from './util/helpers'
 
 addStateHandlers = (initial, handlers, dependencyNames) -> (props) ->
   state = {}

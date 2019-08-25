@@ -1,5 +1,5 @@
-import {isFunction} from 'lodash'
 import {useMemo} from 'react'
+import {isFunction} from './util/helpers'
 
 addProps = (updater, dependencyNames) -> (props) ->
   getAddedProps = ->

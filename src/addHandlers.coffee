@@ -1,5 +1,5 @@
-import {mapValues} from 'lodash/fp'
 import {useMemo} from 'react'
+import {mapValues} from './util/helpers'
 
 addHandlers = (handlers, dependencyNames) ->
   (props) ->
