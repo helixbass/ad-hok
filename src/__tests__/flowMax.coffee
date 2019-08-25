@@ -1,14 +1,18 @@
+### eslint-disable no-console ###
 import React from 'react'
 import {render, fireEvent} from 'react-testing-library'
 import 'jest-dom/extend-expect'
 
 import {addState, addWrapper, addProps, flowMax} from '..'
 
-Comp = flowMax addState('x', 'setX', 'abcd'), ({x, setX}) ->
-  <div>
-    <div data-testid="a">{x}</div>
-    <button onClick={-> setX 'efg'}>update</button>
-  </div>
+Comp = flowMax(
+  addState 'x', 'setX', 'abcd'
+  ({x, setX}) ->
+    <div>
+      <div data-testid="a">{x}</div>
+      <button onClick={-> setX 'efg'}>update</button>
+    </div>
+)
 
 addStuff = flowMax(
   addWrapper ({render: _render, props}) ->
@@ -19,12 +23,15 @@ addStuff = flowMax(
   addProps d: 4
 )
 
-Outer = flowMax addStuff, ({y, d, e}) ->
-  <div>
-    <div data-testid="child-y">{y}</div>
-    <div data-testid="child-d">{d}</div>
-    <div data-testid="child-e">{e}</div>
-  </div>
+Outer = flowMax(
+  addStuff
+  ({y, d, e}) ->
+    <div>
+      <div data-testid="child-y">{y}</div>
+      <div data-testid="child-d">{d}</div>
+      <div data-testid="child-e">{e}</div>
+    </div>
+)
 
 describe 'flowMax', ->
   test 'works in place of flow()', ->
@@ -38,3 +45,8 @@ describe 'flowMax', ->
     expect(getByTestId 'child-y').toHaveTextContent '2'
     expect(getByTestId 'child-d').toHaveTextContent '4'
     expect(getByTestId 'child-e').toHaveTextContent '5'
+
+  test 'throws nice error when passed a non-function', ->
+    expect(->
+      flowMax notA: 'function'
+    ).toThrow TypeError
