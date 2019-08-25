@@ -270,7 +270,7 @@ const Fetcher = flow(
 
 ```js
 addStateHandlers(
-  initialState: Object | (props: Object) => any
+  initialState: Object | (props: Object) => Object
   stateUpdaters: {
     [key: string]: (state: Object, props: Object) => (...payload: any[]) => Object
   },
