@@ -7,7 +7,29 @@ Ad-hok is a set of helpers that let you use React [hooks](https://reactjs.org/do
 ## Installation
 
 ```
-$ npm install ad-hok
+$ npm install --save ad-hok
+```
+
+##### Recommended: ESLint
+
+If you're using [ESLint](https://eslint.org), you may want to install [`eslint-plugin-ad-hok`](https://github.com/helixbass/eslint-plugin-ad-hok) to enforce `ad-hok` best practices
+```
+$ npm install --save-dev eslint-plugin-ad-hok
+```
+In your `.eslintrc`:
+```
+"extends": ["plugin:ad-hok/recommended"]
+```
+
+##### Recommended: Babel display name plugin
+
+If you're using [Babel](https://babeljs.io), you may want to install [`babel-plugin-transform-react-display-name-pipe`](https://github.com/helixbass/babel-plugin-transform-react-display-name-pipe) for nicer component display names when debugging
+```
+$ npm install --save-dev babel-plugin-transform-react-display-name-pipe
+```
+In your `.babelrc` (or `babel.config.js`):
+```
+"plugins": ["transform-react-display-name-pipe"]
 ```
 
 ## Basic usage
