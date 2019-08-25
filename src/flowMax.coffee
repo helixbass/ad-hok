@@ -1,3 +1,5 @@
+import {isFunction} from 'lodash'
+
 import {isAddPropTypes} from './addPropTypes'
 import {isRenderNothing} from './renderNothing'
 import {isReturns} from './returns'
@@ -25,7 +27,7 @@ flowMax = (...funcs) ->
     "#{wrapperStr}(#{displayName ? ''})"
   if flowLength
     for func, funcIndex in funcs
-      if (getNestedFlowMaxArguments = isFlowMax func)
+      if getNestedFlowMaxArguments = isFlowMax func
         return flowMax(
           ...getPrecedingFuncs(funcIndex)
           ...getNestedFlowMaxArguments()
@@ -42,13 +44,12 @@ flowMax = (...funcs) ->
           not newFollowingFlowMax.displayName? or
           newFollowingFlowMax.displayName is 'ret'
         )
-          newFollowingFlowMax.displayName =
-            switch
-              when isAddPropTypes(func)
-                wrapExistingDisplayName 'addPropTypes'
-              when isAddWrapper(func) then wrapExistingDisplayName 'addWrapper'
-              when isAddWrapperHOC(func)
-                wrapExistingDisplayName 'addWrapperHOC'
+          newFollowingFlowMax.displayName = switch
+            when isAddPropTypes func
+              wrapExistingDisplayName 'addPropTypes'
+            when isAddWrapper func then wrapExistingDisplayName 'addWrapper'
+            when isAddWrapperHOC func
+              wrapExistingDisplayName 'addWrapperHOC'
         newFlowMax = flowMax(
           ...getPrecedingFuncs(funcIndex)
           func newFollowingFlowMax
@@ -56,22 +57,22 @@ flowMax = (...funcs) ->
         # Expose original arguments if we're nested
         newFlowMax[getArgumentsPropertyName] = -> funcs
         return newFlowMax
-      if (addedDisplayName = isAddDisplayName func)
+      if addedDisplayName = isAddDisplayName func
         displayName = addedDisplayName[0]
+      throw new TypeError 'Expected a function' unless isFunction func
   ret = (...args) ->
     return args[0] unless funcs?.length
     index = 0
     props = null
     while index < flowLength
       func ###:### = funcs[index]
-      currentArgs =
-        if index is 0
-          args
-        else
-          [props]
+      currentArgs = if index is 0
+        args
+      else
+        [props]
       props = func ...currentArgs
       return null if isRenderNothing props
-      return returnsVal[0] if (returnsVal = isReturns props)
+      return returnsVal[0] if returnsVal = isReturns props
       index++
     props
   ret.displayName = displayName if displayName?

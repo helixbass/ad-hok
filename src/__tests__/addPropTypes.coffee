@@ -6,17 +6,22 @@ import PropTypes from 'prop-types'
 
 import {addPropTypes, addProps, flowMax} from '..'
 
-Comp = flowMax addPropTypes(a: PropTypes.number.isRequired), ({a}) ->
-  <div>
-    <div data-testid="a">{a}</div>
-  </div>
+Comp = flowMax(
+  addPropTypes a: PropTypes.number.isRequired
+  ({a}) ->
+    <div>
+      <div data-testid="a">{a}</div>
+    </div>
+)
 
-Comp2 = flowMax addProps(b: 3), addPropTypes(c: PropTypes.number.isRequired), ({
-  c
-}) ->
-  <div>
-    <div data-testid="c">{c}</div>
-  </div>
+Comp2 = flowMax(
+  addProps b: 3
+  addPropTypes c: PropTypes.number.isRequired
+  ({c}) ->
+    <div>
+      <div data-testid="c">{c}</div>
+    </div>
+)
 
 describe 'addPropTypes', ->
   beforeAll ->

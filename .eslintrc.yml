@@ -32,6 +32,7 @@ rules:
   coffee/valid-jsdoc: off
   coffee/multiline-comment-style: off
   coffee/no-return-assign: off
+  coffee/no-cond-assign: off
   # coffee/no-overwrite: [error, sameScope: false]
   coffee/block-scoped-var: off
   coffee/wrap-regex: off
