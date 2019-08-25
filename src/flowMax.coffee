@@ -1,5 +1,3 @@
-import {isFunction} from 'lodash'
-
 import {isAddPropTypes} from './addPropTypes'
 import {isRenderNothing} from './renderNothing'
 import {isReturns} from './returns'
@@ -7,6 +5,7 @@ import {isAddWrapper} from './addWrapper'
 import {isAddWrapperHOC} from './addWrapperHOC'
 import {isBranch} from './branch-avoid-circular-dependency'
 import {isAddDisplayName} from './addDisplayName'
+import {isFunction} from './util/helpers'
 
 getArgumentsPropertyName = '__ad-hok-flowMax-getArguments'
 

@@ -1,6 +1,4 @@
 flow: lodash/fp
-mapValues: lodash/fp
-map: lodash/fp
 useState: react
 useEffect: react
 useMemo: react
