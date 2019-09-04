@@ -1,5 +1,6 @@
-import {useState, useMemo, useRef} from 'react'
+import {useState, useRef} from 'react'
 import {isFunction, mapValues} from './util/helpers'
+import useMemoized from './util/useMemoized'
 
 addStateHandlers = (initial, handlers, dependencyNames) -> (props) ->
   state = {}
@@ -24,7 +25,7 @@ addStateHandlers = (initial, handlers, dependencyNames) -> (props) ->
     ) handlers
 
   handlerProps = if dependencyNames?
-    useMemo createHandlerProps, [
+    useMemoized createHandlerProps, [
       ...(state[key] for key of useInitial)
       ...(props[dependencyName] for dependencyName in dependencyNames)
     ]
