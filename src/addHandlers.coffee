@@ -1,17 +1,17 @@
-import {useMemo} from 'react'
 import {mapValues} from './util/helpers'
+import useMemoized from './util/useMemoized'
 
 addHandlers = (handlers, dependencyNames) ->
   (props) ->
     createHandlerProps = ->
       mapValues((createHandler) ->
+        handler = createHandler props
         (...args) ->
-          handler = createHandler props
           handler ...args
       ) handlers
 
     handlerProps = if dependencyNames
-      useMemo(
+      useMemoized(
         createHandlerProps
         (props[dependencyName] for dependencyName in dependencyNames)
       )

@@ -1,26 +1,32 @@
-import {useState, useMemo} from 'react'
+import {useState, useRef} from 'react'
 import {isFunction, mapValues} from './util/helpers'
+import useMemoized from './util/useMemoized'
 
 addStateHandlers = (initial, handlers, dependencyNames) -> (props) ->
   state = {}
   setters = {}
-  initial ###:### = initial props if isFunction initial
-  for key, val of initial
+  computedInitial = useRef()
+  useInitial = do ->
+    return initial unless isFunction initial
+    computedInitial.current ?= initial props
+    computedInitial.current
+  for key, val of useInitial
     [stateVal, setter] = useState val
     state[key] = stateVal
     setters[key] = setter
 
   createHandlerProps = ->
     mapValues((handler) ->
+      curriedHandler = handler state, props
       (...args) ->
-        updatedState = handler(state, props) ...args
+        updatedState = curriedHandler ...args
         for stateKey, updatedValue of updatedState
           setters[stateKey] updatedValue
     ) handlers
 
   handlerProps = if dependencyNames?
-    useMemo createHandlerProps, [
-      ...(state[key] for key of initial)
+    useMemoized createHandlerProps, [
+      ...(state[key] for key of useInitial)
       ...(props[dependencyName] for dependencyName in dependencyNames)
     ]
   else

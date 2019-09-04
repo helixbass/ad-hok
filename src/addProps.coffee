@@ -1,12 +1,12 @@
-import {useMemo} from 'react'
 import {isFunction} from './util/helpers'
+import useMemoized from './util/useMemoized'
 
 addProps = (updater, dependencyNames) -> (props) ->
   getAddedProps = ->
     if isFunction updater then updater props else updater
 
   addedProps = if dependencyNames
-    useMemo(
+    useMemoized(
       getAddedProps
       (props[dependencyName] for dependencyName in dependencyNames)
     )
