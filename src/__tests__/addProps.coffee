@@ -11,7 +11,19 @@ Comp = flow(
     ({x}) ->
       console.log 'recomputing y'
       y: x * 2
-    ['x']
+    ['x', 'user.id']
+  )
+  ({y, testId}) ->
+    <div data-testid={testId}>{y}</div>
+)
+
+Comp2 = flow(
+  addProps(
+    ({x}) ->
+      console.log 'recomputing y'
+      y: x * 2
+    (prevProps, props) ->
+      props.x > prevProps.x
   )
   ({y, testId}) ->
     <div data-testid={testId}>{y}</div>
@@ -30,16 +42,44 @@ describe 'addProps', ->
     .mockImplementation ->
 
     testId = 'basic'
-    {getByTestId, rerender} = render <Comp x={2} z={3} testId={testId} />
+    {
+      getByTestId
+      rerender
+    } = render <Comp x={2} z={3} testId={testId} user={id: 3} />
     expect(console.log).toHaveBeenCalledTimes 1
     console.log.mockClear()
     expect(getByTestId testId).toHaveTextContent '4'
 
-    rerender <Comp x={2} z={5} testId={testId} />
+    rerender <Comp x={2} z={5} testId={testId} user={id: 3} />
     expect(console.log).not.toHaveBeenCalled()
     console.log.mockClear()
 
     rerender <Comp x={4} z={5} testId={testId} />
+    expect(console.log).toHaveBeenCalledTimes 1
+    console.log.mockClear()
+    expect(getByTestId testId).toHaveTextContent '8'
+
+    rerender <Comp x={4} z={5} testId={testId} user={id: 4} />
+    expect(console.log).toHaveBeenCalledTimes 1
+    console.log.mockClear()
+    undefined
+
+  test 'works with dependencies callback', ->
+    jest
+    .spyOn console, 'log'
+    .mockImplementation ->
+
+    testId = 'dependencies-callback'
+    {getByTestId, rerender} = render <Comp2 x={2} z={3} testId={testId} />
+    expect(console.log).toHaveBeenCalledTimes 1
+    console.log.mockClear()
+    expect(getByTestId testId).toHaveTextContent '4'
+
+    rerender <Comp2 x={1} z={5} testId={testId} />
+    expect(console.log).not.toHaveBeenCalled()
+    console.log.mockClear()
+
+    rerender <Comp2 x={4} z={5} testId={testId} />
     expect(console.log).toHaveBeenCalledTimes 1
     console.log.mockClear()
     expect(getByTestId testId).toHaveTextContent '8'
