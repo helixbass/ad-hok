@@ -95,6 +95,7 @@ If you use [ESLint](https://github.com/eslint/eslint), you can use [`eslint-plug
 
 * [addState()](#addstate)
 * [addEffect()](#addeffect)
+* [addLayoutEffect()](#addlayouteffect)
 * [addProps()](#addprops)
 * [addPropsOnChange()](#addpropsonchange)
 * [addHandlers()](#addhandlers)
@@ -165,6 +166,42 @@ const Example = flow(
     console.log("I get called on every re-render")
   }),
   addEffect(() => () => {
+    console.log("I only get called once on mount")
+  }, []),
+  ({count, setCount}) =>
+    <>
+      Count: {count}
+      <button onClick={() => setCount(0)}>Reset</button>
+      <button onClick={() => setCount(prevCount => prevCount + 1)}>+</button>
+    </>
+)
+```
+
+### `addLayoutEffect()`
+
+```js
+addLayoutEffect(
+  callback: (props: Object) => Function,
+  dependencies?: Array<string>
+): Function
+```
+
+Accepts a function of props that returns a function (which gets passed to [`useLayoutEffect()`](https://reactjs.org/docs/hooks-reference.html#uselayouteffect)). Used for imperative, possibly effectful code. The signature is identical to `addEffect`, but it fires synchronously after all DOM mutations
+
+The optional second argument is an array of names of props that the effect depends on. It corresponds to the [second argument to `useLayoutEffect()`](https://reactjs.org/docs/hooks-reference.html#conditionally-firing-an-effect)
+
+For example:
+
+```js
+const Example = flow(
+  addState('count', 'setCount', 0),
+  addLayoutEffect(({count}) => () => {
+    document.title = `You clicked ${count} times`
+  }, ['count']),
+  addLayoutEffect(() => () => {
+    console.log("I get called on every re-render")
+  }),
+  addLayoutEffect(() => () => {
     console.log("I only get called once on mount")
   }, []),
   ({count, setCount}) =>
