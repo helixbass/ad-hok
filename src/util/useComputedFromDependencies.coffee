@@ -3,8 +3,13 @@ import {isFunction, get} from './helpers'
 import usePrevious from './usePrevious'
 import useMemoized from './useMemoized'
 
-useComputedFromDependencies = ({compute, dependencies, props}) ->
-  if dependencies
+useComputedFromDependencies = ({
+  compute
+  dependencies
+  additionalResolvedDependencies = []
+  props
+}) ->
+  if dependencies?
     if isFunction dependencies
       prevProps = usePrevious props
       computedValueRef = useRef()
@@ -15,10 +20,10 @@ useComputedFromDependencies = ({compute, dependencies, props}) ->
         computedValueRef.current
       computedValueRef.current = value
     else
-      useMemoized(
-        compute
-        (get(dependencyName) props for dependencyName in dependencies)
-      )
+      useMemoized compute, [
+        ...(get(dependencyName) props for dependencyName in dependencies)
+        ...additionalResolvedDependencies
+      ]
   else
     compute()
 

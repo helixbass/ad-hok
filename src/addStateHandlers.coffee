@@ -1,8 +1,9 @@
 import {useState, useRef} from 'react'
-import {isFunction, mapValues} from './util/helpers'
-import useMemoized from './util/useMemoized'
+import {isFunction, isArray, mapValues} from './util/helpers'
+import usePrevious from './util/usePrevious'
+import useComputedFromDependencies from './util/useComputedFromDependencies'
 
-addStateHandlers = (initial, handlers, dependencyNames) -> (props) ->
+addStateHandlers = (initial, handlers, dependencies) -> (props) ->
   state = {}
   setters = {}
   computedInitial = useRef()
@@ -24,13 +25,28 @@ addStateHandlers = (initial, handlers, dependencyNames) -> (props) ->
           setters[stateKey] updatedValue
     ) handlers
 
-  handlerProps = if dependencyNames?
-    useMemoized createHandlerProps, [
-      ...(state[key] for key of useInitial)
-      ...(props[dependencyName] for dependencyName in dependencyNames)
-    ]
-  else
-    createHandlerProps()
+  handlerProps = useComputedFromDependencies {
+    compute: createHandlerProps
+    dependencies: if dependencies?
+      if isFunction dependencies
+        prevState = usePrevious state
+        hasStateChanged = do ->
+          return yes unless prevState?
+          # eslint-disable-next-line coffee/no-overwrite
+          for key of useInitial
+            currentStateVal = state[key]
+            prevStateVal = prevState[key]
+            return yes unless currentStateVal is prevStateVal
+          no
+        (prevProps, _props) ->
+          return yes if hasStateChanged
+          dependencies prevProps, _props
+      else
+        dependencies
+    additionalResolvedDependencies: if isArray dependencies
+      state[key] for key of useInitial
+    props
+  }
 
   {
     ...props
