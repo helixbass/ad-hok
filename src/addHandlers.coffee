@@ -1,7 +1,7 @@
 import {mapValues} from './util/helpers'
-import useMemoized from './util/useMemoized'
+import useComputedFromDependencies from './util/useComputedFromDependencies'
 
-addHandlers = (handlers, dependencyNames) ->
+addHandlers = (handlers, dependencies) ->
   (props) ->
     createHandlerProps = ->
       mapValues((createHandler) ->
@@ -10,13 +10,11 @@ addHandlers = (handlers, dependencyNames) ->
           handler ...args
       ) handlers
 
-    handlerProps = if dependencyNames
-      useMemoized(
-        createHandlerProps
-        (props[dependencyName] for dependencyName in dependencyNames)
-      )
-    else
-      createHandlerProps()
+    handlerProps = useComputedFromDependencies {
+      compute: createHandlerProps
+      dependencies
+      props
+    }
 
     {
       ...props

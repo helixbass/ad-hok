@@ -29,7 +29,7 @@ Deps = flow(
     onClick: ({x, setY}) -> ->
       setY x + 1
   ,
-    ['x', 'setY']
+    ['x', 'setY', 'user.id']
   ({onClick, y, testId}) ->
     <div>
       <Pure onClick={onClick} />
@@ -37,10 +37,25 @@ Deps = flow(
     </div>
 )
 
-Pure = React.memo ({onClick}) ->
+DepsCallback = flow(
+  addState 'y', 'setY', 2
+  addHandlers
+    onClick: ({x, setY}) -> ->
+      setY x + 1
+  ,
+    (prevProps, props) ->
+      prevProps.x < props.x
+  ({onClick, y, testId}) ->
+    <div>
+      <Pure onClick={onClick} label="pure button DepsCallback" />
+      <div data-testid={testId}>{y}</div>
+    </div>
+)
+
+Pure = React.memo ({onClick, label = 'pure button'}) ->
   console.log 'Pure rerendered'
   <div>
-    <button onClick={onClick}>pure button</button>
+    <button onClick={onClick}>{label}</button>
   </div>
 
 describe 'addHandlers', ->
@@ -57,11 +72,15 @@ describe 'addHandlers', ->
 
     testId = 'y'
     x = 4
-    {rerender, getByText, getByTestId} = render <Deps x={x} testId={testId} />
+    {
+      rerender
+      getByText
+      getByTestId
+    } = render <Deps x={x} testId={testId} user={id: 3} />
     expect(console.log).toHaveBeenCalledTimes 1
     console.log.mockClear()
 
-    rerender <Deps x={x} testId={testId} />
+    rerender <Deps x={x} testId={testId} user={id: 3} />
     expect(console.log).not.toHaveBeenCalled()
     console.log.mockClear()
 
@@ -71,11 +90,55 @@ describe 'addHandlers', ->
     expect(getByTestId testId).toHaveTextContent '5'
 
     x = 6
-    rerender <Deps x={x} testId={testId} />
+    rerender <Deps x={x} testId={testId} user={id: 3} />
     expect(console.log).toHaveBeenCalledTimes 1
     console.log.mockClear()
 
     fireEvent.click getByText /pure button/
+    expect(console.log).not.toHaveBeenCalled()
+    console.log.mockClear()
+    expect(getByTestId testId).toHaveTextContent '7'
+
+    rerender <Deps x={x} testId={testId} user={id: 4} />
+    expect(console.log).toHaveBeenCalledTimes 1
+    console.log.mockClear()
+    expect(getByTestId testId).toHaveTextContent '7'
+
+  test 'allows specifying dependencies as callback', ->
+    jest
+    .spyOn console, 'log'
+    .mockImplementation ->
+
+    testId = 'dependencies-callback'
+    x = 5
+    {
+      rerender
+      getByText
+      getByTestId
+    } = render <DepsCallback x={x} testId={testId} />
+    expect(console.log).toHaveBeenCalledTimes 1
+    console.log.mockClear()
+
+    rerender <DepsCallback x={x} testId={testId} />
+    expect(console.log).not.toHaveBeenCalled()
+    console.log.mockClear()
+
+    x = 4
+    rerender <DepsCallback x={x} testId={testId} />
+    expect(console.log).not.toHaveBeenCalled()
+    console.log.mockClear()
+
+    fireEvent.click getByText /pure button DepsCallback/
+    expect(console.log).not.toHaveBeenCalled()
+    console.log.mockClear()
+    expect(getByTestId testId).toHaveTextContent '6'
+
+    x = 6
+    rerender <DepsCallback x={x} testId={testId} />
+    expect(console.log).toHaveBeenCalledTimes 1
+    console.log.mockClear()
+
+    fireEvent.click getByText /pure button DepsCallback/
     expect(console.log).not.toHaveBeenCalled()
     console.log.mockClear()
     expect(getByTestId testId).toHaveTextContent '7'
