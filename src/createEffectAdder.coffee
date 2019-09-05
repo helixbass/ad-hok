@@ -8,7 +8,7 @@ isSimpleDependenciesArray = (dependencies) ->
       return no
   yes
 
-addSomeEffect = (effectHook) -> (callback, dependencies) -> (props) ->
+createEffectAdder = (effectHook) -> (callback, dependencies) -> (props) ->
   # eslint-disable-next-line coffee/no-negated-condition
   if not dependencies?
     effectHook callback props
@@ -39,4 +39,4 @@ addSomeEffect = (effectHook) -> (callback, dependencies) -> (props) ->
 
   props
 
-export default addSomeEffect
+export default createEffectAdder

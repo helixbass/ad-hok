@@ -1,6 +1,6 @@
 import {useEffect} from 'react'
-import addSomeEffect from './addSomeEffect'
+import createEffectAdder from './createEffectAdder'
 
-addEffect = addSomeEffect useEffect
+addEffect = createEffectAdder useEffect
 
 export default addEffect

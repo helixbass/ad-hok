@@ -1,6 +1,6 @@
 import {useLayoutEffect} from 'react'
-import addSomeEffect from './addSomeEffect'
+import createEffectAdder from './createEffectAdder'
 
-addLayoutEffect = addSomeEffect useLayoutEffect
+addLayoutEffect = createEffectAdder useLayoutEffect
 
 export default addLayoutEffect
