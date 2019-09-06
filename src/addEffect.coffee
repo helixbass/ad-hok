@@ -1,11 +1,6 @@
 import {useEffect} from 'react'
+import createEffectAdder from './createEffectAdder'
 
-addEffect = (callback, changeProps) -> (props) ->
-  useEffect callback(props),
-    # TODO: throw nice error if changeProps isn't array/iterable or any changeProp isn't a string?
-    if changeProps?
-      props[changeProp] for changeProp in changeProps
-
-  props
+addEffect = createEffectAdder useEffect
 
 export default addEffect

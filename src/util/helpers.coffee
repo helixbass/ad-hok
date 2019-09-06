@@ -14,3 +14,21 @@ export mapValues = (callback) -> (obj) ->
   for key, val of obj
     ret[key] = callback val
   ret
+
+# eslint-disable-next-line known-imports/no-unused-vars
+export get = (path) ->
+  pathParts = path.split '.'
+  (obj) ->
+    val = obj
+    for pathPart in pathParts
+      return unless val?
+      val = val?[pathPart]
+    val
+
+# eslint-disable-next-line known-imports/no-unused-vars
+export shallowEqualArray = (a, b) ->
+  return no unless a?.length? and b?.length?
+  return no unless a.length is b.length
+  for element, index in a
+    return no unless element is b[index]
+  yes

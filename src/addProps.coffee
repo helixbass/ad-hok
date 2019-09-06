@@ -1,17 +1,15 @@
 import {isFunction} from './util/helpers'
-import useMemoized from './util/useMemoized'
+import useComputedFromDependencies from './util/useComputedFromDependencies'
 
-addProps = (updater, dependencyNames) -> (props) ->
+addProps = (updater, dependencies) -> (props) ->
   getAddedProps = ->
     if isFunction updater then updater props else updater
 
-  addedProps = if dependencyNames
-    useMemoized(
-      getAddedProps
-      (props[dependencyName] for dependencyName in dependencyNames)
-    )
-  else
-    getAddedProps()
+  addedProps = useComputedFromDependencies {
+    compute: getAddedProps
+    dependencies
+    props
+  }
 
   {
     ...props
