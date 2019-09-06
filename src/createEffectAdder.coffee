@@ -8,35 +8,42 @@ isSimpleDependenciesArray = (dependencies) ->
       return no
   yes
 
-createEffectAdder = (effectHook) -> (callback, dependencies) -> (props) ->
-  # eslint-disable-next-line coffee/no-negated-condition
-  if not dependencies?
-    effectHook callback props
-  else if isSimpleDependenciesArray dependencies
-    # TODO: throw nice error if changeProps isn't array/iterable or any changeProp isn't a string?
-    effectHook(
-      callback props
-      (props[dependencyPropName] for dependencyPropName in dependencies)
-    )
-  else
-    prevProps = usePrevious props
-    if isArray dependencies
-      effectHook ->
-        return if (
-          prevProps? and
-          shallowEqualArray(
-            (get(dependencyName) prevProps for dependencyName in dependencies)
-            (get(dependencyName) props for dependencyName in dependencies)
-          )
-        )
+createEffectAdder = (effectHook) -> (callback, dependencies) ->
+  isDependenciesNullish = not dependencies?
+  isDependenciesSimpleArray =
+    not isDependenciesNullish and isSimpleDependenciesArray dependencies
+  isDependenciesArray =
+    not isDependenciesNullish and
+    (isDependenciesSimpleArray or isArray dependencies)
 
-        callback(props)()
+  (props) ->
+    if isDependenciesNullish
+      effectHook callback props
+    else if isDependenciesSimpleArray
+      # TODO: throw nice error if changeProps isn't array/iterable or any changeProp isn't a string?
+      effectHook(
+        callback props
+        (props[dependencyPropName] for dependencyPropName in dependencies)
+      )
     else
-      effectHook ->
-        return if prevProps? and not dependencies prevProps, props
+      prevProps = usePrevious props
+      if isDependenciesArray
+        effectHook ->
+          return if (
+            prevProps? and
+            shallowEqualArray(
+              (get(dependencyName) prevProps for dependencyName in dependencies)
+              (get(dependencyName) props for dependencyName in dependencies)
+            )
+          )
 
-        callback(props)()
+          callback(props)()
+      else
+        effectHook ->
+          return if prevProps? and not dependencies prevProps, props
 
-  props
+          callback(props)()
+
+    props
 
 export default createEffectAdder
