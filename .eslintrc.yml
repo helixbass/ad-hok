@@ -6,9 +6,9 @@ plugins:
   - react
 extends:
   - eslint:recommended
-  - plugin:react/recommended
   - plugin:coffee/all
-  - plugin:coffee/prettier
+  - plugin:coffee/react-recommended
+  - plugin:coffee/prettier-run-as-rule
   - plugin:known-imports/recommended-react
 rules:
   coffee/prefer-destructuring: [error, {object: true}]
@@ -46,6 +46,16 @@ rules:
   coffee/require-jsdoc: off
   coffee/display-name: off
   coffee/no-empty-function: off
+  sort-imports: off
+  callback-return: off
+  coffee/id-length: off
+  max-statements: off
+  default-case: off
+  no-inline-comments: off
+  no-plusplus: off
+  no-warning-comments: off
+  sort-keys: off
+  require-unicode-regexp: off
 env:
   node: true
   es6: true

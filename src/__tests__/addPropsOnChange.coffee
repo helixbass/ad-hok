@@ -10,6 +10,7 @@ Comp = flow(
   addPropsOnChange ['x'], ({x}) ->
     console.log 'recomputing y'
     y: x * 2
+,
   ({y, testId}) ->
     <div data-testid={testId}>{y}</div>
 )
@@ -21,6 +22,7 @@ CompCallback = flow(
       console.log 'recomputing y'
       y: x[0] * 2
   )
+,
   ({y, testId}) ->
     <div data-testid={testId}>{y}</div>
 )

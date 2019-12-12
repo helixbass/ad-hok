@@ -11,6 +11,7 @@ Comp = flowMax(
     (props) -> {...props, a: 999}
     (props) -> {...props, a: -888}
   )
+,
   ({a, testId}) ->
     <div data-testid={testId}>{a}</div>
 )

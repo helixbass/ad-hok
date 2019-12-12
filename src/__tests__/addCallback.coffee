@@ -11,6 +11,7 @@ Comp = flow(
     'inputCallbackRef'
     ({setInputNode}) -> (node) ->
       setInputNode node
+  ,
     []
   )
   ({inputCallbackRef, inputNode}) ->

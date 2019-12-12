@@ -14,6 +14,7 @@ Wrapper = ({x, children}) ->
 Comp = flowMax(
   addWrapper ({render: _render, props}) ->
     <Wrapper x={props.x}>{_render z: 3}</Wrapper>
+,
   ({y, z}) ->
     <div>
       <span data-testid="child-y">{y}</span>

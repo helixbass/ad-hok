@@ -4,17 +4,19 @@ import 'jest-dom/extend-expect'
 
 import {addDisplayName, flowMax, addProps} from '..'
 
-InitialDisplayName = flowMax addDisplayName('Initial'), addProps(a: 3), ({
-  a
-  testId
-}) ->
-  <div data-testid={testId}>{a}</div>
+InitialDisplayName = flowMax(
+  addDisplayName 'Initial'
+  addProps a: 3
+  ({a, testId}) ->
+    <div data-testid={testId}>{a}</div>
+)
 
-NonInitialDisplayName = flowMax addProps(a: 4), addDisplayName('NonInitial'), ({
-  a
-  testId
-}) ->
-  <div data-testid={testId}>{a}</div>
+NonInitialDisplayName = flowMax(
+  addProps a: 4
+  addDisplayName 'NonInitial'
+  ({a, testId}) ->
+    <div data-testid={testId}>{a}</div>
+)
 
 describe 'addDisplayName', ->
   test 'works as initial step', ->

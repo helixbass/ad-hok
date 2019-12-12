@@ -5,11 +5,14 @@ import {flow} from 'lodash/fp'
 
 import {addRef} from '..'
 
-Comp = flow addRef('inputRef'), ({inputRef}) ->
-  <div>
-    <input data-testid="input" ref={inputRef} />
-    <button onClick={-> inputRef.current.focus()}>update</button>
-  </div>
+Comp = flow(
+  addRef 'inputRef'
+  ({inputRef}) ->
+    <div>
+      <input data-testid="input" ref={inputRef} />
+      <button onClick={-> inputRef.current.focus()}>update</button>
+    </div>
+)
 
 describe 'addRef', ->
   test 'works', ->

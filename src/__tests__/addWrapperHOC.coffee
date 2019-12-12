@@ -10,11 +10,14 @@ hoc = (Component) -> (props) ->
     <Component {...props} z={3} />
   </div>
 
-Comp = flowMax addWrapperHOC(hoc), ({y, z}) ->
-  <div>
-    <span data-testid="child-y">{y}</span>
-    <span data-testid="child-z">{z}</span>
-  </div>
+Comp = flowMax(
+  addWrapperHOC hoc
+  ({y, z}) ->
+    <div>
+      <span data-testid="child-y">{y}</span>
+      <span data-testid="child-z">{z}</span>
+    </div>
+)
 
 describe 'addWrapperHOC', ->
   test 'works', ->

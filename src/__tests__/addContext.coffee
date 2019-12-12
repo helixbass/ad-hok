@@ -7,8 +7,11 @@ import {addContext} from '..'
 
 NumberContext = React.createContext()
 
-Comp = flow addContext(NumberContext, 'number'), ({number}) ->
-  <div data-testid="a">{number}</div>
+Comp = flow(
+  addContext NumberContext, 'number'
+  ({number}) ->
+    <div data-testid="a">{number}</div>
+)
 
 describe 'addContext', ->
   test 'works', ->

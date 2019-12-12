@@ -1,4 +1,4 @@
-### eslint-disable no-console ###
+### eslint-disable no-console, react/prop-types ###
 import React, {useRef} from 'react'
 import {render, fireEvent} from 'react-testing-library'
 import 'jest-dom/extend-expect'
@@ -45,6 +45,7 @@ DepsCallback = flow(
   ,
     (prevProps, props) ->
       prevProps.x < props.x
+,
   ({onClick, y, testId}) ->
     <div>
       <Pure onClick={onClick} label="pure button DepsCallback" />

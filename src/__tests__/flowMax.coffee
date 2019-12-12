@@ -20,6 +20,7 @@ addStuff = flowMax(
       <div data-testid="passed-z">{props.z}</div>
       {_render y: 2}
     </div>
+,
   addProps d: 4
 )
 

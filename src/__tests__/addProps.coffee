@@ -11,6 +11,7 @@ Comp = flow(
     ({x}) ->
       console.log 'recomputing y'
       y: x * 2
+  ,
     ['x', 'user.id']
   )
   ({y, testId}) ->
@@ -22,9 +23,11 @@ Comp2 = flow(
     ({x}) ->
       console.log 'recomputing y'
       y: x * 2
+  ,
     (prevProps, props) ->
       props.x > prevProps.x
   )
+,
   ({y, testId}) ->
     <div data-testid={testId}>{y}</div>
 )

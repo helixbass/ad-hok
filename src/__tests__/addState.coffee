@@ -5,16 +5,22 @@ import {flow} from 'lodash/fp'
 
 import {addState} from '..'
 
-Comp = flow addState('x', 'setX', 'abcd'), ({x, setX}) ->
-  <div>
-    <div data-testid="a">{x}</div>
-    <button onClick={-> setX 'efg'}>update</button>
-  </div>
+Comp = flow(
+  addState 'x', 'setX', 'abcd'
+  ({x, setX}) ->
+    <div>
+      <div data-testid="a">{x}</div>
+      <button onClick={-> setX 'efg'}>update</button>
+    </div>
+)
 
-Comp2 = flow addState('x', 'setX', ({initial}) -> initial), ({x}) ->
-  <div>
-    <div data-testid="b">{x}</div>
-  </div>
+Comp2 = flow(
+  addState 'x', 'setX', ({initial}) -> initial
+  ({x}) ->
+    <div>
+      <div data-testid="b">{x}</div>
+    </div>
+)
 
 describe 'addState', ->
   test 'initial state', ->

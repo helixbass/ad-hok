@@ -4,8 +4,11 @@ import 'jest-dom/extend-expect'
 
 import {branch, flowMax, renderNothing} from '..'
 
-Comp = flowMax branch((({a}) -> a > 2), renderNothing()), ({a, testId}) ->
-  <div data-testid={testId}>{a}</div>
+Comp = flowMax(
+  branch (({a}) -> a > 2), renderNothing()
+  ({a, testId}) ->
+    <div data-testid={testId}>{a}</div>
+)
 
 describe 'renderNothing', ->
   test 'works', ->

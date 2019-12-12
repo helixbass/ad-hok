@@ -18,6 +18,7 @@ Comp = flow(
       # axios.get.mockResolvedValueOnce data: greeting: 'ddd'
       # {data: {greeting}} = await axios.get 'SOME_URL'
       setX 'ddd'
+,
   createFactory DisplayComp
 )
 
@@ -27,6 +28,7 @@ Comp2 = flow(
     ({x, setX}) ->
       ->
         setX x + 1
+  ,
     []
   )
   ({x, testId}) ->
@@ -39,6 +41,7 @@ Comp3 = flow(
     ({x, setX}) ->
       ->
         setX x + 1
+  ,
     ['y']
   )
   ({x, testId}) ->
@@ -51,6 +54,7 @@ PathDependency = flow(
     ({x, setX}) ->
       ->
         setX x + 1
+  ,
     ['y', 'user.id']
   )
   ({x, testId}) ->
@@ -63,9 +67,11 @@ Comp4 = flow(
     ({x, setX}) ->
       ->
         setX x + 1
+  ,
     (prevProps, props) ->
       prevProps.y < props.y
   )
+,
   ({x, testId}) ->
     <div data-testid={testId}>{x}</div>
 )

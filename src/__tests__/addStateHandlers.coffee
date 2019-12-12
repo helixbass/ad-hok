@@ -1,4 +1,4 @@
-### eslint-disable no-console ###
+### eslint-disable no-console, react/prop-types ###
 import React from 'react'
 import {render, fireEvent} from 'react-testing-library'
 import 'jest-dom/extend-expect'
@@ -83,6 +83,7 @@ CallbackDeps = flow(
   ,
     (prevProps, props) ->
       prevProps.y < props.y
+,
   ({incrementXByY, x, testId}) ->
     <div>
       <PropPure onClick={incrementXByY} label="prop pure CallbackDeps" />
