@@ -1,8 +1,10 @@
 # Ad-hok
 
-Ad-hok is a set of helpers that let you use React [hooks](https://reactjs.org/docs/hooks-intro.html) in a [functional pipeline](https://www.martinfowler.com/articles/collection-pipeline/) style. Its API and concept are inspired by [Recompose](https://github.com/acdlite/recompose)
+Ad-hok is a set of helpers that let you use React [hooks](https://reactjs.org/docs/hooks-intro.html) in a [functional pipeline](https://www.martinfowler.com/articles/collection-pipeline/) style. Its API and concept are inspired by [Recompose](https://github.com/acdlite/recompose).
 
 [**Full API documentation**](#api)
+
+**For an introductory comparison of `ad-hok` vs "vanilla" hooks, see [this article](http://helixbass.net/blog/ad-hok-intro-at-a-glance/).**
 
 ## Installation
 
@@ -81,6 +83,7 @@ helpers) that it can't support. For example, anything where you'd want to "bail 
 So `ad-hok` provides a "magic" version of `flow()` called [`flowMax()`](#flowmax) that you use as your wrapper function when using any of the corresponding "magic" helpers:
 - [`addPropTypes()`](#addproptypes)
 - [`addWrapper()`](#addwrapper)
+- [`addWrapperHOC()`](#addwrapperhoc)
 - [`branch()`](#branch)
 - [`renderNothing()`](#rendernothing)
 - [`returns()`](#returns)
@@ -109,6 +112,7 @@ If you use [ESLint](https://github.com/eslint/eslint), you can use [`eslint-plug
 * [returns()](#returns)
 * [addPropTypes()](#addproptypes)
 * [addWrapper()](#addwrapper)
+* [addWrapperHOC()](#addwrapperhoc)
 * [flowMax()](#flowmax)
 
 ### `addState()`
@@ -649,6 +653,36 @@ const Outer = flowMax(
 )
 
 <Outer header="Topsy" message="Turvy"/>
+```
+
+### `addWrapperHOC()`
+
+```js
+addWrapperHOC(
+  hoc: HigherOrderComponent
+): Function
+```
+
+A "magic" helper that allows wrapping an existing [higher-order component](https://reactjs.org/docs/higher-order-components.html).
+
+Since it's magic, you must wrap with [`flowMax()`](#flowmax) instead of `flow()`
+
+Doesn't wrap any hooks, just a convenience helper
+
+For example:
+
+```js
+import {withNavigation} from 'react-navigation'
+
+const BackButton = flowMax(
+  addWrapperHOC(withNavigation),
+  ({navigation, children}) =>
+    <Button onPress={() => navigation.goBack()}>
+      <Text>{children}</Text>
+    </Button>
+)
+
+<BackButton>Back</BackButton>
 ```
 
 ### `flowMax()`
