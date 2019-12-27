@@ -1,15 +1,14 @@
-# parser: ./lib/index.js
 plugins:
   - coffee
   - known-imports
   - prettier
-  - react
 extends:
   - eslint:recommended
   - plugin:coffee/all
   - plugin:coffee/react-recommended
   - plugin:coffee/prettier-run-as-rule
   - plugin:known-imports/recommended-react
+  - plugin:coffee/import-all
 rules:
   coffee/prefer-destructuring: [error, {object: true}]
   coffee/no-unused-vars: off
@@ -56,6 +55,14 @@ rules:
   no-warning-comments: off
   sort-keys: off
   require-unicode-regexp: off
+  coffee/callback-return: off
+  import/group-exports: off
+  coffee/no-named-export: off
+  import/no-internal-modules: off
+  import/max-dependencies: off
+  import/no-relative-parent-imports: off
+  import/no-unassigned-import: off
+  import/order: [error, {newlines-between: always}]
 env:
   node: true
   es6: true

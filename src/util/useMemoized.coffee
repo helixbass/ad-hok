@@ -1,6 +1,7 @@
+import {useRef} from 'react'
+
 import usePrevious from './usePrevious'
 import {shallowEqualArray} from './helpers'
-import {useRef} from 'react'
 
 useMemoized = (compute, dependencies) ->
   memoizedValueRef = useRef()

@@ -1,4 +1,5 @@
 import {useState} from 'react'
+
 import {isFunction} from './util/helpers'
 
 addState = (name, setterName, initial) ->

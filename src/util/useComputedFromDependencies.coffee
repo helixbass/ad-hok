@@ -1,4 +1,5 @@
 import {useRef} from 'react'
+
 import {isFunction, get} from './helpers'
 import usePrevious from './usePrevious'
 import useMemoized from './useMemoized'
