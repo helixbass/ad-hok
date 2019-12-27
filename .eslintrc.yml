@@ -6,10 +6,18 @@ extends:
   - eslint:recommended
   - plugin:coffee/all
   - plugin:coffee/react-recommended
-  - plugin:coffee/prettier-run-as-rule
   - plugin:known-imports/recommended-react
   - plugin:coffee/import-all
+  # - plugin:coffee/airbnb
+  - plugin:coffee/prettier-run-as-rule
 rules:
+  # coffee/object-curly-spacing: off
+  # coffee/implicit-arrow-linebreak: off
+  # coffee/comma-style: off
+  # coffee/function-paren-newline: off
+  # coffee/jsx-wrap-multilines: off
+  # react/jsx-props-no-spreading: off
+  # react/button-has-type: off
   coffee/prefer-destructuring: [error, {object: true}]
   coffee/no-unused-vars: off
   known-imports/no-unused-vars: [error, {varsIgnorePattern: ^_+$}]
@@ -62,7 +70,7 @@ rules:
   import/max-dependencies: off
   import/no-relative-parent-imports: off
   import/no-unassigned-import: off
-  import/order: [error, {newlines-between: always}]
+  coffee/order: [error, {newlines-between: always}]
 env:
   node: true
   es6: true
