@@ -2,6 +2,7 @@ import {isAddPropTypes} from './addPropTypes'
 import {isRenderNothing} from './renderNothing'
 import {isReturns} from './returns'
 import {isAddWrapper} from './addWrapper'
+import {isAddWrapperPositionalArgs} from './addWrapperPositionalArgs'
 import {isAddWrapperHOC} from './addWrapperHOC'
 import {isBranch} from './branch-avoid-circular-dependency'
 import {isAddDisplayName} from './addDisplayName'
@@ -35,6 +36,7 @@ flowMax = (...funcs) ->
       if (
         isAddPropTypes(func) or
         isAddWrapper(func) or
+        isAddWrapperPositionalArgs(func) or
         isAddWrapperHOC(func) or
         isBranch func
       )
@@ -47,6 +49,8 @@ flowMax = (...funcs) ->
             when isAddPropTypes func
               wrapExistingDisplayName 'addPropTypes'
             when isAddWrapper func then wrapExistingDisplayName 'addWrapper'
+            when isAddWrapperPositionalArgs func
+              wrapExistingDisplayName 'addWrapperPositionalArgs'
             when isAddWrapperHOC func
               wrapExistingDisplayName 'addWrapperHOC'
         newFlowMax = flowMax(
