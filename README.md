@@ -391,7 +391,7 @@ const IncrementByX = flow(
 ```js
 addRef(
   refName: string,
-  initialValue: any
+  initialValue: (incomingProps: Object) => any | any,
 ): Function
 ```
 
