@@ -8,7 +8,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [10.x, 12.x]
 
     steps:
     - uses: actions/checkout@v1
@@ -22,5 +22,5 @@ jobs:
       run: yarn lint
     - name: yarn build
       run: yarn build
-    - name: yarn text
+    - name: yarn test
       run: yarn test
