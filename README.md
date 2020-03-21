@@ -100,6 +100,7 @@ If you use [ESLint](https://github.com/eslint/eslint), you can use [`eslint-plug
 * [addEffect()](#addeffect)
 * [addLayoutEffect()](#addlayouteffect)
 * [addProps()](#addprops)
+* [addDefaultProps()](#adddefaultprops)
 * [addHandlers()](#addhandlers)
 * [addStateHandlers()](#addstatehandlers)
 * [addRef()](#addref)
@@ -247,6 +248,23 @@ const OptimizedDoubler = flow(
   ({num}) =>
     <div>Number: {num}</div>
 )
+```
+
+### `addDefaultProps()`
+
+```js
+addDefaultProps(
+  defaults: (incomingProps: Object) => Object | Object,
+): Function
+```
+
+Adds some props only if they are not already present in the incoming props (ie. if they are `null` or `undefined`).
+
+For example:
+
+```js
+addDefaultProps({ a: 1, b: 2 })({ a: "one" })
+// Results in { a: "one", b: 2 }
 ```
 
 ### `addHandlers()`
