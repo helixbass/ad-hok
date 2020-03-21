@@ -100,11 +100,9 @@ If you use [ESLint](https://github.com/eslint/eslint), you can use [`eslint-plug
 * [addEffect()](#addeffect)
 * [addLayoutEffect()](#addlayouteffect)
 * [addProps()](#addprops)
-* [addPropsOnChange()](#addpropsonchange)
 * [addHandlers()](#addhandlers)
 * [addStateHandlers()](#addstatehandlers)
 * [addRef()](#addref)
-* [addCallback()](#addcallback)
 * [addContext()](#addcontext)
 * [branch()](#branch)
 * [branchPure()](#branchpure)
@@ -251,42 +249,6 @@ const OptimizedDoubler = flow(
 )
 ```
 
-### `addPropsOnChange()`
-
-```js
-addPropsOnChange(
-  dependenciesOrShouldMap: Array<string> | (props: Object, nextProps: Object) => boolean,
-  createProps: (incomingProps: Object) => Object,
-): Function
-```
-
-Like `addProps()`, except the new props are only created when one of the incoming props specified by `dependenciesOrShouldMap` changes. This can be used to avoid expensive recomputation or to stabilize prop identity across rerenders (allowing for downstream `shouldComponentUpdate()`/`React.memo()` optimizations that rely on prop equality)
-
-When `dependenciesOrShouldMap` is specified as an array of prop dependencies, this is equivalent to calling `addProps()` with a dependencies argument (eg `addPropsOnChange(['x'], ...)` is equivalent to `addProps(..., ['x'])`)
-
-Otherwise `dependenciesOrShouldMap` can be a function that returns a boolean, given the current props and the next props. This allows you to customize when `createProps()` should be called
-
-Doesn't wrap any hooks (other than `useMemo()` for the dependency tracking), just a convenience helper comparable to Recompose's [`withPropsOnChange()`](https://github.com/acdlite/recompose/blob/master/docs/API.md#withpropsonchange)
-
-For example:
-
-```js
-const Doubler = flow(
-  addPropsOnChange(['num'], ({num}) => ({num: num * 2})),
-  ({num}) =>
-    <div>Number: {num}</div>
-)
-
-const DoublerNums = flow(
-  addProps(
-    (prevProps, props) => prevProps.nums[0] !== props.nums[0],
-    ({nums}) => ({num: nums[0] * 2})
-  ),
-  ({num}) =>
-    <div>Number: {num}</div>
-)
-```
-
 ### `addHandlers()`
 
 ```js
@@ -408,36 +370,6 @@ const Example = flow(
     <>
       <input ref={inputRef} />
       <button onClick={() => inputRef.current.focus()}>focus input</button>
-    </>
-)
-```
-
-### `addCallback()`
-
-```js
-addCallback(
-  callbackName: string,
-  callback: (props: Object) => Function,
-  dependencies: Array<any>
-): Function
-```
-
-Adds an additional prop of the given name whose value is a memoized callback. The second argument is a callback creator. This is a higher-order function that accept a set of props and return a callback. The optional third argument is an array of values that the callback depends on. It corresponds to the [second argument to `useCallback()`](https://reactjs.org/docs/hooks-reference.html#usecallback)
-
-Wraps [`useCallback()`](https://reactjs.org/docs/hooks-reference.html#usecallback) hook
-
-For example:
-
-```js
-const Example = flow(
-  addState('inputNode', 'setInputNode'),
-  addCallback('inputCallbackRef', ({setInputNode}) => node => {
-    setInputNode(node)
-  }),
-  ({inputCallbackRef, inputNode}) =>
-    <>
-      <input ref={inputCallbackRef} />
-      <button onClick={() => inputNode.focus()}>focus input</button>
     </>
 )
 ```

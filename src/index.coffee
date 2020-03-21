@@ -14,9 +14,7 @@ import branchPure from './branchPure'
 import returns from './returns'
 import addWrapper from './addWrapper'
 import addWrapperHOC from './addWrapperHOC'
-import addCallback from './addCallback'
 import addDisplayName from './addDisplayName'
-import addPropsOnChange from './addPropsOnChange'
 
 export {
   addState
@@ -35,8 +33,6 @@ export {
   returns
   addWrapper
   addWrapperHOC
-  addCallback
   addDisplayName
-  addPropsOnChange
   # addComponentBoundary
 }
