@@ -12,7 +12,7 @@ Wrapper = ({x, children}) ->
   </div>
 
 Comp = flowMax(
-  addWrapper ({render: _render, props}) ->
+  addWrapper (_render, props) ->
     <Wrapper x={props.x}>{_render z: 3}</Wrapper>
 ,
   ({y, z}) ->

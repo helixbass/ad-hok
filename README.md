@@ -618,10 +618,10 @@ const Maybe = flowMax(
 
 ```js
 addWrapper(
-  ({
-    props: Object,
-    render: (additionalProps: ?Object) => any
-  }) => any
+  (
+    render: (additionalProps: ?Object) => any,
+    props: Object
+  ) => any
 ): Function
 ```
 
@@ -643,7 +643,7 @@ const WrapInHeader = ({children, header}) =>
   </div>
 
 const Outer = flowMax(
-  addWrapper(({props, render}) =>
+  addWrapper((render, props) =>
     <WrapInHeader header={props.header}>
       {render({style: {color: 'red'}})}
     </WrapInHeader>

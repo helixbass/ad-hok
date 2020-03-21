@@ -15,7 +15,7 @@ Comp = flowMax(
 )
 
 addStuff = flowMax(
-  addWrapper ({render: _render, props}) ->
+  addWrapper (_render, props) ->
     <div>
       <div data-testid="passed-z">{props.z}</div>
       {_render y: 2}
