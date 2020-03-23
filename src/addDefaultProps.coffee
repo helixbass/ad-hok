@@ -8,14 +8,11 @@ addDefaultProps = (createDefaults) ->
     else
       createDefaults
 
-    Object.keys(defaults).reduce(
-      (newProps, key) ->
-        if props[key] is null or props[key] is undefined
-          {...newProps, [key]: defaults[key]}
-        else
-          newProps
-    ,
-      {}
-    )
+    newProps = {}
+
+    for key, val of defaults when not props[key]
+      newProps[key] = val
+
+    newProps
 
 export default addDefaultProps

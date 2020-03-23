@@ -263,8 +263,18 @@ Adds some props only if they are not already present in the incoming props (ie. 
 For example:
 
 ```js
-addDefaultProps({ a: 1, b: 2 })({ a: "one" })
-// Results in { a: "one", b: 2 }
+const Greeting = flow(
+  addDefaultProps({
+    name: 'world',
+  }),
+  ({name}) => <div>Hello, {name}!</div>
+)
+
+const AnonymousGreeting = () =>
+  <Greeting /> // renders "Hello, world!"
+
+const ReactGreeting = () =>
+  <Greeting name="React" /> // renders "Hello, React!"
 ```
 
 ### `addHandlers()`

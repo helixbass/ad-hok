@@ -1,23 +1,43 @@
 ### eslint-disable no-console ###
+import React from 'react'
 import 'jest-dom/extend-expect'
+import {flow} from 'lodash/fp'
+import {render} from 'react-testing-library'
 
 import addDefaultProps from '../addDefaultProps'
 
+Greeting = flow(
+  addDefaultProps ({num}) => name: if num > 1 then 'People' else 'Person'
+  ({name}) => <span>Hello, {name}</span>
+)
+
+Greeting2 = flow(
+  addDefaultProps name: 'World'
+  ({name}) => <span>Hello, {name}</span>
+)
+
 describe 'addDefaultProps', ->
   test 'adds prop from function when missing', ->
-    expect(addDefaultProps(({a}) -> b: a + 1) a: 1).toEqual a: 1, b: 2
+    {getByText} = render <Greeting num={2} />
+    getByText /Hello,.+People/
+    undefined
 
-  test 'adds prop from obect when missing', ->
-    expect(addDefaultProps(a: 1) {}).toEqual a: 1
+  test 'adds prop from object when missing', ->
+    {getByText} = render <Greeting2 />
+    getByText /Hello,.+World/
+    undefined
 
   test 'adds prop from object when null', ->
-    expect(addDefaultProps(a: 1) a: null).toEqual a: 1
+    {getByText} = render <Greeting2 name={null} />
+    getByText /Hello,.+World/
+    undefined
 
   test 'adds prop from object when undefined', ->
-    expect(addDefaultProps(a: 1) a: undefined).toEqual a: 1
+    {getByText} = render <Greeting2 name={undefined} />
+    getByText /Hello,.+World/
+    undefined
 
   test 'does not add props from object when present', ->
-    expect(addDefaultProps(a: 1) a: 'present').toEqual a: 'present'
-
-  test 'does not add props from object when falsy', ->
-    expect(addDefaultProps(a: 1) a: false).toEqual a: false
+    {getByText} = render <Greeting2 name={'Buddy'} />
+    getByText /Hello,.+Buddy/
+    undefined
