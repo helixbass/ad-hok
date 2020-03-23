@@ -8,10 +8,11 @@ export isAddWrapper = (func) ->
 
 export default (callback) ->
   ret = (Component) -> (props) ->
-    callback {
-      props
-      render: (additionalProps) ->
+    callback(
+      (additionalProps) ->
         <Component {...props} {...additionalProps} />
-    }
+    ,
+      props
+    )
   ret[markerPropertyName] = yes
   ret
