@@ -7,13 +7,13 @@ import {render} from 'react-testing-library'
 import addDefaultProps from '../addDefaultProps'
 
 Greeting = flow(
-  addDefaultProps ({num}) => name: if num > 1 then 'People' else 'Person'
-  ({name}) => <span>Hello, {name}</span>
+  addDefaultProps ({num}) -> name: if num > 1 then 'People' else 'Person'
+  ({name}) -> <span>Hello, {name}</span>
 )
 
 Greeting2 = flow(
   addDefaultProps name: 'World'
-  ({name}) => <span>Hello, {name}</span>
+  ({name}) -> <span>Hello, {name}</span>
 )
 
 describe 'addDefaultProps', ->
