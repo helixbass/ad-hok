@@ -768,6 +768,21 @@ const Counter = flow(
 
 <!-- TODO: keep props separate by starting flow() with props => ({props}) -->
 
+## React Hooks Equivalents
+
+| React Hook                                                                                 | Ad-hok                                                  |
+|--------------------------------------------------------------------------------------------|---------------------------------------------------------|
+| [`useState`](https://reactjs.org/docs/hooks-reference.html#usestate)                       | [`addState`](#addstate)                                 |
+| [`useEffect`](https://reactjs.org/docs/hooks-reference.html#useeffect)                     | [`addEffect`](#addeffect)                               |
+| [`useContext`](https://reactjs.org/docs/hooks-reference.html#usecontext)                   | [`addContext`](#addcontext)                             |
+| [`useReducer`](https://reactjs.org/docs/hooks-reference.html#usereducer)                   | -                                                       |
+| [`useCallback`](https://reactjs.org/docs/hooks-reference.html#usecallback)                 | [`addHandlers`](#addhandlers) with a dependencies array |
+| [`useMemo`](https://reactjs.org/docs/hooks-reference.html#usememo)                         | [`addProps`](#addprops) with a dependencies array       |
+| [`useRef`](https://reactjs.org/docs/hooks-reference.html#useref)                           | [`addRef`](#addref)                                     |
+| [`useImperativeHandle`](https://reactjs.org/docs/hooks-reference.html#useimperativehandle) | -                                                       |
+| [`useLayoutEffect`](https://reactjs.org/docs/hooks-reference.html#uselayouteffect)         | [`addLayoutEffect`](#addlayouteffect)                   |
+| [`useDebugValue`](https://reactjs.org/docs/hooks-reference.html#usedebugvalue)             | -                                                       |
+
 ## Help / Contributions / Feedback
 
 Please file an issue or submit a PR with any questions/suggestions
