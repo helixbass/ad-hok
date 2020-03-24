@@ -10,7 +10,7 @@ addDefaultProps = (createDefaults) ->
 
     newProps = {}
 
-    for key, val of defaults when not props[key]
+    for key, val of defaults when not props[key]?
       newProps[key] = val
 
     newProps

@@ -8,36 +8,61 @@ import addDefaultProps from '../addDefaultProps'
 
 Greeting = flow(
   addDefaultProps ({num}) -> name: if num > 1 then 'People' else 'Person'
-  ({name}) -> <span>Hello, {name}</span>
+  ({name, testId}) -> <span data-testid={testId}>Hello, {name}</span>
 )
 
 Greeting2 = flow(
   addDefaultProps name: 'World'
-  ({name}) -> <span>Hello, {name}</span>
+  ({name, testId}) -> <span data-testid={testId}>Hello, {name}</span>
+)
+
+Bool = flow(
+  addDefaultProps bool: true
+  ({bool, testId}) ->
+    <span data-testid={testId}>{bool.toString()}</span>
 )
 
 describe 'addDefaultProps', ->
-  test 'adds prop from function when missing', ->
-    {getByText} = render <Greeting num={2} />
-    getByText /Hello,.+People/
-    undefined
+  runTest = ({name, props, testId, expectedContent, Component = Greeting2}) ->
+    test name, ->
+      {getByTestId} = render <Component {...props} testId={testId} />
+      expect(getByTestId testId).toHaveTextContent expectedContent
+      undefined
 
-  test 'adds prop from object when missing', ->
-    {getByText} = render <Greeting2 />
-    getByText /Hello,.+World/
-    undefined
+  runTest
+    name: 'add props from function when missing'
+    props: num: 2
+    testId: 'function-missing'
+    expectedContent: /Hello,.+People/
+    Component: Greeting
 
-  test 'adds prop from object when null', ->
-    {getByText} = render <Greeting2 name={null} />
-    getByText /Hello,.+World/
-    undefined
+  runTest
+    name: 'add props from object when missing'
+    props: {}
+    testId: 'object-missing'
+    expectedContent: /Hello,.+World/
 
-  test 'adds prop from object when undefined', ->
-    {getByText} = render <Greeting2 name={undefined} />
-    getByText /Hello,.+World/
-    undefined
+  runTest
+    name: 'add props from object when null'
+    props: name: null
+    testId: 'object-null'
+    expectedContent: /Hello,.+World/
 
-  test 'does not add props from object when present', ->
-    {getByText} = render <Greeting2 name={'Buddy'} />
-    getByText /Hello,.+Buddy/
-    undefined
+  runTest
+    name: 'add props from object when undefined'
+    props: name: undefined
+    testId: 'object-null'
+    expectedContent: /Hello,.+World/
+
+  runTest
+    name: 'does not add props from object when present'
+    props: name: 'Buddy'
+    testId: 'object-present'
+    expectedContent: /Hello,.+Buddy/
+
+  runTest
+    name: 'does not add props from object when present with falsy value'
+    props: bool: false
+    testId: 'object-falsy'
+    expectedContent: /false/
+    Component: Bool
