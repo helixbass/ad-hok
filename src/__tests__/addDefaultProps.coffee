@@ -51,7 +51,7 @@ describe 'addDefaultProps', ->
   runTest
     name: 'add props from object when undefined'
     props: name: undefined
-    testId: 'object-null'
+    testId: 'object-undefined'
     expectedContent: /Hello,.+World/
 
   runTest
