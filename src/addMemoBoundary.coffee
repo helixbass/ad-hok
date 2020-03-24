@@ -1,14 +1,14 @@
 import React from 'react'
 
 import addWrapperHOC from './addWrapperHOC'
-import {isFunction, some} from './util/helpers'
+import {get, isFunction, some} from './util/helpers'
 
 memo = (compare) -> (component) ->
   React.memo component, compare
 
 defaultCompareDependencies = (dependencies) -> (oldProps, newProps) ->
   not some((dependency) ->
-    oldProps[dependency] isnt newProps[dependency]
+    get(dependency)(oldProps) isnt get(dependency) newProps
   ) dependencies
 
 addMemoBoundary = (compare) ->

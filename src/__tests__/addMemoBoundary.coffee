@@ -18,7 +18,7 @@ Comp = flowMax(
 Comp2 = flowMax(
   addMemoBoundary ['x']
   addProps ({x}) ->
-    console.log 'recomputing y', x
+    console.log 'recomputing y'
     y: x * 2
 ,
   ({y, testId}) ->
@@ -26,9 +26,19 @@ Comp2 = flowMax(
 )
 
 Comp3 = flowMax(
+  addMemoBoundary ['object.x']
+  addProps ({object: {x}}) ->
+    console.log 'recomputing y'
+    y: x * 2
+,
+  ({y, testId}) ->
+    <div data-testid={testId}>{y}</div>
+)
+
+Comp4 = flowMax(
   addMemoBoundary (oldProps, newProps) -> newProps.x isnt 3
   addProps ({x}) ->
-    console.log 'recomputing y', x
+    console.log 'recomputing y'
     y: x * 2
 ,
   ({y, testId}) ->
@@ -58,27 +68,53 @@ describe 'addMemoBoundary', ->
 
     undefined
 
-  test 'with an array of dependencies', ->
-    jest
-    .spyOn console, 'log'
-    .mockImplementation ->
+  describe 'with an array of dependencies', ->
+    test 'no path dependencies', ->
+      jest
+      .spyOn console, 'log'
+      .mockImplementation ->
 
-    testId = 'array'
-    {getByTestId, rerender} = render <Comp2 a={1} x={2} testId={testId} />
-    expect(console.log).toHaveBeenCalledTimes 1
-    console.log.mockClear()
-    expect(getByTestId testId).toHaveTextContent '4'
+      testId = 'no-path-dependencies'
+      {getByTestId, rerender} = render <Comp2 a={1} x={2} testId={testId} />
+      expect(console.log).toHaveBeenCalledTimes 1
+      console.log.mockClear()
+      expect(getByTestId testId).toHaveTextContent '4'
 
-    rerender <Comp2 a={2} x={2} testId={testId} />
-    expect(console.log).not.toHaveBeenCalled()
-    console.log.mockClear()
+      rerender <Comp2 a={2} x={2} testId={testId} />
+      expect(console.log).not.toHaveBeenCalled()
+      console.log.mockClear()
 
-    rerender <Comp2 a={2} x={3} testId={testId} />
-    expect(console.log).toHaveBeenCalledTimes 1
-    console.log.mockClear()
-    expect(getByTestId testId).toHaveTextContent '6'
+      rerender <Comp2 a={2} x={3} testId={testId} />
+      expect(console.log).toHaveBeenCalledTimes 1
+      console.log.mockClear()
+      expect(getByTestId testId).toHaveTextContent '6'
 
-    undefined
+      undefined
+
+    test 'path dependencies', ->
+      jest
+      .spyOn console, 'log'
+      .mockImplementation ->
+
+      testId = 'path-dependencies'
+      {
+        getByTestId
+        rerender
+      } = render <Comp3 object={a: 1, x: 2} testId={testId} />
+      expect(console.log).toHaveBeenCalledTimes 1
+      console.log.mockClear()
+      expect(getByTestId testId).toHaveTextContent '4'
+
+      rerender <Comp3 object={a: 2, x: 2} testId={testId} />
+      expect(console.log).not.toHaveBeenCalled()
+      console.log.mockClear()
+
+      rerender <Comp3 object={a: 2, x: 3} testId={testId} />
+      expect(console.log).toHaveBeenCalledTimes 1
+      console.log.mockClear()
+      expect(getByTestId testId).toHaveTextContent '6'
+
+      undefined
 
   test 'with a comparison function', ->
     jest
@@ -86,16 +122,16 @@ describe 'addMemoBoundary', ->
     .mockImplementation ->
 
     testId = 'function'
-    {getByTestId, rerender} = render <Comp3 x={1} testId={testId} />
+    {getByTestId, rerender} = render <Comp4 x={1} testId={testId} />
     expect(console.log).toHaveBeenCalledTimes 1
     console.log.mockClear()
     expect(getByTestId testId).toHaveTextContent '2'
 
-    rerender <Comp3 x={2} testId={testId} />
+    rerender <Comp4 x={2} testId={testId} />
     expect(console.log).not.toHaveBeenCalled()
     console.log.mockClear()
 
-    rerender <Comp3 x={3} testId={testId} />
+    rerender <Comp4 x={3} testId={testId} />
     expect(console.log).toHaveBeenCalledTimes 1
     console.log.mockClear()
     expect(getByTestId testId).toHaveTextContent '6'
