@@ -447,8 +447,6 @@ Memoizes everything below it in a `flowMax` chain using [`React.memo()`](https:/
 
 For example:
 
-For example:
-
 ```js
 const DefaultDoubler = flow(
   addMemoBoundary(),
