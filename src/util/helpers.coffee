@@ -32,3 +32,12 @@ export shallowEqualArray = (a, b) ->
   for element, index in a
     return no unless element is b[index]
   yes
+
+export identity = (x) -> x
+
+# eslint-disable-next-line known-imports/no-unused-vars
+export some = (predicate = identity) ->
+  (array) ->
+    for value in array
+      return true if predicate value
+    false

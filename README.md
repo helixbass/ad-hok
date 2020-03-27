@@ -105,6 +105,7 @@ If you use [ESLint](https://github.com/eslint/eslint), you can use [`eslint-plug
 * [addStateHandlers()](#addstatehandlers)
 * [addRef()](#addref)
 * [addContext()](#addcontext)
+* [addMemoBoundary()](#addmemoboundary)
 * [branch()](#branch)
 * [branchPure()](#branchpure)
 * [renderNothing()](#rendernothing)
@@ -432,6 +433,38 @@ const Outer = () =>
   <ColorContext.Provider value="red">
     <Example />
   </ColorContext.Provider>
+```
+
+### `addMemoBoundary()`
+
+```js
+addMemoBoundary(
+  dependencies?: Array<string> | (oldProps: Object, newProps: Object) => boolean
+): Function
+```
+
+Avoids unnecessary re-rendering of everything below it in a `flowMax` chain
+
+Wraps [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo)
+
+The optional argument is an array of names of props that should trigger re-rendering whenever one of those props changes (based on `===` comparison). If the argument is omitted, re-rendering will occur whenever _any_ prop changes (like `React.memo()`'s default behavior)
+
+For example:
+
+```js
+const DefaultDoubler = flow(
+  addMemoBoundary(), // this component will re-render whenever any of its props changes
+  addProps(({num}) => ({doubled: num * 2})),
+  ({doubled}) =>
+    <div>Doubled: {doubled}</div>
+)
+
+const PropsArrayDoubler = flow(
+  addMemoBoundary(["num"]), // this component will re-render whenever its `num` prop changes
+  addProps(({num}) => ({doubled: num * 2})),
+  ({doubled}) =>
+    <div>Doubled: {doubled}</div>
+)
 ```
 
 ### `branch()`
