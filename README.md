@@ -439,34 +439,31 @@ const Outer = () =>
 
 ```js
 addMemoBoundary(
-  dependencies?: Array<string> | (oldProps: Object, newProps: Object) => Object
+  dependencies?: Array<string> | (oldProps: Object, newProps: Object) => boolean
 ): Function
 ```
 
-Memoizes everything below it in a `flowMax` chain using [`React.memo()`](https://reactjs.org/docs/react-api.html#reactmemo). When the `dependencies` argument is an array, it will re-render whenever one of the props named in the array changes. If `dependencies` is a function, it will re-render whenever it returns `false`, indicating that `oldProps` and `newProps` are not equal. (This is equivalent to the comparison function that `React.memo()` optionally accepts.) If the `dependencies` argument is not present, it will re-render whenever the props change, using a shallow comparison of values in the props object. (This is equivalent to using `React.memo` with no custom comparison function.)
+Avoids unnecessary re-rendering of everything below it in a `flowMax` chain
+
+Wraps [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo)
+
+The optional argument is an array of names of props that should trigger re-rendering whenever one of those props changes (based on `===` comparison). If the argument is omitted, re-rendering will occur whenever _any_ prop changes (like `React.memo()`'s default behavior)
 
 For example:
 
 ```js
 const DefaultDoubler = flow(
-  addMemoBoundary(),
+  addMemoBoundary(), // this component will re-render whenever any of its props changes
   addProps(({num}) => ({doubled: num * 2})),
   ({doubled}) =>
-  <div>Doubled: {doubled}</div>
+    <div>Doubled: {doubled}</div>
 )
 
 const PropsArrayDoubler = flow(
-  addMemoBoundary(["num"]),
+  addMemoBoundary(["num"]), // this component will re-render whenever its `num` prop changes
   addProps(({num}) => ({doubled: num * 2})),
   ({doubled}) =>
-  <div>Doubled: {doubled}</div>
-)
-
-const CustomComparisonDoubler = flow(
-  addMemoBoundary((oldProps, newProps) => oldProps.num === newProps.num),
-  addProps(({num}) => ({doubled: num * 2})),
-  ({doubled}) =>
-  <div>Doubled: {doubled}</div>
+    <div>Doubled: {doubled}</div>
 )
 ```
 
