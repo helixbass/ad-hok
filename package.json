@@ -1,0 +1,59 @@
+{
+  "name": "ad-hok",
+  "version": "0.0.32-dev.1",
+  "description": "Recompose-style React hooks",
+  "main": "lib/index.js",
+  "scripts": {
+    "watch": "coffee -o lib/ -wc src/",
+    "build": "coffee --transpile -o lib/ -c src/",
+    "prepublish": "npm run build",
+    "lint": "eslint 'src/**/*.coffee'",
+    "test": "jest"
+  },
+  "files": [
+    "lib"
+  ],
+  "keywords": [
+    "composition",
+    "utilities",
+    "toolkit",
+    "react",
+    "hooks",
+    "react-hooks",
+    "recompose"
+  ],
+  "author": "Julian Rosse <@helixbass>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:helixbass/ad-hok.git"
+  },
+  "bugs": "https://github.com/helixbass/ad-hok/issues",
+  "peerDependencies": {
+    "react": ">=16.8.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.2",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-react": "^7.0.0",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-jest": "^23.6.0",
+    "coffeescript": "^2.5.0",
+    "eslint": "^6.0.0",
+    "eslint-config-prettier": "^3.1.0",
+    "eslint-plugin-coffee": "github:helixbass/eslint-plugin-coffee#eslint-plugin-coffee-v0.1.13-dev.1-gitpkg",
+    "eslint-plugin-known-imports": "^0.0.14",
+    "eslint-plugin-prettier": "^3.0.0",
+    "jest": "^23.6.0",
+    "jest-dom": "^2.1.0",
+    "lodash": "^4.17.15",
+    "prettier": "github:helixbass/prettier#b8818ebd",
+    "prettier-plugin-coffeescript": "^0.1.4",
+    "prop-types": "^15.7.2",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-testing-library": "^5.2.3",
+    "regenerator-runtime": "^0.12.1"
+  },
+  "dependencies": {}
+}
