@@ -11,8 +11,12 @@ export default (test, consequent, alternate = (props) -> props) ->
         consequent
         Component
       )
-      if not Consequent.displayName? or Consequent.displayName is 'ret'
-        Consequent.displayName = "branch(#{Component.displayName ? ''})"
+      Consequent.displayName = "branch(#{
+        if not Consequent.displayName? or Consequent.displayName is 'ret'
+          Component.displayName ? ''
+        else
+          Consequent.displayName
+      })"
       Consequent
     AlternateAsComponent = null
     createAlternate = ->
@@ -20,8 +24,12 @@ export default (test, consequent, alternate = (props) -> props) ->
         alternate
         Component
       )
-      if not Alternate.displayName? or Alternate.displayName is 'ret'
-        Alternate.displayName = "branch(#{Component.displayName ? ''})"
+      Alternate.displayName = "branch(#{
+        if not Alternate.displayName? or Alternate.displayName is 'ret'
+          Component.displayName ? ''
+        else
+          Alternate.displayName
+      })"
       Alternate
     (props) ->
       if test props

@@ -2058,10 +2058,9 @@ eslint-module-utils@^2.4.1:
     debug "^2.6.9"
     pkg-dir "^2.0.0"
 
-eslint-plugin-coffee@^0.1.12:
-  version "0.1.12"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-coffee/-/eslint-plugin-coffee-0.1.12.tgz#1bb2f41b62fd75b258062cd8dfa230c41eaff2c1"
-  integrity sha512-ThsCQLHhuxpQrqV7mH5+Xlf6Zt3rrzAgkvoduhdzoIwa8xRLxXUahAW1R3FGT/ci04f+8Z9kqlz52/9QtVWxtw==
+"eslint-plugin-coffee@github:helixbass/eslint-plugin-coffee#eslint-plugin-coffee-v0.1.13-dev.1-gitpkg":
+  version "0.1.13-dev.1"
+  resolved "https://codeload.github.com/helixbass/eslint-plugin-coffee/tar.gz/38ddc8c2a769d7a0697d38fae6373c8679681e0f"
   dependencies:
     axe-core "^3.4.1"
     babel-eslint "^7.2.2"
