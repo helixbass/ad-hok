@@ -54,6 +54,13 @@ WithBranchAndAddWrapper = flowMax(
   -> <div />
 )
 
+NoDisplayNameBranchAndAddWrapper = flowMax(
+  addWrapper ({render: _render}) -> _render()
+  branch (-> false), renderNothing()
+,
+  -> <div />
+)
+
 ### eslint-disable new-cap ###
 
 describe 'addDisplayName', ->
@@ -85,4 +92,9 @@ describe 'addDisplayName', ->
   test 'carries across branch() + addWrapper()', ->
     expect(WithBranchAndAddWrapper().type().type.displayName).toEqual(
       'branch(addWrapper(WithBranchAndAddWrapper))'
+    )
+
+  test 'branch() + addWrapper() with no explicit display name', ->
+    expect(NoDisplayNameBranchAndAddWrapper().type().type.displayName).toEqual(
+      'branch(addWrapper())'
     )
