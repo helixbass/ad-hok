@@ -42,20 +42,20 @@ WithBranch = flowMax(
 
 WithAddWrapper = flowMax(
   addDisplayName 'WithAddWrapper'
-  addWrapper ({render: _render}) -> _render()
+  addWrapper (_render) -> _render()
   -> <div />
 )
 
 WithBranchAndAddWrapper = flowMax(
   addDisplayName 'WithBranchAndAddWrapper'
-  addWrapper ({render: _render}) -> _render()
+  addWrapper (_render) -> _render()
   branch (-> false), renderNothing()
 ,
   -> <div />
 )
 
 NoDisplayNameBranchAndAddWrapper = flowMax(
-  addWrapper ({render: _render}) -> _render()
+  addWrapper (_render) -> _render()
   branch (-> false), renderNothing()
 ,
   -> <div />
