@@ -17,6 +17,7 @@ import addWrapperHOC from './addWrapperHOC'
 import addDisplayName from './addDisplayName'
 import addDefaultProps from './addDefaultProps'
 import addMemoBoundary from './addMemoBoundary'
+import addReducer from './addReducer'
 
 export {
   addState
@@ -38,5 +39,5 @@ export {
   addDisplayName
   addDefaultProps
   addMemoBoundary
-  # addComponentBoundary
+  addReducer
 }
