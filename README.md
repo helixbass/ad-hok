@@ -2,9 +2,36 @@
 
 Ad-hok is a set of helpers that let you use React [hooks](https://reactjs.org/docs/hooks-intro.html) in a [functional pipeline](https://www.martinfowler.com/articles/collection-pipeline/) style. Its API and concept are inspired by [Recompose](https://github.com/acdlite/recompose).
 
-[**Full API documentation**](#api)
-
 **For an introductory comparison of `ad-hok` vs "vanilla" hooks, see [this article](http://helixbass.net/blog/ad-hok-intro-at-a-glance/).**
+
+## Table of Contents
+
+- [Installation](#installation)
+- [Basic usage](#basic-usage)
+- [API](#api)
+  * [addState()](#addstate)
+  * [addEffect()](#addeffect)
+  * [addLayoutEffect()](#addlayouteffect)
+  * [addProps()](#addprops)
+  * [addDefaultProps()](#adddefaultprops)
+  * [addHandlers()](#addhandlers)
+  * [addStateHandlers()](#addstatehandlers)
+  * [addRef()](#addref)
+  * [addContext()](#addcontext)
+  * [addMemoBoundary()](#addmemoboundary)
+  * [branch()](#branch)
+  * [branchPure()](#branchpure)
+  * [renderNothing()](#rendernothing)
+  * [returns()](#returns)
+  * [addPropTypes()](#addproptypes)
+  * [addWrapper()](#addwrapper)
+  * [addWrapperHOC()](#addwrapperhoc)
+  * [flowMax()](#flowmax)
+- [Bonus: usage in non-React contexts](#bonus-use-ad-hokflowmax-in-non-react-contexts)
+- [Motivation](#motivation)
+- [React hooks equivalents](#react-hooks-equivalents)
+- [Help / Contributions / Feedback](#help--contributions--feedback)
+- [License](#license)
 
 ## Installation
 
@@ -95,25 +122,6 @@ If you use [ESLint](https://github.com/eslint/eslint), you can use [`eslint-plug
 - you use `flowMax()` when a simple `flow()` would suffice
 
 ## API
-
-* [addState()](#addstate)
-* [addEffect()](#addeffect)
-* [addLayoutEffect()](#addlayouteffect)
-* [addProps()](#addprops)
-* [addDefaultProps()](#adddefaultprops)
-* [addHandlers()](#addhandlers)
-* [addStateHandlers()](#addstatehandlers)
-* [addRef()](#addref)
-* [addContext()](#addcontext)
-* [addMemoBoundary()](#addmemoboundary)
-* [branch()](#branch)
-* [branchPure()](#branchpure)
-* [renderNothing()](#rendernothing)
-* [returns()](#returns)
-* [addPropTypes()](#addproptypes)
-* [addWrapper()](#addwrapper)
-* [addWrapperHOC()](#addwrapperhoc)
-* [flowMax()](#flowmax)
 
 ### `addState()`
 
@@ -803,14 +811,14 @@ const Counter = flow(
 
 <!-- TODO: keep props separate by starting flow() with props => ({props}) -->
 
-## React Hooks Equivalents
+## React hooks equivalents
 
-| React Hook                                                                                 | Ad-hok                                                  |
+| React hook                                                                                 | Ad-hok                                                  |
 |--------------------------------------------------------------------------------------------|---------------------------------------------------------|
 | [`useState`](https://reactjs.org/docs/hooks-reference.html#usestate)                       | [`addState`](#addstate)                                 |
 | [`useEffect`](https://reactjs.org/docs/hooks-reference.html#useeffect)                     | [`addEffect`](#addeffect)                               |
 | [`useContext`](https://reactjs.org/docs/hooks-reference.html#usecontext)                   | [`addContext`](#addcontext)                             |
-| [`useReducer`](https://reactjs.org/docs/hooks-reference.html#usereducer)                   | -                                                       |
+| [`useReducer`](https://reactjs.org/docs/hooks-reference.html#usereducer)                   | [`addReducer`](#addreducer)                                                       |
 | [`useCallback`](https://reactjs.org/docs/hooks-reference.html#usecallback)                 | [`addHandlers`](#addhandlers) with a dependencies array |
 | [`useMemo`](https://reactjs.org/docs/hooks-reference.html#usememo)                         | [`addProps`](#addprops) with a dependencies array       |
 | [`useRef`](https://reactjs.org/docs/hooks-reference.html#useref)                           | [`addRef`](#addref)                                     |
