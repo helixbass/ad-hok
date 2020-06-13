@@ -2,9 +2,37 @@
 
 Ad-hok is a set of helpers that let you use React [hooks](https://reactjs.org/docs/hooks-intro.html) in a [functional pipeline](https://www.martinfowler.com/articles/collection-pipeline/) style. Its API and concept are inspired by [Recompose](https://github.com/acdlite/recompose).
 
-[**Full API documentation**](#api)
-
 **For an introductory comparison of `ad-hok` vs "vanilla" hooks, see [this article](http://helixbass.net/blog/ad-hok-intro-at-a-glance/).**
+
+## Table of Contents
+
+- [Installation](#installation)
+- [Basic usage](#basic-usage)
+- [API](#api)
+  * [addState()](#addstate)
+  * [addEffect()](#addeffect)
+  * [addLayoutEffect()](#addlayouteffect)
+  * [addProps()](#addprops)
+  * [addDefaultProps()](#adddefaultprops)
+  * [addHandlers()](#addhandlers)
+  * [addStateHandlers()](#addstatehandlers)
+  * [addRef()](#addref)
+  * [addContext()](#addcontext)
+  * [addReducer()](#addreducer)
+  * [addMemoBoundary()](#addmemoboundary)
+  * [branch()](#branch)
+  * [branchPure()](#branchpure)
+  * [renderNothing()](#rendernothing)
+  * [returns()](#returns)
+  * [addPropTypes()](#addproptypes)
+  * [addWrapper()](#addwrapper)
+  * [addWrapperHOC()](#addwrapperhoc)
+  * [flowMax()](#flowmax)
+- [Bonus: usage in non-React contexts](#bonus-use-ad-hokflowmax-in-non-react-contexts)
+- [Motivation](#motivation)
+- [React hooks equivalents](#react-hooks-equivalents)
+- [Help / Contributions / Feedback](#help--contributions--feedback)
+- [License](#license)
 
 ## Installation
 
@@ -95,26 +123,6 @@ If you use [ESLint](https://github.com/eslint/eslint), you can use [`eslint-plug
 - you use `flowMax()` when a simple `flow()` would suffice
 
 ## API
-
-* [addState()](#addstate)
-* [addEffect()](#addeffect)
-* [addLayoutEffect()](#addlayouteffect)
-* [addProps()](#addprops)
-* [addDefaultProps()](#adddefaultprops)
-* [addHandlers()](#addhandlers)
-* [addStateHandlers()](#addstatehandlers)
-* [addRef()](#addref)
-* [addContext()](#addcontext)
-* [addReducer()](#addreducer)
-* [addMemoBoundary()](#addmemoboundary)
-* [branch()](#branch)
-* [branchPure()](#branchpure)
-* [renderNothing()](#rendernothing)
-* [returns()](#returns)
-* [addPropTypes()](#addproptypes)
-* [addWrapper()](#addwrapper)
-* [addWrapperHOC()](#addwrapperhoc)
-* [flowMax()](#flowmax)
 
 ### `addState()`
 
@@ -659,9 +667,9 @@ addWrapper(
 ): Function
 ```
 
-A "magic" helper that allows taking control of the rendering of the rest of the `flowMax()`. Use cases could be to render additional JSX/markup wrapping or side-by-side with the JSX returned at the end of the `flowMax()`
+A "magic" helper that allows taking control of the rendering of the rest of the `flowMax()` chain. Use cases could be to render additional JSX/markup wrapping or side-by-side with the JSX returned at the end of the `flowMax()`
 
-The supplied callback receives an object with `props` (the incoming props) and a `render` function. `render()` will render the rest of the `flowMax()`. It optionally accepts additional props to pass to the next step in the `flowMax()` (which will also get "forwarded" the incoming `props`. Additional props passed via `render()` take precedence over forwarded `props`)
+The supplied callback receives a `render` function and the incoming `props`. `render()` will render the rest of the chain. It optionally accepts additional props to pass to the next step in the chain (which will also get "forwarded" the incoming `props`. Additional props passed via `render()` take precedence over forwarded `props`)
 
 Since it's magic, you must wrap with [`flowMax()`](#flowmax) instead of `flow()`
 
@@ -670,23 +678,25 @@ Doesn't wrap any hooks, just a convenience helper
 For example:
 
 ```js
-const WrapInHeader = ({children, header}) =>
-  <div>
-    <h1>{header}</h1>
-    {children}
-  </div>
-
-const Outer = flowMax(
+const MaybeShowMessage = flowMax(
   addWrapper((render, props) =>
-    <WrapInHeader header={props.header}>
-      {render({style: {color: 'red'}})}
-    </WrapInHeader>
+    <div>
+      <h1>{props.header}</h1>
+      {render()}
+    </div>
   ),
-  ({message, style}) =>
-    <span style={style}>{message}</span>
+  addProps(() => ({
+    shouldShowMessage: !!random(),
+  })),
+  branch(({shouldShowMessage}) => !shouldShowMessage, renderNothing()),
+  ({message}) =>
+    <span>{message}</span>
 )
 
-<Outer header="Topsy" message="Turvy"/>
+<MaybeShowMessage
+  header="This always gets rendered"
+  message="This maybe gets rendered"
+/>
 ```
 
 ### `addWrapperHOC()`
@@ -842,14 +852,14 @@ const Counter = flow(
 
 <!-- TODO: keep props separate by starting flow() with props => ({props}) -->
 
-## React Hooks Equivalents
+## React hooks equivalents
 
-| React Hook                                                                                 | Ad-hok                                                  |
+| React hook                                                                                 | Ad-hok                                                  |
 |--------------------------------------------------------------------------------------------|---------------------------------------------------------|
 | [`useState`](https://reactjs.org/docs/hooks-reference.html#usestate)                       | [`addState`](#addstate)                                 |
 | [`useEffect`](https://reactjs.org/docs/hooks-reference.html#useeffect)                     | [`addEffect`](#addeffect)                               |
 | [`useContext`](https://reactjs.org/docs/hooks-reference.html#usecontext)                   | [`addContext`](#addcontext)                             |
-| [`useReducer`](https://reactjs.org/docs/hooks-reference.html#usereducer)                   | -                                                       |
+| [`useReducer`](https://reactjs.org/docs/hooks-reference.html#usereducer)                   | [`addReducer`](#addreducer)                                                       |
 | [`useCallback`](https://reactjs.org/docs/hooks-reference.html#usecallback)                 | [`addHandlers`](#addhandlers) with a dependencies array |
 | [`useMemo`](https://reactjs.org/docs/hooks-reference.html#usememo)                         | [`addProps`](#addprops) with a dependencies array       |
 | [`useRef`](https://reactjs.org/docs/hooks-reference.html#useref)                           | [`addRef`](#addref)                                     |
