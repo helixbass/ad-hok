@@ -138,13 +138,13 @@ const Counter = flowMax(
 ```js
 addEffect(
   callback: (props: Object) => Function,
-  dependencies?: Array<string>
+  dependencies?: Array<string> | (oldProps: Object, newProps: Object) => boolean
 ): Function
 ```
 
 Accepts a function of props that returns a function (which gets passed to [`useEffect()`](https://reactjs.org/docs/hooks-reference.html#useeffect)). Used for imperative, possibly effectful code
 
-The optional second argument is an array of names of props that the effect depends on. It corresponds to the [second argument to `useEffect()`](https://reactjs.org/docs/hooks-reference.html#conditionally-firing-an-effect)
+The optional second argument is a [dependencies argument](#dependencies-arguments). It corresponds to the [second argument to `useEffect()`](https://reactjs.org/docs/hooks-reference.html#conditionally-firing-an-effect)
 
 For example:
 
@@ -174,13 +174,13 @@ const Example = flowMax(
 ```js
 addLayoutEffect(
   callback: (props: Object) => Function,
-  dependencies?: Array<string>
+  dependencies?: Array<string> | (oldProps: Object, newProps: Object) => boolean
 ): Function
 ```
 
 Accepts a function of props that returns a function (which gets passed to [`useLayoutEffect()`](https://reactjs.org/docs/hooks-reference.html#uselayouteffect)). Used for imperative, possibly effectful code. The signature is identical to `addEffect`, but it fires synchronously after all DOM mutations
 
-The optional second argument is an array of names of props that the effect depends on. It corresponds to the [second argument to `useLayoutEffect()`](https://reactjs.org/docs/hooks-reference.html#conditionally-firing-an-effect)
+The optional second argument is a [dependencies argument](#dependencies-arguments). It corresponds to the [second argument to `useLayoutEffect()`](https://reactjs.org/docs/hooks-reference.html#conditionally-firing-an-effect)
 
 For example:
 
@@ -210,13 +210,13 @@ const Example = flowMax(
 ```js
 addProps(
   createProps: (incomingProps: Object) => Object | Object,
-  dependencies?: Array<string>
+  dependencies?: Array<string> | (oldProps: Object, newProps: Object) => boolean
 ): Function
 ```
 
 Accepts a function that returns additional props based on the incoming props. Or accepts an object of additional props. The additional props get merged with the incoming props
 
-The optional second argument is an array of names of props that the added props depend on. The added props will only get re-created when one of the dependency props changes. This can be used to avoid expensive recomputation or to stabilize prop identity across rerenders (allowing for downstream `shouldComponentUpdate()`/`React.memo()` optimizations that rely on prop equality)
+The optional second argument is a [dependencies argument](#dependencies-arguments) that controls memoization of the added props. This can be used to avoid expensive recomputation or to stabilize prop identity across rerenders (allowing for downstream `shouldComponentUpdate()`/`React.memo()` optimizations that rely on prop equality)
 
 Doesn't wrap any hooks (other than `useMemo()` for the dependency tracking), just a convenience helper comparable to Recompose's [`withProps()`](https://github.com/acdlite/recompose/blob/master/docs/API.md#withprops)
 
@@ -273,13 +273,13 @@ addHandlers(
   handlerCreators: {
     [handlerName: string]: (props: Object) => Function
   },
-  dependencies?: Array<string>
+  dependencies?: Array<string> | (oldProps: Object, newProps: Object) => boolean
 ): Function
 ```
 
 Takes an object map of handler creators. These are higher-order functions that accept a set of props and return a function handler.
 
-The optional second argument is an array of names of props that the handlers depend on. By providing this argument, the handlers' identities will stay stable across rerenders when the dependency props haven't changed (allowing for downstream `shouldComponentUpdate()`/`React.memo()` optimizations that rely on prop equality)
+The optional second argument is a [dependencies argument](#dependencies-arguments) that controls memoizing the handlers. Stabilizing the handlers' identities across rerenders allows for downstream `shouldComponentUpdate()`/`React.memo()` optimizations that rely on prop equality
 
 Doesn't wrap any hooks (other than `useMemo()` when passing the optional `dependencies` argument), just a convenience helper comparable to Recompose's [`withHandlers()`](https://github.com/acdlite/recompose/blob/master/docs/API.md#withhandlers)
 
@@ -316,13 +316,13 @@ addStateHandlers(
   stateUpdaters: {
     [key: string]: (state: Object, props: Object) => (...payload: any[]) => Object
   },
-  dependencies?: Array<string>
+  dependencies?: Array<string> | (oldProps: Object, newProps: Object) => boolean
 ): Function
 ```
 
 Adds additional props for state object properties and immutable updater functions in a form of `(...payload: any[]) => Object`
 
-The optional third argument is an array of names of props that the handlers depend on. By providing this argument, the handlers' identities will stay stable across rerenders when neither the dependency props nor the state object has changed (allowing for downstream `shouldComponentUpdate()`/`React.memo()` optimizations that rely on prop equality)
+The optional third argument is a [dependencies argument](#dependencies-arguments) that controls memoization of the handlers (handlers will also always get recreated whenever the state object changes)
 
 Wraps [`useState()`](https://reactjs.org/docs/hooks-reference.html#usestate) hook
 
@@ -679,6 +679,34 @@ const Message = flowMax(
 )
 ```
 
+#### Dependencies arguments
+
+Several helpers accept an optional "dependencies" argument specifying conditions under which that helper should "re-run" (eg recompute its values, or retrigger its effect). This is conceptually parallel to e.g. [`useEffect()`](https://reactjs.org/docs/hooks-reference.html#conditionally-firing-an-effect)'s or [`useMemo()`](https://reactjs.org/docs/hooks-reference.html#usememo)'s dependencies argument
+
+This dependencies argument cah either be specified as a simple declarative "dependencies list" of props, or as a callback comparing old vs new props
+
+A "dependencies list" is an array of strings that are Lodash [`get()`](https://lodash.com/docs/4.17.15#get)-style "paths" into the props object. The helper re-runs whenever any of the corresponding values in the props object change _identity_
+
+So for example this specifies that the effect should retrigger whenever the `message` prop changes or the `language` property of the `settings` prop changes:
+```js
+addEffect(({message, settings}) => () => {
+  const translatedMessage = getTranslatedMessage(message, settings.language)
+  alert(translatedMessage)
+}, ['message', 'settings.language'])
+```
+
+When the condition for re-running the helper can't easily be expressed as a dependencies list, you can instead use a callback that compares old vs new props and returns true if the helper should re-run:
+```js
+addEffect(
+  ({count}) => () => {
+    console.log(`count just increased by > 1: ${count}`)
+  },
+  (oldProps, newProps) => newProps.cound - oldProps.count > 1
+)
+```
+
+The callback won't be called on the initial render so you can always safely assume that `oldProps` exists
+
 ## Bonus: use `ad-hok`/`flowMax()` in non-React contexts
 
 Once you get used to `ad-hok`'s helpers, you may find that some of them come in handy when writing typical non-React code where you'd usually use `lodash/fp`'s `flow()`
@@ -791,8 +819,8 @@ const Counter = flowMax(
 | [`useEffect`](https://reactjs.org/docs/hooks-reference.html#useeffect)                     | [`addEffect`](#addeffect)                               |
 | [`useContext`](https://reactjs.org/docs/hooks-reference.html#usecontext)                   | [`addContext`](#addcontext)                             |
 | [`useReducer`](https://reactjs.org/docs/hooks-reference.html#usereducer)                   | [`addReducer`](#addreducer)                                                       |
-| [`useCallback`](https://reactjs.org/docs/hooks-reference.html#usecallback)                 | [`addHandlers`](#addhandlers) with a dependencies array |
-| [`useMemo`](https://reactjs.org/docs/hooks-reference.html#usememo)                         | [`addProps`](#addprops) with a dependencies array       |
+| [`useCallback`](https://reactjs.org/docs/hooks-reference.html#usecallback)                 | [`addHandlers`](#addhandlers) with a dependencies argument |
+| [`useMemo`](https://reactjs.org/docs/hooks-reference.html#usememo)                         | [`addProps`](#addprops) with a dependencies argument       |
 | [`useRef`](https://reactjs.org/docs/hooks-reference.html#useref)                           | [`addRef`](#addref)                                     |
 | [`useImperativeHandle`](https://reactjs.org/docs/hooks-reference.html#useimperativehandle) | -                                                       |
 | [`useLayoutEffect`](https://reactjs.org/docs/hooks-reference.html#uselayouteffect)         | [`addLayoutEffect`](#addlayouteffect)                   |
