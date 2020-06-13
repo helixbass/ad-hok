@@ -206,3 +206,22 @@ describe 'addStateHandlers', ->
     expect(console.log).toHaveBeenCalledTimes 1
     console.log.mockClear()
     expect(getByTestId testId).toHaveTextContent '3'
+
+  test 'initial state only gets computed once', ->
+    getInitial = jest.fn -> x: 1
+    Component = flow(
+      addStateHandlers(
+        -> getInitial()
+        incrementX: ({x}) -> ({by: amount = 1} = {}) -> x: x + amount
+      )
+      ({x, incrementX}) ->
+        <div>
+          <div data-testid="c">{x}</div>
+          <button onClick={incrementX}>increment</button>
+          <button onClick={-> incrementX by: 2}>two</button>
+        </div>
+    )
+    {getByTestId, rerender} = render <Component />
+    expect(getByTestId 'c').toHaveTextContent '9'
+    rerender <Component />
+    expect(getInitial).toHaveBeenCalledTimes 1

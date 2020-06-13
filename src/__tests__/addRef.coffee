@@ -43,3 +43,16 @@ describe 'addRef', ->
       {getByText} = render <CompWithInitialValueFromProps />
       getByText 'initial'
       undefined
+  test 'initial state only gets computed once', ->
+    getInitial = jest.fn -> 1
+    Component = flow(
+      addRef 'x', getInitial
+      ({x}) ->
+        <div>
+          <div data-testid="c">{x.current}</div>
+        </div>
+    )
+    {getByTestId, rerender} = render <Component />
+    expect(getByTestId 'c').toHaveTextContent '1'
+    rerender <Component />
+    expect(getInitial).toHaveBeenCalledTimes 1
