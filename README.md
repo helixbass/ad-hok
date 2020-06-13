@@ -1,6 +1,6 @@
-# Ad-hok
+# ad-hok
 
-Ad-hok is a set of helpers that let you use React [hooks](https://reactjs.org/docs/hooks-intro.html) in a [functional pipeline](https://www.martinfowler.com/articles/collection-pipeline/) style. Its API and concept are inspired by [Recompose](https://github.com/acdlite/recompose).
+ad-hok is a set of helpers that let you use React [hooks](https://reactjs.org/docs/hooks-intro.html) in a [functional pipeline](https://www.martinfowler.com/articles/collection-pipeline/) style. Its API and concept are inspired by [Recompose](https://github.com/acdlite/recompose).
 
 **For an introductory comparison of `ad-hok` vs "vanilla" hooks, see [this article](http://helixbass.net/blog/ad-hok-intro-at-a-glance/).**
 
@@ -64,10 +64,9 @@ In your `.babelrc` (or `babel.config.js`):
 ## Basic usage
 
 ```
-import {flow} from 'lodash/fp'
-import {addState, addHandlers} from 'ad-hok'
+import {addState, addHandlers, flowMax} from 'ad-hok'
 
-const Counter = flow(
+const Counter = flowMax(
   addState('count', 'setCount', 0),
   addHandlers({
     increment: ({ setCount }) => () => setCount(n => n + 1),
@@ -84,7 +83,7 @@ const Counter = flow(
 )
 ```
 
-Ad-hok helpers can be composed using a simple function composition utility like [`lodash/fp`](https://github.com/lodash/lodash/wiki/FP-Guide)'s [`flow()`](https://simonsmith.io/dipping-a-toe-into-functional-js-with-lodash-fp/)
+ad-hok helpers are composed using `flowMax()`
 
 Compare this to using Recompose's [`compose()`](https://github.com/acdlite/recompose/blob/master/docs/API.md#compose) to compose a chain of higher-order components:
 ```js
@@ -101,25 +100,6 @@ const addCounting = compose(
 
 const EnhancedComponent = addCounting(SomeComponent)
 ```
-
-## Get "magic" with `flowMax()`
-
-While `flow()` is great for composing most hooks-related functionality, there are some use cases (and corresponding Recompose
-helpers) that it can't support. For example, anything where you'd want to "bail out early" rather than always progressing through the whole `flow()` and rendering the typical display component at the end of the `flow()`
-
-So `ad-hok` provides a "magic" version of `flow()` called [`flowMax()`](#flowmax) that you use as your wrapper function when using any of the corresponding "magic" helpers:
-- [`addPropTypes()`](#addproptypes)
-- [`addWrapper()`](#addwrapper)
-- [`addWrapperHOC()`](#addwrapperhoc)
-- [`branch()`](#branch)
-- [`renderNothing()`](#rendernothing)
-- [`returns()`](#returns)
-
-##### `eslint-plugin-ad-hok`
-
-If you use [ESLint](https://github.com/eslint/eslint), you can use [`eslint-plugin-ad-hok`](https://github.com/helixbass/eslint-plugin-ad-hok) to catch cases where:
-- you forgot to use `flowMax()` when using a "magic" helper (`addPropTypes()`, `addWrapper()`, `branch()`, `renderNothing()` or `returns()`)
-- you use `flowMax()` when a simple `flow()` would suffice
 
 ## API
 
@@ -142,7 +122,7 @@ Comparable to Recompose's [`withState()`](https://github.com/acdlite/recompose/b
 For example:
 
 ```js
-const Counter = flow(
+const Counter = flowMax(
   addState('count', 'setCount', 0),
   ({count, setCount}) =>
     <>
@@ -169,7 +149,7 @@ The optional second argument is an array of names of props that the effect depen
 For example:
 
 ```js
-const Example = flow(
+const Example = flowMax(
   addState('count', 'setCount', 0),
   addEffect(({count}) => () => {
     document.title = `You clicked ${count} times`
@@ -205,7 +185,7 @@ The optional second argument is an array of names of props that the effect depen
 For example:
 
 ```js
-const Example = flow(
+const Example = flowMax(
   addState('count', 'setCount', 0),
   addLayoutEffect(({count}) => () => {
     document.title = `You clicked ${count} times`
@@ -243,7 +223,7 @@ Doesn't wrap any hooks (other than `useMemo()` for the dependency tracking), jus
 For example:
 
 ```js
-const Doubler = flow(
+const Doubler = flowMax(
   addProps(({num}) => ({num: num * 2})),
   ({num}) =>
     <div>Number: {num}</div>
@@ -252,7 +232,7 @@ const Doubler = flow(
 const Outer = () =>
   <Doubler num={3}> // renders "Number: 6"
   
-const OptimizedDoubler = flow(
+const OptimizedDoubler = flowMax(
   addProps(({num}) => ({num: num * 2}), ['num']),
   ({num}) =>
     <div>Number: {num}</div>
@@ -272,7 +252,7 @@ Adds some props only if they are not already present in the incoming props (ie. 
 For example:
 
 ```js
-const Greeting = flow(
+const Greeting = flowMax(
   addDefaultProps({
     name: 'world',
   }),
@@ -306,7 +286,7 @@ Doesn't wrap any hooks (other than `useMemo()` when passing the optional `depend
 For example:
 
 ```js
-const ClickLogger = flow(
+const ClickLogger = flowMax(
   addHandlers({
     onClick: ({onClick}) => (...args) => {
       console.log('click')
@@ -317,7 +297,7 @@ const ClickLogger = flow(
     <button onClick={onClick}>click me</button>
 )
 
-const Fetcher = flow(
+const Fetcher = flowMax(
   addHandlers({
     onSubmit: ({someProp}) => () => {
       fetchData({someProp})
@@ -351,7 +331,7 @@ Comparable to Recompose's [`withStateHandlers()`](https://github.com/acdlite/rec
 For example:
 
 ```js
-const Counter = flow(
+const Counter = flowMax(
   addStateHandlers(
     {count: 0},
     {
@@ -369,7 +349,7 @@ const Counter = flow(
     </>
 )
 
-const IncrementByX = flow(
+const IncrementByX = flowMax(
   addStateHandlers(
     {count: 0},
     {
@@ -401,7 +381,7 @@ Wraps [`useRef()`](https://reactjs.org/docs/hooks-reference.html#useref) hook
 For example:
 
 ```js
-const Example = flow(
+const Example = flowMax(
   addRef('inputRef', null),
   ({inputRef}) =>
     <>
@@ -429,7 +409,7 @@ For example:
 ```js
 const ColorContext = React.createContext()
 
-const Example = flow(
+const Example = flowMax(
   addContext(ColorContext, 'color'),
   ({color}) =>
     <span>
@@ -460,14 +440,14 @@ The optional argument is an array of names of props that should trigger re-rende
 For example:
 
 ```js
-const DefaultDoubler = flow(
+const DefaultDoubler = flowMax(
   addMemoBoundary(), // this component will re-render whenever any of its props changes
   addProps(({num}) => ({doubled: num * 2})),
   ({doubled}) =>
     <div>Doubled: {doubled}</div>
 )
 
-const PropsArrayDoubler = flow(
+const PropsArrayDoubler = flowMax(
   addMemoBoundary(["num"]), // this component will re-render whenever its `num` prop changes
   addProps(({num}) => ({doubled: num * 2})),
   ({doubled}) =>
@@ -485,13 +465,11 @@ branch(
 ): Function
 ```
 
-A "magic" helper that accepts a test function and two functions. The test function is passed the incoming props. If it returns true, the left function is called with the incoming props; otherwise, the right function is called. If the right is not supplied, it will by default pass through the incoming props.
+A helper that accepts a test function and two functions. The test function is passed the incoming props. If it returns true, the left function is called with the incoming props; otherwise, the right function is called. If the right is not supplied, it will by default pass through the incoming props.
 
 Doesn't wrap any hooks, just a convenience helper comparable to Recompose's [`branch()`](https://github.com/acdlite/recompose/blob/master/docs/API.md#branch)
 
-Since it's magic, you must wrap with [`flowMax()`](#flowmax) instead of `flow()`
-
-Typically used along with the "magic" helpers [`renderNothing()`](#rendernothing)/[`returns()`](#returns)
+Typically used along with [`renderNothing()`](#rendernothing)/[`returns()`](#returns) to do conditional rendering
 
 For example:
 
@@ -541,9 +519,7 @@ returnsThreeSometimes(1) // 5
 renderNothing(): MagicReturnValue
 ```
 
-A "magic" helper that always renders `null`
-
-Since it's magic, you must wrap with [`flowMax()`](#flowmax) instead of `flow()`
+A helper that always renders `null` (as the return value of the whole `flowMax()`)
 
 Doesn't wrap any hooks, just a convenience helper comparable to Recompose's [`renderNothing()`](https://github.com/acdlite/recompose/blob/master/docs/API.md#rendernothing)
 
@@ -567,9 +543,7 @@ returns(
 ): MagicReturnValue
 ```
 
-A "magic" helper that always returns the return value of its argument (as the return value of the whole `flowMax()`)
-
-Since it's magic, you must wrap with [`flowMax()`](#flowmax) instead of `flow()`
+A helper that always returns the return value of its argument (as the return value of the whole `flowMax()`)
 
 Doesn't wrap any hooks, just a convenience helper somewhat comparable to Recompose's [`renderComponent()`](https://github.com/acdlite/recompose/blob/master/docs/API.md#rendercomponent)
 
@@ -593,9 +567,7 @@ addPropTypes(
 ): Function
 ```
 
-A "magic" helper that assigns to the `propTypes` property of the current point in the `flowMax()`
-
-Since it's magic, you must wrap with [`flowMax()`](#flowmax) instead of `flow()`
+A helper that assigns to the `propTypes` property of the current point in the `flowMax()`
 
 Doesn't wrap any hooks, just a convenience helper comparable to Recompose's [`setPropTypes()`](https://github.com/acdlite/recompose/blob/master/docs/API.md#setproptypes)
 
@@ -626,11 +598,9 @@ addWrapper(
 ): Function
 ```
 
-A "magic" helper that allows taking control of the rendering of the rest of the `flowMax()` chain. Use cases could be to render additional JSX/markup wrapping or side-by-side with the JSX returned at the end of the `flowMax()`
+A helper that allows taking control of the rendering of the rest of the `flowMax()` chain. Use cases could be to render additional JSX/markup wrapping or side-by-side with the JSX returned at the end of the `flowMax()`
 
 The supplied callback receives a `render` function and the incoming `props`. `render()` will render the rest of the chain. It optionally accepts additional props to pass to the next step in the chain (which will also get "forwarded" the incoming `props`. Additional props passed via `render()` take precedence over forwarded `props`)
-
-Since it's magic, you must wrap with [`flowMax()`](#flowmax) instead of `flow()`
 
 Doesn't wrap any hooks, just a convenience helper
 
@@ -666,9 +636,7 @@ addWrapperHOC(
 ): Function
 ```
 
-A "magic" helper that allows wrapping an existing [higher-order component](https://reactjs.org/docs/higher-order-components.html).
-
-Since it's magic, you must wrap with [`flowMax()`](#flowmax) instead of `flow()`
+A helper that allows wrapping an existing [higher-order component](https://reactjs.org/docs/higher-order-components.html).
 
 Doesn't wrap any hooks, just a convenience helper
 
@@ -697,7 +665,9 @@ flowMax(
 ): Function
 ```
 
-A wrapper that replaces `flow()` when your pipeline uses a "magic" helper (`addPropTypes()`, `addWrapper()`, `renderNothing()` or `returns()`)
+Used to compose helpers together into a single chain encapsulating your component
+
+Comparable to Recompose's [`compose()`](https://github.com/acdlite/recompose/blob/master/docs/API.md#compose). Works like [`lodash/fp`](https://github.com/lodash/lodash/wiki/FP-Guide)'s [`flow()`](https://simonsmith.io/dipping-a-toe-into-functional-js-with-lodash-fp/), with some additional "magic"
 
 For example:
 
@@ -711,7 +681,7 @@ const Message = flowMax(
 
 ## Bonus: use `ad-hok`/`flowMax()` in non-React contexts
 
-Once you get used to `ad-hok`'s helpers, you may find that some of them come in handy when writing typical non-React `flow()`s
+Once you get used to `ad-hok`'s helpers, you may find that some of them come in handy when writing typical non-React code where you'd usually use `lodash/fp`'s `flow()`
 
 For example, `addProps()` is a nice shorthand for `obj => ({...obj, someAdditionalProps})`:
 ```js
@@ -720,14 +690,16 @@ flow(
     ...obj,
     a,
     b: a + 2
-  })
+  }),
+  ...
 )
 // vs:
-flow(
-  addProps(({a}) => ({b: a + 2})
+flowMax(
+  addProps(({a}) => ({b: a + 2}),
+  ...
 )
 ```
-And the "magic" helpers like `branchPure()`/`returns()` can be powerful:
+And the control-flow helpers like `branchPure()`/`returns()` can be powerful:
 ```js
 const maybeReturnsThree = x => {
   if (x < 2) return 3
@@ -736,7 +708,7 @@ const maybeReturnsThree = x => {
 }
 // vs:
 const maybeReturnsThree = flowMax(
-  branchPure(x => x < 2, returns(3)),
+  branchPure(x => x < 2, returns(() => 3)),
   x => x + 4
 )
 ```
@@ -745,7 +717,7 @@ const maybeReturnsThree = flowMax(
 
 #### Background
 
-Recompose's approach is an elegant, highly composable way of building up logic out of small "building blocks" (in its case, higher-order components). Once I saw how clearly it expressed the separation between different pieces of functionality and the dependencies between them, it made writing class components look like an unappealing structure where you just have a flat set of methods and have to work hard to trace the dependencies between them
+Recompose's approach is an elegant, highly composable way of building up logic out of small "building blocks" (in its case, higher-order components). Once I saw how clearly it expressed the separation between different pieces of functionality and the dependencies between them, it made writing class components look like an unappealing structure where you just have a "flat" set of methods and have to work hard to trace the dependencies between them
 
 #### Enter hooks
 
@@ -753,17 +725,17 @@ Now React hooks have entered the picture. And they're very interesting and the p
 
 But I find the typical usage of hooks to still be less readable (and composable) than Recompose's style. By starting your function component bodies with a bunch of hooks, you're introducing a lot of local variable state. Visually tracking the dependencies between local variables is hard, many consider it good practice to minimize the use of local variables
 
-So you can have the best of both worlds by using Ad-hok:
+So you can have the best of both worlds by using ad-hok:
 - Use hooks without introducing local variable state
 - Easily track dependencies between hooks when scanning code
 
 #### Display components
 
-Another thing you lose with typical hooks usage is the simple "display component" - your function component body becomes two sections, first a bunch of stuff related to hooks and then rendering. By using Ad-hok, you regain the separation of actual rendering from surrounding logic
+Another thing you lose with typical hooks usage is the simple ["display component"](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0) - your function component body becomes two sections, first a bunch of stuff related to hooks and then rendering. By using ad-hok, you regain the separation of actual rendering from surrounding logic
 
 #### Reuse
 
-In the simplest usage (as in the initial example), the final step in your `flow()` is a rendering function. If you want that rendering function to be an actual "display" function component (for reuse and/or eg prop types validation), just use `React.createFactory()`:
+In the simplest usage (as in the initial example), the final step in your `flowMax()` is a rendering function. If you want that rendering function to be an actual "display" function component (for reuse and/or eg prop types validation), just use `React.createFactory()`:
 ```js
 import {createFactory} from 'react'
 
@@ -775,7 +747,7 @@ const DisplayCounter = ({count, increment, decrement, reset}) =>
     <button onClick={decrement}>-</button>
   </>
 
-const Counter = flow(
+const Counter = flowMax(
   addState('count', 'setCount', 0),
   addHandlers({
     increment: ({ setCount }) => () => setCount(n => n + 1),
@@ -786,9 +758,9 @@ const Counter = flow(
 )
 ```
 
-If you want to be able to reuse chunks of Ad-hok "container" logic, just extract and name that part of the `flow()`:
+If you want to be able to reuse chunks of ad-hok "container" logic, just extract and name that part of the `flowMax()`:
 ```js
-const addCounter = flow(
+const addCounter = flowMax(
   addState('count', 'setCount', 0),
   addHandlers({
     increment: ({ setCount }) => () => setCount(n => n + 1),
@@ -797,7 +769,7 @@ const addCounter = flow(
   })
 )
 
-const Counter = flow(
+const Counter = flowMax(
   addCounter,
   ({count, increment, decrement, reset}) =>
     <>
@@ -813,7 +785,7 @@ const Counter = flow(
 
 ## React hooks equivalents
 
-| React hook                                                                                 | Ad-hok                                                  |
+| React hook                                                                                 | ad-hok                                                  |
 |--------------------------------------------------------------------------------------------|---------------------------------------------------------|
 | [`useState`](https://reactjs.org/docs/hooks-reference.html#usestate)                       | [`addState`](#addstate)                                 |
 | [`useEffect`](https://reactjs.org/docs/hooks-reference.html#useeffect)                     | [`addEffect`](#addeffect)                               |
