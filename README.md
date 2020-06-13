@@ -618,9 +618,9 @@ addWrapper(
 ): Function
 ```
 
-A "magic" helper that allows taking control of the rendering of the rest of the `flowMax()`. Use cases could be to render additional JSX/markup wrapping or side-by-side with the JSX returned at the end of the `flowMax()`
+A "magic" helper that allows taking control of the rendering of the rest of the `flowMax()` chain. Use cases could be to render additional JSX/markup wrapping or side-by-side with the JSX returned at the end of the `flowMax()`
 
-The supplied callback receives an object with `props` (the incoming props) and a `render` function. `render()` will render the rest of the `flowMax()`. It optionally accepts additional props to pass to the next step in the `flowMax()` (which will also get "forwarded" the incoming `props`. Additional props passed via `render()` take precedence over forwarded `props`)
+The supplied callback receives a `render` function and the incoming `props`. `render()` will render the rest of the chain. It optionally accepts additional props to pass to the next step in the chain (which will also get "forwarded" the incoming `props`. Additional props passed via `render()` take precedence over forwarded `props`)
 
 Since it's magic, you must wrap with [`flowMax()`](#flowmax) instead of `flow()`
 
@@ -629,23 +629,25 @@ Doesn't wrap any hooks, just a convenience helper
 For example:
 
 ```js
-const WrapInHeader = ({children, header}) =>
-  <div>
-    <h1>{header}</h1>
-    {children}
-  </div>
-
-const Outer = flowMax(
+const MaybeShowMessage = flowMax(
   addWrapper((render, props) =>
-    <WrapInHeader header={props.header}>
-      {render({style: {color: 'red'}})}
-    </WrapInHeader>
+    <div>
+      <h1>{props.header}</h1>
+      {render()}
+    </div>
   ),
-  ({message, style}) =>
-    <span style={style}>{message}</span>
+  addProps(() => ({
+    shouldShowMessage: !!random(),
+  })),
+  branch(({shouldShowMessage}) => !shouldShowMessage, renderNothing()),
+  ({message}) =>
+    <span>{message}</span>
 )
 
-<Outer header="Topsy" message="Turvy"/>
+<MaybeShowMessage
+  header="This always gets rendered"
+  message="This maybe gets rendered"
+/>
 ```
 
 ### `addWrapperHOC()`
