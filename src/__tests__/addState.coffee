@@ -35,3 +35,17 @@ describe 'addState', ->
   test 'initial state from props', ->
     {getByTestId} = render <Comp2 initial="aaa" />
     expect(getByTestId 'b').toHaveTextContent 'aaa'
+
+  test 'initial state only gets computed once', ->
+    getInitial = jest.fn -> 1
+    Component = flow(
+      addState 'x', 'setX', getInitial
+      ({x}) ->
+        <div>
+          <div data-testid="c">{x}</div>
+        </div>
+    )
+    {getByTestId, rerender} = render <Component />
+    expect(getByTestId 'c').toHaveTextContent '1'
+    rerender <Component />
+    expect(getInitial).toHaveBeenCalledTimes 1
