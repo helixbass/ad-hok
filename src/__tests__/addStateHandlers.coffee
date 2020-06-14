@@ -4,7 +4,7 @@ import {render, fireEvent} from 'react-testing-library'
 import 'jest-dom/extend-expect'
 import {flow} from 'lodash/fp'
 
-import {addStateHandlers} from '..'
+import {addStateHandlers, addState} from '..'
 
 Comp = flow(
   addStateHandlers
@@ -225,3 +225,69 @@ describe 'addStateHandlers', ->
     expect(getByTestId 'c').toHaveTextContent '9'
     rerender <Component />
     expect(getInitial).toHaveBeenCalledTimes 1
+
+  test 'state values are dependencies when using dependencies callback', ->
+    Inner = flow(
+      addStateHandlers
+        x: 0
+      ,
+        incrementXbyY: ({x}, {y}) -> ->
+          x: x + y
+      ,
+        (oldProps, newProps) -> oldProps.y isnt newProps.y
+    ,
+      ({x, incrementXbyY}) ->
+        <div>
+          <div data-testid="d">{x}</div>
+          <button onClick={incrementXbyY}>incrementXbyY</button>
+        </div>
+    )
+    Outer = flow(
+      addState 'y', 'setY', 1
+      ({y, setY}) ->
+        <div>
+          <Inner y={y} />
+          <button onClick={-> setY 2}>update Y</button>
+        </div>
+    )
+    {getByTestId, getByText} = render <Outer />
+    expect(getByTestId 'd').toHaveTextContent '0'
+    fireEvent.click getByText /incrementXbyY/
+    expect(getByTestId 'd').toHaveTextContent '1'
+    fireEvent.click getByText /incrementXbyY/
+    expect(getByTestId 'd').toHaveTextContent '2'
+    fireEvent.click getByText /update Y/
+    fireEvent.click getByText /incrementXbyY/
+    expect(getByTestId 'd').toHaveTextContent '4'
+  test 'state values are dependencies when using dependencies array', ->
+    Inner = flow(
+      addStateHandlers
+        x: 0
+      ,
+        incrementXbyZ: ({x}, {z}) -> ->
+          x: x + z
+      ,
+        ['z']
+      ({x, incrementXbyZ}) ->
+        <div>
+          <div data-testid="e">{x}</div>
+          <button onClick={incrementXbyZ}>incrementXbyZ</button>
+        </div>
+    )
+    Outer = flow(
+      addState 'z', 'setZ', 1
+      ({z, setZ}) ->
+        <div>
+          <Inner z={z} />
+          <button onClick={-> setZ 2}>update Z</button>
+        </div>
+    )
+    {getByTestId, getByText} = render <Outer />
+    expect(getByTestId 'e').toHaveTextContent '0'
+    fireEvent.click getByText /incrementXbyZ/
+    expect(getByTestId 'e').toHaveTextContent '1'
+    fireEvent.click getByText /incrementXbyZ/
+    expect(getByTestId 'e').toHaveTextContent '2'
+    fireEvent.click getByText /update Z/
+    fireEvent.click getByText /incrementXbyZ/
+    expect(getByTestId 'e').toHaveTextContent '4'
