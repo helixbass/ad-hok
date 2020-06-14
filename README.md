@@ -18,6 +18,7 @@ ad-hok is a set of helpers that let you use React [hooks](https://reactjs.org/do
   * [addStateHandlers()](#addstatehandlers)
   * [addRef()](#addref)
   * [addContext()](#addcontext)
+  * [addReducer()](#addreducer)
   * [addMemoBoundary()](#addmemoboundary)
   * [branch()](#branch)
   * [branchPure()](#branchpure)
@@ -421,6 +422,46 @@ const Outer = () =>
   <ColorContext.Provider value="red">
     <Example />
   </ColorContext.Provider>
+```
+
+### `addReducer()`
+
+```js
+addReducer(
+  reducer: (prevState: Object, action: any) => Object,
+  initialState: Object | (props: Object) => Object,
+): Function
+```
+
+Adds additional props for state object properties and the reducer `dispatch` function
+
+Wraps [`useReducer()`](https://reactjs.org/docs/hooks-reference.html#usereducer) hook
+
+For example:
+
+```js
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'increment':
+      return {count: state.count + 1};
+    case 'decrement':
+      return {count: state.count - 1};
+    default:
+      throw new Error();
+  }
+}
+
+const initialState = {count: 0}
+
+const Counter = flow(
+  addReducer(reducer, initialState),
+  ({count, dispatch}) =>
+    <>
+      Count: {count}
+      <button onClick={() => dispatch({type: 'increment'})}>+</button>
+      <button onClick={() => dispatch({type: 'decrement'})}>-</button>
+    </>
+)
 ```
 
 ### `addMemoBoundary()`
