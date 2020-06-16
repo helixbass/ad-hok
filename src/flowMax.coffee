@@ -28,6 +28,7 @@ flowMax = (...funcs) ->
     "#{wrapperStr}(#{displayName ? ''})"
   if flowLength
     for func, funcIndex in funcs
+      throw new TypeError 'Expected a function' unless isFunction func
       if getNestedFlowMaxArguments = isFlowMax func
         return flowMax(
           ...getPrecedingFuncs(funcIndex)
@@ -63,7 +64,6 @@ flowMax = (...funcs) ->
         return newFlowMax
       if addedDisplayName = isAddDisplayName func
         displayName = addedDisplayName[0]
-      throw new TypeError 'Expected a function' unless isFunction func
   ret = (...args) ->
     return args[0] unless funcs?.length
     index = 0
