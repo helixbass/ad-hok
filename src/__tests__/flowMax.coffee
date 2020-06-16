@@ -50,4 +50,9 @@ describe 'flowMax', ->
   test 'throws nice error when passed a non-function', ->
     expect(->
       flowMax notA: 'function'
-    ).toThrow TypeError
+    ).toThrow 'Expected a function'
+
+  test 'throws nice error when passed undefined', ->
+    expect(->
+      flowMax undefined
+    ).toThrow 'Expected a function'
