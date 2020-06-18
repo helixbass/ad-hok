@@ -12,7 +12,7 @@ export isFunction = (obj) ->
 export mapValues = (callback) -> (obj) ->
   ret = {}
   for key, val of obj
-    ret[key] = callback val
+    ret[key] = callback val, key
   ret
 
 # eslint-disable-next-line known-imports/no-unused-vars
