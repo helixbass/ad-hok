@@ -132,3 +132,26 @@ describe 'addStateHandlers', ->
     expect(getByTestId 'c').toHaveTextContent '9'
     rerender <Component />
     expect(getInitial).toHaveBeenCalledTimes 1
+
+  test 'handles multiple updates on same render', ->
+    Component = flow(
+      addStateHandlers {x: 1}, incrementX: ({x}) -> -> x: x + 1
+      ({x, incrementX, testId}) ->
+        <div>
+          <div data-testid={testId}>{x}</div>
+          <button
+            onClick={->
+              incrementX()
+              incrementX()
+            }
+          >
+            trigger multiple updates
+          </button>
+        </div>
+    )
+    testId = 'multiple-updates-on-same-render'
+    {getByTestId, getByText} = render <Component testId={testId} />
+    expect(getByTestId testId).toHaveTextContent '1'
+
+    fireEvent.click getByText /trigger multiple updates/
+    expect(getByTestId testId).toHaveTextContent '3'
