@@ -155,3 +155,29 @@ describe 'addStateHandlers', ->
 
     fireEvent.click getByText /trigger multiple updates/
     expect(getByTestId testId).toHaveTextContent '3'
+  test "doesn't care if new state keys get added by handlers", ->
+    Component = flow(
+      addStateHandlers
+        x: 1
+      ,
+        incrementX: ({x}) -> ->
+          x: x + 1
+          hasIncremented: true
+      ({x, incrementX, testId, hasIncremented}) ->
+        <div>
+          <div data-testid={testId}>{x}</div>
+          <div data-testid={"#{testId}-hasIncremented"}>
+            {if hasIncremented? then 'yes' else 'no'}
+          </div>
+          <button onClick={incrementX}>increment and mark incremented</button>
+        </div>
+    )
+    testId = 'new-state-keys-added'
+    testIdHasIncremented = "#{testId}-hasIncremented"
+    {getByTestId, getByText} = render <Component testId={testId} />
+    expect(getByTestId testId).toHaveTextContent '1'
+    expect(getByTestId testIdHasIncremented).toHaveTextContent 'no'
+
+    fireEvent.click getByText /increment and mark incremented/
+    expect(getByTestId testId).toHaveTextContent '2'
+    expect(getByTestId testIdHasIncremented).toHaveTextContent 'yes'
