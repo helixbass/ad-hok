@@ -316,16 +316,15 @@ addStateHandlers(
   initialState: Object | (props: Object) => Object
   stateUpdaters: {
     [key: string]: (state: Object, props: Object) => (...payload: any[]) => Object
-  },
-  dependencies?: Array<string> | (oldProps: Object, newProps: Object) => boolean
+  }
 ): Function
 ```
 
 Adds additional props for state object properties and immutable updater functions in a form of `(...payload: any[]) => Object`
 
-The optional third argument is a [dependencies argument](#dependencies-arguments) that controls memoization of the handlers (handlers will also always get recreated whenever the state object changes)
+`addStateHandlers()` doesn't accept a dependencies argument because the identity of the exposed handlers is always stable
 
-Wraps [`useState()`](https://reactjs.org/docs/hooks-reference.html#usestate) hook
+Wraps [`useReducer()`](https://reactjs.org/docs/hooks-reference.html#usereducer) hook
 
 Comparable to Recompose's [`withStateHandlers()`](https://github.com/acdlite/recompose/blob/master/docs/API.md#withstatehandlers)
 
@@ -347,21 +346,6 @@ const Counter = flowMax(
       <button onClick={reset}>Reset</button>
       <button onClick={increment}>+</button>
       <button onClick={decrement}>-</button>
-    </>
-)
-
-const IncrementByX = flowMax(
-  addStateHandlers(
-    {count: 0},
-    {
-      increment: ({count}, {x}) => () => ({count: count + x}),
-    },
-    ['x']
-  ),
-  ({count, increment}) =>
-    <>
-      Count: {count}
-      <ExpensiveToRender onClick={increment} />
     </>
 )
 ```

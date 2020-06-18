@@ -1,58 +1,40 @@
-import {useState, useRef} from 'react'
+import {useReducer} from 'react'
 
-import {isFunction, isArray, mapValues} from './util/helpers'
-import usePrevious from './util/usePrevious'
-import useComputedFromDependencies from './util/useComputedFromDependencies'
+import {isFunction, mapValues} from './util/helpers'
+import useMemoized from './util/useMemoized'
 
-addStateHandlers = (initial, handlers, dependencies) -> (props) ->
-  state = {}
-  setters = {}
-  computedInitial = useRef()
-  useInitial = do ->
-    return initial unless isFunction initial
-    computedInitial.current ?= initial props
-    computedInitial.current
-  for key, val of useInitial
-    [stateVal, setter] = useState val
-    state[key] = stateVal
-    setters[key] = setter
-
-  createHandlerProps = ->
-    mapValues((handler) ->
-      curriedHandler = handler state, props
-      (...args) ->
-        updatedState = curriedHandler ...args
-        for stateKey, updatedValue of updatedState
-          setters[stateKey] updatedValue
-    ) handlers
-
-  handlerProps = useComputedFromDependencies {
-    compute: createHandlerProps
-    dependencies: if dependencies?
-      if isFunction dependencies
-        prevState = usePrevious state
-        hasStateChanged = do ->
-          return yes unless prevState?
-          # eslint-disable-next-line coffee/no-overwrite
-          for key of useInitial
-            currentStateVal = state[key]
-            prevStateVal = prevState[key]
-            return yes unless currentStateVal is prevStateVal
-          no
-        (prevProps, _props) ->
-          return yes if hasStateChanged
-          dependencies prevProps, _props
+addStateHandlers = (initial, handlers) -> (props) ->
+  computedInitial = useMemoized(
+    ->
+      if isFunction initial
+        initial props
       else
-        dependencies
-    additionalResolvedDependencies: if isArray dependencies
-      state[key] for key of useInitial
-    props
-  }
-
+        initial
+  ,
+    []
+  )
+  reducer = (state, {type, args}) ->
+    {
+      ...state
+      ...handlers[type](state, props)(...args)
+    }
+  [state, dispatch] = useReducer reducer, computedInitial
+  exposedHandlers = useMemoized(
+    ->
+      mapValues((handler, handlerName) ->
+        (...args) ->
+          dispatch {
+            type: handlerName
+            args
+          }
+      ) handlers
+  ,
+    []
+  )
   {
     ...props
     ...state
-    ...handlerProps
+    ...exposedHandlers
   }
 
 export default addStateHandlers

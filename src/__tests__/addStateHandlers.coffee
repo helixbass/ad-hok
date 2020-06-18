@@ -4,7 +4,7 @@ import {render, fireEvent} from 'react-testing-library'
 import 'jest-dom/extend-expect'
 import {flow} from 'lodash/fp'
 
-import {addStateHandlers, addState} from '..'
+import {addStateHandlers} from '..'
 
 Comp = flow(
   addStateHandlers
@@ -45,8 +45,8 @@ Comp3 = flow(
     </div>
 )
 
-EmptyDeps = flow(
-  addStateHandlers {x: 1}, {incrementX: ({x}) -> -> x: x + 1}, []
+ContainsPure = flow(
+  addStateHandlers {x: 1}, {incrementX: ({x}, {y}) -> -> x: x + y}, []
   ({incrementX, x, testId}) ->
     <div>
       <EmptyPure onClick={incrementX} />
@@ -56,43 +56,6 @@ EmptyDeps = flow(
 
 EmptyPure = React.memo ({onClick, label = 'empty pure button'}) ->
   console.log 'Pure rerendered'
-  <div>
-    <button onClick={onClick}>{label}</button>
-  </div>
-
-PropDeps = flow(
-  addStateHandlers
-    x: 1
-  ,
-    incrementXByY: ({x}, {y}) -> -> x: x + y
-  ,
-    ['y', 'user.id']
-  ({incrementXByY, x, testId}) ->
-    <div>
-      <PropPure onClick={incrementXByY} />
-      <div data-testid={testId}>{x}</div>
-    </div>
-)
-
-CallbackDeps = flow(
-  addStateHandlers
-    x: 1
-  ,
-    incrementXByY: ({x}, {y}) -> ->
-      x: x + y
-  ,
-    (prevProps, props) ->
-      prevProps.y < props.y
-,
-  ({incrementXByY, x, testId}) ->
-    <div>
-      <PropPure onClick={incrementXByY} label="prop pure CallbackDeps" />
-      <div data-testid={testId}>{x}</div>
-    </div>
-)
-
-PropPure = React.memo ({onClick, label = 'prop pure button'}) ->
-  console.log 'PropPure rerendered'
   <div>
     <button onClick={onClick}>{label}</button>
   </div>
@@ -122,7 +85,7 @@ describe 'addStateHandlers', ->
     {getByTestId} = render <Comp3 initialX={9} />
     expect(getByTestId 'c').toHaveTextContent '9'
 
-  test 'allows specifying empty dependencies', ->
+  test "doesn't change handler identities", ->
     jest
     .spyOn console, 'log'
     .mockImplementation ->
@@ -132,80 +95,24 @@ describe 'addStateHandlers', ->
       rerender
       getByText
       getByTestId
-    } = render <EmptyDeps randomProp={1} testId={testId} />
+    } = render <ContainsPure y={2} testId={testId} />
     expect(console.log).toHaveBeenCalledTimes 1
     console.log.mockClear()
     expect(getByTestId testId).toHaveTextContent '1'
 
-    rerender <EmptyDeps randomProp={2} testId={testId} />
+    rerender <ContainsPure y={3} testId={testId} />
     expect(console.log).not.toHaveBeenCalled()
     console.log.mockClear()
 
     fireEvent.click getByText /empty pure button/
-    expect(console.log).toHaveBeenCalledTimes 1
-    console.log.mockClear()
-    expect(getByTestId testId).toHaveTextContent '2'
-
-  test 'allows specifying prop dependencies', ->
-    jest
-    .spyOn console, 'log'
-    .mockImplementation ->
-
-    testId = 'prop-deps'
-    {
-      rerender
-      getByText
-      getByTestId
-    } = render <PropDeps y={1} testId={testId} user={id: 3} />
-    expect(console.log).toHaveBeenCalledTimes 1
-    console.log.mockClear()
-    expect(getByTestId testId).toHaveTextContent '1'
-
-    rerender <PropDeps y={2} testId={testId} user={id: 3} />
-    expect(console.log).toHaveBeenCalledTimes 1
-    console.log.mockClear()
-
-    rerender <PropDeps y={2} testId={testId} user={id: 3} />
     expect(console.log).not.toHaveBeenCalled()
-
-    rerender <PropDeps y={2} testId={testId} user={id: 4} />
-    expect(console.log).toHaveBeenCalledTimes 1
     console.log.mockClear()
+    expect(getByTestId testId).toHaveTextContent '4'
 
-    fireEvent.click getByText /prop pure button/
-    expect(console.log).toHaveBeenCalledTimes 1
-    console.log.mockClear()
-    expect(getByTestId testId).toHaveTextContent '3'
-
-  test 'allows specifying dependencies as callback', ->
-    jest
-    .spyOn console, 'log'
-    .mockImplementation ->
-
-    testId = 'callback-deps'
-    {
-      rerender
-      getByText
-      getByTestId
-    } = render <CallbackDeps y={1} testId={testId} />
-    expect(console.log).toHaveBeenCalledTimes 1
-    console.log.mockClear()
-    expect(getByTestId testId).toHaveTextContent '1'
-
-    rerender <CallbackDeps y={1} testId={testId} />
+    fireEvent.click getByText /empty pure button/
     expect(console.log).not.toHaveBeenCalled()
-
-    rerender <CallbackDeps y={0} testId={testId} />
-    expect(console.log).not.toHaveBeenCalled()
-
-    rerender <CallbackDeps y={2} testId={testId} />
-    expect(console.log).toHaveBeenCalledTimes 1
     console.log.mockClear()
-
-    fireEvent.click getByText /prop pure CallbackDeps/
-    expect(console.log).toHaveBeenCalledTimes 1
-    console.log.mockClear()
-    expect(getByTestId testId).toHaveTextContent '3'
+    expect(getByTestId testId).toHaveTextContent '7'
 
   test 'initial state only gets computed once', ->
     getInitial = jest.fn -> x: 1
@@ -226,68 +133,51 @@ describe 'addStateHandlers', ->
     rerender <Component />
     expect(getInitial).toHaveBeenCalledTimes 1
 
-  test 'state values are dependencies when using dependencies callback', ->
-    Inner = flow(
+  test 'handles multiple updates on same render', ->
+    Component = flow(
+      addStateHandlers {x: 1}, incrementX: ({x}) -> -> x: x + 1
+      ({x, incrementX, testId}) ->
+        <div>
+          <div data-testid={testId}>{x}</div>
+          <button
+            onClick={->
+              incrementX()
+              incrementX()
+            }
+          >
+            trigger multiple updates
+          </button>
+        </div>
+    )
+    testId = 'multiple-updates-on-same-render'
+    {getByTestId, getByText} = render <Component testId={testId} />
+    expect(getByTestId testId).toHaveTextContent '1'
+
+    fireEvent.click getByText /trigger multiple updates/
+    expect(getByTestId testId).toHaveTextContent '3'
+  test "doesn't care if new state keys get added by handlers", ->
+    Component = flow(
       addStateHandlers
-        x: 0
+        x: 1
       ,
-        incrementXbyY: ({x}, {y}) -> ->
-          x: x + y
-      ,
-        (oldProps, newProps) -> oldProps.y isnt newProps.y
-    ,
-      ({x, incrementXbyY}) ->
+        incrementX: ({x}) -> ->
+          x: x + 1
+          hasIncremented: true
+      ({x, incrementX, testId, hasIncremented}) ->
         <div>
-          <div data-testid="d">{x}</div>
-          <button onClick={incrementXbyY}>incrementXbyY</button>
+          <div data-testid={testId}>{x}</div>
+          <div data-testid={"#{testId}-hasIncremented"}>
+            {if hasIncremented? then 'yes' else 'no'}
+          </div>
+          <button onClick={incrementX}>increment and mark incremented</button>
         </div>
     )
-    Outer = flow(
-      addState 'y', 'setY', 1
-      ({y, setY}) ->
-        <div>
-          <Inner y={y} />
-          <button onClick={-> setY 2}>update Y</button>
-        </div>
-    )
-    {getByTestId, getByText} = render <Outer />
-    expect(getByTestId 'd').toHaveTextContent '0'
-    fireEvent.click getByText /incrementXbyY/
-    expect(getByTestId 'd').toHaveTextContent '1'
-    fireEvent.click getByText /incrementXbyY/
-    expect(getByTestId 'd').toHaveTextContent '2'
-    fireEvent.click getByText /update Y/
-    fireEvent.click getByText /incrementXbyY/
-    expect(getByTestId 'd').toHaveTextContent '4'
-  test 'state values are dependencies when using dependencies array', ->
-    Inner = flow(
-      addStateHandlers
-        x: 0
-      ,
-        incrementXbyZ: ({x}, {z}) -> ->
-          x: x + z
-      ,
-        ['z']
-      ({x, incrementXbyZ}) ->
-        <div>
-          <div data-testid="e">{x}</div>
-          <button onClick={incrementXbyZ}>incrementXbyZ</button>
-        </div>
-    )
-    Outer = flow(
-      addState 'z', 'setZ', 1
-      ({z, setZ}) ->
-        <div>
-          <Inner z={z} />
-          <button onClick={-> setZ 2}>update Z</button>
-        </div>
-    )
-    {getByTestId, getByText} = render <Outer />
-    expect(getByTestId 'e').toHaveTextContent '0'
-    fireEvent.click getByText /incrementXbyZ/
-    expect(getByTestId 'e').toHaveTextContent '1'
-    fireEvent.click getByText /incrementXbyZ/
-    expect(getByTestId 'e').toHaveTextContent '2'
-    fireEvent.click getByText /update Z/
-    fireEvent.click getByText /incrementXbyZ/
-    expect(getByTestId 'e').toHaveTextContent '4'
+    testId = 'new-state-keys-added'
+    testIdHasIncremented = "#{testId}-hasIncremented"
+    {getByTestId, getByText} = render <Component testId={testId} />
+    expect(getByTestId testId).toHaveTextContent '1'
+    expect(getByTestId testIdHasIncremented).toHaveTextContent 'no'
+
+    fireEvent.click getByText /increment and mark incremented/
+    expect(getByTestId testId).toHaveTextContent '2'
+    expect(getByTestId testIdHasIncremented).toHaveTextContent 'yes'
