@@ -86,7 +86,7 @@ const Counter = flowMax(
 
 ad-hok helpers are composed using `flowMax()`
 
-Compare this to using Recompose's [`compose()`](https://github.com/acdlite/recompose/blob/master/docs/API.md#compose) to compose a chain of higher-order components:
+Compare this to using Recompose's [`compose()`](https://github.com/acdlite/recompose/blob/master/docs/API.md#compose):
 ```js
 import {compose, withState, withHandlers} from 'recompose'
 
