@@ -1,5 +1,5 @@
 export {default as addState} from './addState'
-// export {default as addStateHandlers} from './addStateHandlers'
+export {default as addStateHandlers} from './addStateHandlers'
 export {default as addEffect} from './addEffect'
 export {default as addLayoutEffect} from './addLayoutEffect'
 export {default as addProps} from './addProps'
@@ -12,9 +12,16 @@ export {default as renderNothing} from './renderNothing'
 export {default as branch} from './branch'
 export {default as branchPure} from './branchPure'
 export {default as returns} from './returns'
-export {default as addWrapper} from './addWrapper'
-export {default as addWrapperHOC} from './addWrapperHOC'
+export {default as addWrapper, AddWrapperRenderCallback} from './addWrapper'
+export {default as addWrapperHOC, PropAddingHOC} from './addWrapperHOC'
 export {default as addDisplayName} from './addDisplayName'
 export {default as addDefaultProps} from './addDefaultProps'
 export {default as addMemoBoundary} from './addMemoBoundary'
 export {default as addReducer} from './addReducer'
+export {
+  ValueOrFunctionOfProps,
+  CurriedPropsAdder,
+  SimplePropsAdder,
+  UnchangedProps,
+  SimpleUnchangedProps,
+} from './helperTypes'

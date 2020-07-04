@@ -1,6 +1,7 @@
 import {useReducer, Reducer} from 'react'
 
-import {isFunction, mapValues} from 'utils/helpers'
+import isFunction from 'utils/isFunction'
+import mapValues from 'utils/mapValues'
 import useMemoized from 'utils/useMemoized'
 import {ValueOrFunctionOfProps, CurriedPropsAdder} from 'helperTypes'
 
@@ -18,10 +19,14 @@ type AddStateHandlersType = <
 >(
   initialState: ValueOrFunctionOfProps<TState, TProps>,
   stateUpdaters: Updaters,
-  dependencies?: string[],
 ) => CurriedPropsAdder<
   TProps,
-  TState & {[K in keyof Updaters]: ReturnType<Updaters[K]>}
+  TState &
+    {
+      [K in keyof Updaters]: (
+        ...args: Parameters<ReturnType<Updaters[K]>>
+      ) => void
+    }
 >
 
 const addStateHandlers: AddStateHandlersType = (initial, handlers) => (
@@ -31,7 +36,12 @@ const addStateHandlers: AddStateHandlersType = (initial, handlers) => (
     () => (isFunction(initial) ? initial(props) : initial),
     [],
   )
-  const reducer: Reducer = (state, {type, args}) => ({
+  type TState = typeof computedInitial
+  type TAction = {
+    type: keyof typeof handlers
+    args: unknown[]
+  }
+  const reducer: Reducer<TState, TAction> = (state, {type, args}) => ({
     ...state,
     ...handlers[type](state, props)(...args),
   })
@@ -39,11 +49,12 @@ const addStateHandlers: AddStateHandlersType = (initial, handlers) => (
   const exposedHandlers = useMemoized(
     () =>
       mapValues(
-        (handler, handlerName) => (...args) =>
+        (handler, handlerName) => (...args: any[]) => {
           dispatch({
             type: handlerName,
             args,
-          }),
+          })
+        },
         handlers,
       ),
     [],
