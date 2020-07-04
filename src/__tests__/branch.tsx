@@ -1,7 +1,7 @@
-import React from 'react'
-import {render, fireEvent} from 'react-testing-library'
-import 'jest-dom/extend-expect'
-import {flow} from 'lodash/fp'
+import React, {FC} from 'react'
+import {render, screen, fireEvent} from '@testing-library/react'
+import '@testing-library/jest-dom'
+import '@testing-library/jest-dom/extend-expect'
 
 import {branch, flowMax, renderNothing, addStateHandlers, addState} from '..'
 
