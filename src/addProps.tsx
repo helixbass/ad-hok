@@ -1,13 +1,17 @@
 import isFunction from 'utils/isFunction'
 import useComputedFromDependencies from 'utils/useComputedFromDependencies'
-import {ValueOrFunctionOfProps, CurriedPropsAdder} from 'helperTypes'
+import {
+  ValueOrFunctionOfProps,
+  CurriedPropsAdder,
+  DependenciesArgument,
+} from 'helperTypes'
 
 type AddPropsType = <
   TProps extends {},
   AdditionalProps extends {[key: string]: any}
 >(
   createProps: ValueOrFunctionOfProps<AdditionalProps, TProps>,
-  dependencies?: string[],
+  dependencies?: DependenciesArgument<TProps>,
 ) => CurriedPropsAdder<TProps, AdditionalProps>
 
 const addProps: AddPropsType = (updater, dependencies) => (props) => {
