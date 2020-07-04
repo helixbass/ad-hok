@@ -6,12 +6,3 @@ export const mapValues = <TObject extends {}>(callback: () => , obj: TObject) =>
     ret[key] = callback val, key
   ret
 }
-
-export identity = (x) -> x
-
-# eslint-disable-next-line known-imports/no-unused-vars
-export some = (predicate = identity) ->
-  (array) ->
-    for value in array
-      return true if predicate value
-    false
