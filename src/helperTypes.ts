@@ -13,3 +13,7 @@ export type SimplePropsAdder<AdditionalProps> = <TProps>(
 export type UnchangedProps<TProps> = (props: TProps) => TProps
 
 export type SimpleUnchangedProps = <TProps>(props: TProps) => TProps
+
+export type DependenciesArgument<TProps> =
+  | string[]
+  | ((prevProps: TProps, props: TProps) => boolean)
