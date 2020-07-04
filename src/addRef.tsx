@@ -6,7 +6,7 @@ import {ValueOrFunctionOfProps, CurriedPropsAdder} from 'helperTypes'
 
 type AddRefType = <TRefName extends string, TRefValue, TProps>(
   refName: TRefName,
-  initialValue: ValueOrFunctionOfProps<TRefValue, TProps>,
+  initialValue?: ValueOrFunctionOfProps<TRefValue, TProps>,
 ) => CurriedPropsAdder<
   TProps,
   {
@@ -14,7 +14,12 @@ type AddRefType = <TRefName extends string, TRefValue, TProps>(
   }
 >
 
-const addRef: AddRefType = (name, initialValue) => (props) => {
+const addRef: AddRefType = <TRefName extends string, TRefValue, TProps>(
+  name: TRefName,
+  initialValue:
+    | TRefValue
+    | ((props: TProps) => TRefValue) = (undefined as unknown) as TRefValue,
+) => (props: TProps) => {
   const computedInitialValue = useMemoized(
     () => (isFunction(initialValue) ? initialValue(props) : initialValue),
     [],
