@@ -6,8 +6,8 @@ type AddDisplayNameType = <TProps>(
   displayName: string,
 ) => UnchangedProps<TProps>
 
-export const isAddDisplayName = (func: Function): boolean =>
-  markerPropertyName in func
+export const isAddDisplayName = (func: Function): [string] | false =>
+  markerPropertyName in func && (func as any)[markerPropertyName]
 
 const addDisplayName: AddDisplayNameType = (displayName) => {
   const ret = <TProps,>(props: TProps) => props
