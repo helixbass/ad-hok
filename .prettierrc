@@ -1,3 +1,4 @@
+semi: false
+trailingComma: all
 singleQuote: true
 bracketSpacing: false
-indentChain: false
