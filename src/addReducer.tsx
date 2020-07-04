@@ -2,10 +2,11 @@ import {useReducer, Reducer} from 'react'
 
 import isFunction from 'utils/isFunction'
 import useMemoized from 'utils/useMemoized'
+import {ValueOrFunctionOfProps} from 'helperTypes'
 
 type AddReducerType = <TState, TAction, TProps>(
   reducer: Reducer<TState, TAction>,
-  initialState: TState,
+  initialState: ValueOrFunctionOfProps<TState, TProps>,
 ) => (
   props: TProps,
 ) => TProps &
