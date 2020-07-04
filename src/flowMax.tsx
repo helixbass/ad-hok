@@ -50,13 +50,13 @@ const flowMax = (...funcs: Function[]): ((...args: unknown[]) => unknown) => {
         isAddWrapperHOC(func) ||
         isBranch(func)
       ) {
-        const wrappedDisplayName: string | null = isAddPropTypes(func)
+        const wrappedDisplayName: string | undefined = isAddPropTypes(func)
           ? wrapExistingDisplayName('addPropTypes')
           : isAddWrapper(func)
           ? wrapExistingDisplayName('addWrapper')
           : isAddWrapperHOC(func)
           ? wrapExistingDisplayName('addWrapperHOC')
-          : null
+          : undefined
         const newFollowingFlowMax = flowMax(
           ...getFollowingFuncs(funcIndex, {wrappedDisplayName}),
         )
