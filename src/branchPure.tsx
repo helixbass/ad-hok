@@ -1,9 +1,10 @@
 import {BranchType} from './branch'
 
-const branchPure: BranchType = <TProps,>(
+const branchPure = <TProps,>(
   test: (props: TProps) => boolean,
   consequent: (props: TProps) => any,
   alternate: (props: TProps) => unknown = (props) => props,
 ) => (props: TProps) => (test(props) ? consequent(props) : alternate(props))
 
-export default branchPure
+const branchPurePublishedType = branchPure as BranchType
+export default branchPurePublishedType
