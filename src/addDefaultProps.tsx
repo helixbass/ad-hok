@@ -1,7 +1,16 @@
 import isFunction from 'utils/isFunction'
-import addProps, {AddPropsType} from './addProps'
+import addProps from './addProps'
+import {ValueOrFunctionOfProps, CurriedPropsAdder} from 'helperTypes'
 
-const addDefaultProps: AddPropsType = (createDefaults) =>
+type AddDefaultPropsType = <
+  TProps extends {},
+  TAdditionalProps extends Partial<TProps>
+>(
+  createProps: ValueOrFunctionOfProps<TAdditionalProps, TProps>,
+  dependencies?: string[],
+) => CurriedPropsAdder<TProps, TAdditionalProps>
+
+const addDefaultProps: AddDefaultPropsType = (createDefaults) =>
   addProps((props) => {
     const defaults = isFunction(createDefaults)
       ? createDefaults(props)
