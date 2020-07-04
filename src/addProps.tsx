@@ -2,7 +2,10 @@ import isFunction from 'utils/isFunction'
 import useComputedFromDependencies from 'utils/useComputedFromDependencies'
 import {ValueOrFunctionOfProps, CurriedPropsAdder} from 'helperTypes'
 
-type AddPropsType = <TProps, AdditionalProps extends {[key: string]: any}>(
+export type AddPropsType = <
+  TProps extends {},
+  AdditionalProps extends {[key: string]: any}
+>(
   createProps: ValueOrFunctionOfProps<AdditionalProps, TProps>,
   dependencies?: string[],
 ) => CurriedPropsAdder<TProps, AdditionalProps>
