@@ -1,4 +1,4 @@
-import {UnchangedProps} from 'helperTypes'
+import {UnchangedProps} from './helperTypes'
 
 const nonce = {}
 

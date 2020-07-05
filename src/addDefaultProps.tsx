@@ -1,6 +1,6 @@
-import isFunction from 'utils/isFunction'
+import isFunction from './utils/isFunction'
 import addProps from './addProps'
-import {ValueOrFunctionOfProps, CurriedPropsAdder} from 'helperTypes'
+import {ValueOrFunctionOfProps, CurriedPropsAdder} from './helperTypes'
 
 type AddDefaultPropsType = <
   TProps extends {},

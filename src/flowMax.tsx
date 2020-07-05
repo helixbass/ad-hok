@@ -5,7 +5,7 @@ import {isAddWrapper} from './addWrapper'
 import {isAddWrapperHOC} from './addWrapperHOC'
 import {isBranch} from './branch-avoid-circular-dependency'
 import addDisplayName, {isAddDisplayName} from './addDisplayName'
-import isFunction from 'utils/isFunction'
+import isFunction from './utils/isFunction'
 import {FlowMaxType} from './flowMaxType'
 
 const getArgumentsPropertyName = '__ad-hok-flowMax-getArguments'

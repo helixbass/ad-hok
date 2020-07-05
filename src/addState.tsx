@@ -1,8 +1,8 @@
 import {useState} from 'react'
 
-import isFunction from 'utils/isFunction'
-import useMemoized from 'utils/useMemoized'
-import {ValueOrFunctionOfProps, CurriedPropsAdder} from 'helperTypes'
+import isFunction from './utils/isFunction'
+import useMemoized from './utils/useMemoized'
+import {ValueOrFunctionOfProps, CurriedPropsAdder} from './helperTypes'
 
 type AddStateType = <
   TState,

@@ -2,7 +2,7 @@ import React, {FC, ReactElement} from 'react'
 
 import flowMax from './flowMax'
 import {markerPropertyName} from './branch-avoid-circular-dependency'
-import {UnchangedProps, CurriedPropsAdder} from 'helperTypes'
+import {UnchangedProps, CurriedPropsAdder} from './helperTypes'
 
 export const branch = <TProps, TAdditionalProps>(
   test: (props: TProps) => boolean,

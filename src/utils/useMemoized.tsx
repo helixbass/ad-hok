@@ -1,7 +1,7 @@
 import {useRef} from 'react'
 
-import usePrevious from 'utils/usePrevious'
-import shallowEqualArray from 'utils/shallowEqualArray'
+import usePrevious from './usePrevious'
+import shallowEqualArray from './shallowEqualArray'
 
 const useMemoized = <TValue,>(
   compute: () => TValue,

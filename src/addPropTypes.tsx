@@ -1,7 +1,7 @@
 import React, {ComponentType, FC} from 'react'
 import {ValidationMap} from 'prop-types'
 
-import {UnchangedProps} from 'helperTypes'
+import {UnchangedProps} from './helperTypes'
 
 const markerPropertyName = '__ad-hok-addPropTypes'
 

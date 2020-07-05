@@ -1,10 +1,10 @@
 import {useEffect, useLayoutEffect} from 'react'
 
-import isArray from 'utils/isArray'
-import get from 'utils/get'
-import shallowEqualArray from 'utils/shallowEqualArray'
-import usePrevious from 'utils/usePrevious'
-import {UnchangedProps, DependenciesArgument} from 'helperTypes'
+import isArray from './isArray'
+import get from './get'
+import shallowEqualArray from './shallowEqualArray'
+import usePrevious from './usePrevious'
+import {UnchangedProps, DependenciesArgument} from '../helperTypes'
 
 const isSimpleDependenciesArray = (
   dependencies: string[] | Function | undefined,

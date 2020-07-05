@@ -1,6 +1,6 @@
 import {useEffect} from 'react'
 
-import createEffectAdder, {AddEffectType} from 'utils/createEffectAdder'
+import createEffectAdder, {AddEffectType} from './utils/createEffectAdder'
 
 const addEffect: AddEffectType = createEffectAdder(useEffect)
 

@@ -1,7 +1,7 @@
-import mapValues from 'utils/mapValues'
-import useComputedFromDependencies from 'utils/useComputedFromDependencies'
+import mapValues from './utils/mapValues'
+import useComputedFromDependencies from './utils/useComputedFromDependencies'
 
-import {CurriedPropsAdder, DependenciesArgument} from 'helperTypes'
+import {CurriedPropsAdder, DependenciesArgument} from './helperTypes'
 
 interface HandlerCreators<TProps> {
   [key: string]: (props: TProps) => (...args: any[]) => any

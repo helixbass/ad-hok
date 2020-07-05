@@ -1,6 +1,6 @@
 import {useContext, Context} from 'react'
 
-import {CurriedPropsAdder} from 'helperTypes'
+import {CurriedPropsAdder} from './helperTypes'
 
 type AddContextType = <TContextName extends string, TContext, TProps>(
   context: Context<TContext>,
