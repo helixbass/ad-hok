@@ -4,7 +4,8 @@ import {ValueOrFunctionOfProps, CurriedPropsAdder} from './helperTypes'
 
 type AddDefaultPropsType = <
   TProps extends {},
-  TAdditionalProps extends Partial<TProps>
+  // TAdditionalProps extends Partial<TProps>
+  TAdditionalProps
 >(
   createProps: ValueOrFunctionOfProps<TAdditionalProps, TProps>,
   dependencies?: string[],
