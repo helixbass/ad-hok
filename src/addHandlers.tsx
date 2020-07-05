@@ -3,7 +3,7 @@ import useComputedFromDependencies from './utils/useComputedFromDependencies'
 
 import {CurriedPropsAdder, DependenciesArgument} from './helperTypes'
 
-interface HandlerCreators<TProps> {
+export interface HandlerCreators<TProps> {
   [key: string]: (props: TProps) => (...args: any[]) => any
 }
 
