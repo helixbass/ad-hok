@@ -23,8 +23,8 @@ type AddStateHandlersType = <
   TProps,
   TState &
     {
-      [K in keyof Updaters]: (
-        ...args: Parameters<ReturnType<Updaters[K]>>
+      [handlerName in keyof Updaters]: (
+        ...args: Parameters<ReturnType<Updaters[handlerName]>>
       ) => void
     }
 >
@@ -66,4 +66,20 @@ const addStateHandlers: AddStateHandlersType = (initial, handlers) => (
   }
 }
 
-export default addStateHandlers
+type AddStateHandlersPublishedType = <
+  Updaters extends StateUpdaters<TProps, TState>,
+  TProps,
+  TState
+>(
+  initialState: ValueOrFunctionOfProps<TState, TProps>,
+  stateUpdaters: Updaters,
+) => CurriedPropsAdder<
+  TProps,
+  TState &
+    {
+      [handlerName in keyof Updaters]: ReturnType<Updaters[handlerName]>
+    }
+>
+
+const addStateHandlersPublishedType = addStateHandlers as AddStateHandlersPublishedType
+export default addStateHandlersPublishedType
