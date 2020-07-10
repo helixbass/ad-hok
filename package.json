@@ -9,7 +9,8 @@
     "test": "jest --config jestconfig.json",
     "prepare": "npm run build",
     "prepublishOnly": "npm test && npm run lint",
-    "preversion": "npm run lint"
+    "preversion": "npm run lint",
+    "generateFlowMaxType": "node scripts/generateFlowMaxType.js > src/flowMaxType.ts && prettier --write src/flowMaxType.ts"
   },
   "files": [
     "lib/**/*"

@@ -1,3 +1,5 @@
+// Generated with "yarn generateFlowMaxType"
+
 export interface FlowMaxType {
   <T0, T1>(f1: (a: T0) => T1): (a: T0) => T1
   <T0, T1, T2>(f1: (a: T0) => T1, f2: (a: T1) => T2): (a: T0) => T2
