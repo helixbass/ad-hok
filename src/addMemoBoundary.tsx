@@ -4,7 +4,7 @@ import {addWrapperHOC} from './addWrapperHOC'
 import get from './utils/get'
 import isFunction from './utils/isFunction'
 import some from './utils/some'
-import {UnchangedProps, DependenciesArgument} from './helperTypes'
+import {CurriedUnchangedProps, DependenciesArgument} from './helperTypes'
 
 const memo = <TProps,>(
   compare: ((prevProps: TProps, props: TProps) => boolean) | undefined,
@@ -32,7 +32,7 @@ export const addMemoBoundary = <TProps,>(
 
 type AddMemoBoundaryType = <TProps>(
   dependencies?: DependenciesArgument<TProps>,
-) => UnchangedProps<TProps>
+) => CurriedUnchangedProps<TProps>
 
 const addMemoBoundaryPublishedType = addMemoBoundary as AddMemoBoundaryType
 export default addMemoBoundaryPublishedType

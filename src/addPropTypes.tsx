@@ -1,7 +1,7 @@
 import React, {ComponentType, FC} from 'react'
 import {ValidationMap} from 'prop-types'
 
-import {UnchangedProps} from './helperTypes'
+import {CurriedUnchangedProps} from './helperTypes'
 
 const markerPropertyName = '__ad-hok-addPropTypes'
 
@@ -10,7 +10,7 @@ export const isAddPropTypes = (func: Function): boolean =>
 
 type AddPropTypesType = <TPropTypes, TProps>(
   propTypes: ValidationMap<TPropTypes>,
-) => UnchangedProps<TProps>
+) => CurriedUnchangedProps<TProps>
 
 export const addPropTypes = <TPropTypes, TProps>(
   propTypes: TPropTypes,

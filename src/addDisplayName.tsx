@@ -1,10 +1,10 @@
-import {UnchangedProps} from './helperTypes'
+import {CurriedUnchangedProps} from './helperTypes'
 
 const markerPropertyName = '__ad-hok-addDisplayName'
 
 type AddDisplayNameType = <TProps>(
   displayName: string,
-) => UnchangedProps<TProps>
+) => CurriedUnchangedProps<TProps>
 
 export const isAddDisplayName = (func: Function): [string] | false =>
   markerPropertyName in func && (func as any)[markerPropertyName]

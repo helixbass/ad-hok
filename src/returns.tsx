@@ -1,4 +1,4 @@
-import {UnchangedProps} from './helperTypes'
+import {CurriedUnchangedProps} from './helperTypes'
 
 const key = '__ad-hok-returns'
 
@@ -13,7 +13,7 @@ export const isReturns = (props: {}): [unknown] | false => {
 
 type ReturnsType = <TProps>(
   callback: (props: TProps) => unknown,
-) => UnchangedProps<TProps>
+) => CurriedUnchangedProps<TProps>
 
 const returns: ReturnsType = (callback) => (props) =>
   (({

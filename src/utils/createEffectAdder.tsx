@@ -4,7 +4,7 @@ import isArray from './isArray'
 import get from './get'
 import shallowEqualArray from './shallowEqualArray'
 import usePrevious from './usePrevious'
-import {UnchangedProps, DependenciesArgument} from '../helperTypes'
+import {CurriedUnchangedProps, DependenciesArgument} from '../helperTypes'
 
 const isSimpleDependenciesArray = (
   dependencies: string[] | Function | undefined,
@@ -23,7 +23,7 @@ type CreateEffectAdderType = (
 ) => <TProps>(
   callback: (props: TProps) => () => void | (() => void | undefined),
   dependencies?: DependenciesArgument<TProps>,
-) => UnchangedProps<TProps>
+) => CurriedUnchangedProps<TProps>
 
 export type AddEffectType = ReturnType<CreateEffectAdderType>
 

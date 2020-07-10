@@ -22,6 +22,6 @@ export {
   ValueOrFunctionOfProps,
   CurriedPropsAdder,
   SimplePropsAdder,
-  UnchangedProps,
+  CurriedUnchangedProps,
   SimpleUnchangedProps,
 } from './helperTypes'
