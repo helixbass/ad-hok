@@ -8,11 +8,11 @@ import {
 
 type AddPropsType = <
   TProps extends {},
-  AdditionalProps extends {[key: string]: any}
+  TAdditionalProps extends {[key: string]: any}
 >(
-  createProps: ValueOrFunctionOfProps<AdditionalProps, TProps>,
+  createProps: ValueOrFunctionOfProps<TAdditionalProps, TProps>,
   dependencies?: DependenciesArgument<TProps>,
-) => CurriedPropsAdder<TProps, AdditionalProps>
+) => CurriedPropsAdder<TProps, TAdditionalProps>
 
 const addProps: AddPropsType = (updater, dependencies) => (props) => {
   const getAddedProps = () => (isFunction(updater) ? updater(props) : updater)
