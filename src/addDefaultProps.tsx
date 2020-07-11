@@ -8,7 +8,6 @@ type AddDefaultPropsType = <
   TAdditionalProps
 >(
   createProps: ValueOrFunctionOfProps<TAdditionalProps, TProps>,
-  dependencies?: string[],
 ) => CurriedPropsAdder<TProps, TAdditionalProps>
 
 const addDefaultProps: AddDefaultPropsType = (createDefaults) =>
