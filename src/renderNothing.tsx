@@ -4,8 +4,11 @@ const nonce = {}
 
 export const isRenderNothing = (value: unknown): boolean => value === nonce
 
-type RenderNothingType = <TProps>() => CurriedUnchangedProps<TProps>
+type RenderNothingType = <TProps>() => (props: TProps) => typeof nonce
 
-const renderNothing: RenderNothingType = () => (props) => nonce as typeof props
+export const renderNothing: RenderNothingType = () => (_props) => nonce
 
-export default renderNothing
+type RenderNothingPublishedType = <TProps>() => CurriedUnchangedProps<TProps>
+
+const renderNothingPublishedType = renderNothing as RenderNothingPublishedType
+export default renderNothingPublishedType

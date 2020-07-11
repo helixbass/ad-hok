@@ -16,7 +16,9 @@ const Comp: FC<{
 describe('renderNothing', () => {
   test('works', () => {
     const testId = 'pass'
-    render(<Comp a={3} testId={testId} />)
+    const {rerender} = render(<Comp a={3} testId={testId} />)
     expect(screen.queryByTestId(testId)).toBeNull()
+    rerender(<Comp a={1} testId={testId} />)
+    expect(screen.queryByTestId(testId)).toHaveTextContent('1')
   })
 })
