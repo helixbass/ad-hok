@@ -11,13 +11,21 @@ export const isReturns = (props: {}): [unknown] | false => {
   }
 }
 
-type ReturnsType = <TProps>(
+type ReturnsType = <TProps, TReturn>(
+  callback: (props: TProps) => TReturn,
+) => (
+  props: TProps,
+) => {
+  [key in typeof key]: TReturn
+}
+
+export const returns: ReturnsType = (callback) => (props) => ({
+  [key]: callback(props),
+})
+
+type ReturnsPublishedType = <TProps>(
   callback: (props: TProps) => unknown,
 ) => CurriedUnchangedProps<TProps>
 
-const returns: ReturnsType = (callback) => (props) =>
-  (({
-    [key]: callback(props),
-  } as unknown) as typeof props)
-
-export default returns
+const returnsPublishedType = returns as ReturnsPublishedType
+export default returnsPublishedType

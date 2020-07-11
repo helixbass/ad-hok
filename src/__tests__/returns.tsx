@@ -55,8 +55,10 @@ describe('returns', () => {
     )
 
     const testId = 'branch'
-    render(<Comp x={3} testId={testId} />)
+    const {rerender} = render(<Comp x={3} testId={testId} />)
     expect(screen.getByTestId(testId)).toHaveTextContent('4')
+    rerender(<Comp x={1} testId={testId} />)
+    expect(screen.getByTestId(testId)).toHaveTextContent('1')
   })
 
   test('works at top level', () => {
