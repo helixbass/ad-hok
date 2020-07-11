@@ -56,11 +56,11 @@ type BranchOneBranchType = <TProps>(
   left: (props: TProps) => any,
 ) => CurriedUnchangedProps<TProps>
 
-type BranchTwoBranchType = <RightProps, TProps>(
+type BranchTwoBranchType = <TRightProps, TProps>(
   test: (props: TProps) => boolean,
   left: (props: TProps) => any,
-  right: (props: TProps) => RightProps,
-) => CurriedPropsAdder<TProps, RightProps>
+  right: (props: TProps) => TRightProps,
+) => CurriedPropsAdder<TProps, TRightProps>
 
 export type BranchType = BranchOneBranchType & BranchTwoBranchType
 
