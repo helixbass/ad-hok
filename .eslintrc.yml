@@ -1,78 +1,26 @@
-plugins:
-  - coffee
-  - known-imports
-  - prettier
+parser: '@typescript-eslint/parser'
+parserOptions:
+  ecmaVersion: 2020
+  sourceType: module
+  ecmaFeatures:
+    jsx: true
 extends:
-  - eslint:recommended
-  - plugin:coffee/all
-  - plugin:coffee/react-recommended
-  - plugin:known-imports/recommended-react
-  - plugin:coffee/import-all
-  # - plugin:coffee/airbnb
-  - plugin:coffee/prettier-run-as-rule
+  - 'plugin:@typescript-eslint/recommended'
+  - plugin:react/recommended
+  - plugin:prettier/recommended
 rules:
-  # coffee/object-curly-spacing: off
-  # coffee/implicit-arrow-linebreak: off
-  # coffee/comma-style: off
-  # coffee/function-paren-newline: off
-  # coffee/jsx-wrap-multilines: off
-  # react/jsx-props-no-spreading: off
-  # react/button-has-type: off
-  coffee/prefer-destructuring: [error, {object: true}]
-  coffee/no-unused-vars: off
-  known-imports/no-unused-vars: [error, {varsIgnorePattern: ^_+$}]
-  prefer-rest-params: error
-  # no-else-return: error
-  # id-length: error
-  # no-multi-assign: error
-  no-self-compare: error
-  coffee/no-magic-numbers: off
-  coffee/no-implicit-coercion: off
-  coffee/vars-on-top: off
-  coffee/max-depth: off
-  coffee/complexity: off
-  coffee/max-lines-per-function: off
-  coffee/capitalized-comments: off
-  coffee/spaced-comment: off
-  coffee/no-underscore-dangle: off
-  coffee/no-commonjs: off
-  coffee/valid-jsdoc: off
-  coffee/multiline-comment-style: off
-  coffee/no-return-assign: off
-  coffee/no-cond-assign: off
-  # coffee/no-overwrite: [error, sameScope: false]
-  coffee/block-scoped-var: off
-  coffee/wrap-regex: off
-  coffee/no-default-export: off
-  coffee/jsx-no-bind: off
-  coffee/no-anonymous-default-export: off
-  coffee/guard-for-in: off
-  no-sparse-arrays: off
-  coffee/no-invalid-this: off
-  require-jsdoc: off
-  coffee/require-jsdoc: off
-  coffee/display-name: off
-  coffee/no-empty-function: off
-  sort-imports: off
-  callback-return: off
-  coffee/id-length: off
-  max-statements: off
-  default-case: off
-  no-inline-comments: off
-  no-plusplus: off
-  no-warning-comments: off
-  sort-keys: off
-  require-unicode-regexp: off
-  coffee/callback-return: off
-  import/group-exports: off
-  coffee/no-named-export: off
-  import/no-internal-modules: off
-  import/max-dependencies: off
-  import/no-relative-parent-imports: off
-  import/no-unassigned-import: off
-  coffee/order: [error, {newlines-between: always}]
-env:
-  node: true
-  es6: true
-  jest: true
-  browser: true
+  '@typescript-eslint/no-explicit-any': off
+  '@typescript-eslint/no-unused-vars':
+    - error
+    - args: after-used
+      ignoreRestSiblings: true
+      argsIgnorePattern: '^_'
+  react/display-name: off
+  react/prop-types: off
+  '@typescript-eslint/no-empty-function': off
+  '@typescript-eslint/ban-types': off
+  '@typescript-eslint/no-non-null-assertion': off
+  '@typescript-eslint/no-extra-semi': off
+settings:
+  react:
+    version: detect
