@@ -3,7 +3,7 @@ import {render, screen, fireEvent} from '@testing-library/react'
 import '@testing-library/jest-dom'
 import '@testing-library/jest-dom/extend-expect'
 
-import {addProps, addRef, flowMax} from '..'
+import {addRef, addProps, flowMax} from '..'
 
 describe('addRef', () => {
   describe('with no initial value', () => {
