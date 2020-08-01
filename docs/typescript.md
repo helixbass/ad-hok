@@ -161,6 +161,45 @@ type AddCount = <TProps>(getInitialValue: ((props: TProps) => number)) => Currie
 ...
 ```
 
+#### Unchanged props
+
+For helpers that don't add any props, they effectively just pass through an unmodified `TProps`:
+```typescript
+import {SimpleUnchangedProps, CurriedUnchangedProps, addEffect} from 'ad-hok'
+
+type AddGreetingOnMount = <TProps>(props: TProps) => TProps
+
+// or, using the SimpleUnchangedProps helper type:
+
+type AddGreetingOnMount = SimpleUnchangedProps
+
+const addGreetingOnMount: AddGreetingOnMount = addEffect(() => () => {
+  window.alert("Hello!")
+}, [])
+
+
+
+type AddDelayedGreetingOnMount = <TProps>(delay: number) => (props: TProps) => TProps
+
+// or, using the CurriedUnchangedProps helper type:
+
+type AddDelayedGreetingOnMount = <TProps>(delay: number) => CurriedUnchangedProps<TProps>
+
+const addDelayedGreetingOnMount: AddDelayedGreetingOnMount = (delay) => addEffect(() => () => {
+  setTimeout(() => {
+    window.alert("Hello!")
+  }, delay)
+}, [])
+
+
+
+type AddPersonalizedGreetingOnMount = <TProps extends {name: string}>(props: TProps) => TProps
+
+const addPersonalizedGreetingOnMount: AddPersonalizedGreetingOnMount = addEffect(({name}) => () => {
+  window.alert(`Hello, ${name}!`)
+}, [])
+```
+
 #### Further reading
 
 I'd suggest looking at the source code of [`ad-hok-utils`](https://github.com/helixbass/ad-hok-utils)
