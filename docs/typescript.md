@@ -107,11 +107,64 @@ const MyBadComponent: FC = flowMax(
 ```
 (when there's a constraint on `TProps`, we can't use the `SimplePropsAdder` helper since it assumes a plain old `TProps` generic)
 
+#### Curried helpers
+
+Let's type an `addCount()` helper that exposes `count` + `setCount` props and takes an initial value:
+```typescript
+type AddCount = <TProps>(initialValue: number) => (props: TProps) => TProps & {
+  count: number
+  setCount: (newCount: number | ((oldCount: number) => number)) => void
+}
+
+const addCount: AddCount = (initialValue) =>
+  addState('count', 'setCount', initialValue)
+  
+const MyComponent: FC = flowMax(
+  addCount(10),
+  ({count, setCount}) =>
+    <div>
+      <p>The count is {count}</p>
+      <button onClick={() => setCount(count + 5)}>increment by 5</button>
+    </div>
+)
+```
+
+Often, the arguments supplied to a curried helper will need to reference `TProps`:
+```typescript
+type AddCount = <TProps>(getInitialValue: ((props: TProps) => number)) => (props: TProps) => TProps & {
+  count: number
+  setCount: (newCount: number | ((oldCount: number) => number)) => void
+}
+
+const addCount: AddCount = (getInitialValue) =>
+  addState('count', 'setCount', props => getInitialValue(props))
+
+const MyComponent: FC<{initialCount: number}> = flowMax(
+  addCount(({initialCount}) => initialCount),
+  ({count, setCount}) =>
+    <div>
+      <p>The count is {count}</p>
+      <button onClick={() => setCount(count + 5)}>increment by 5</button>
+    </div>
+)
+```
+
+We can also use the `CurriedPropsAdder` helper type to simplify the type definition:
+```typescript
+import {CurriedPropsAdder} from 'ad-hok'
+
+type AddCount = <TProps>(getInitialValue: ((props: TProps) => number)) => CurriedPropsAdder<TProps, {
+  count: number
+  setCount: (newCount: number | ((oldCount: number) => number)) => void
+}>
+
+...
+```
 
 #### Further reading
 
 I'd suggest looking at the source code of [`ad-hok-utils`](https://github.com/helixbass/ad-hok-utils)
-for examples of how to type various helpers
+for various examples of how to type helpers
 
 ## Tips
 
