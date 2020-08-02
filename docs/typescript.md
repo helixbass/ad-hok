@@ -19,6 +19,8 @@ $ yarn add ad-hok
 Declare your ad-hok `flowMax()` components using `React.FC`:
 
 ```typescript
+import {FC} from 'react'
+
 interface Props {
   name: string
   className: string
@@ -51,9 +53,11 @@ So for example, here's a helper that just adds a prop:
 ```typescript
 type AddFoo = <TProps>(props: TProps) => TProps & {foo: number}
 
-const addFoo: AddFoo = addProps({
-  foo: 3
-})
+const addFoo: AddFoo = flowMax(
+  addProps({
+    foo: 3
+  })
+)
 ```
 
 Ad-hok comes with some helper types to simplify these helper type declarations: `SimplePropsAdder`,
@@ -61,21 +65,25 @@ Ad-hok comes with some helper types to simplify these helper type declarations: 
 gets added to the chain without function-call parens (eg just `addFoo`) vs a "curried" helper which gets
 called explicitly, sometimes with arguments (eg `addPropIdentityStabilization('someProp')`)
 
-So the above example is a "simple" helper that adds props ie a `SimplePropsAdder` and could be written like:
+So the above example is a "simple" helper that adds props ie a `SimplePropsAdder` and could be typed like:
 ```
-import {SimplePropsAdder, addProps} from 'ad-hok'
+import {SimplePropsAdder, addProps, flowMax} from 'ad-hok'
 
 type AddFoo = SimplePropsAdder<{foo: number}>
 
-const addFoo: AddFoo = addProps({
-  foo: 3
-})
+const addFoo: AddFoo = flowMax(
+  addProps({
+    foo: 3
+  })
+)
 
 // or if you prefer, don't predeclare the type:
 
-const addFoo: SimplePropsAdder<{foo: number}> = addProps({
-  foo: 3
-})
+const addFoo: SimplePropsAdder<{foo: number}> = flowMax(
+  addProps({
+    foo: 3
+  })
+)
 ```
 
 #### Constraint on incoming props
