@@ -8,6 +8,7 @@ ad-hok is a set of helpers that let you use React [hooks](https://reactjs.org/do
 
 - [Installation](#installation)
 - [Basic usage](#basic-usage)
+- [Usage with Typescript](#usage-with-typescript)
 - [API](#api)
   * [addState()](#addstate)
   * [addEffect()](#addeffect)
@@ -101,6 +102,10 @@ const addCounting = compose(
 
 const EnhancedComponent = addCounting(SomeComponent)
 ```
+
+## Usage with Typescript
+
+Ad-hok works nicely with Typescript, see our [guide to ad-hok + Typescript](./docs/typescript.md)
 
 ## API
 
