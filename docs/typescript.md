@@ -11,6 +11,7 @@ Ad-hok and Typescript play quite nicely together!
   * [Passing additional props to `addWrapper()`'s `render()` callback](#passing-additional-props-to-addwrappers-render-callback)
   * [Inferring `addState()` state value types](#inferring-addstate-state-value-types)
   * [Explicitly annotate handler param types](#explicitly-annotate-handler-param-types)
+  * [How to type `addWrapperHOC()`](#how-to-type-addwrapperhoc)
 
 ## Installation
 
@@ -476,6 +477,33 @@ const MyBetterComponent: FC = flowMax(
 Since this is easy to forget to do, [`eslint-plugin-ad-hok`](https://github.com/helixbass/eslint-plugin-ad-hok) includes an
 `annotate-handler-param-types` rule that's included in its `recommended-typescript` config that will flag "inner" handler
 function params without an explicit type annotation
+
+
+### How to type `addWrapperHOC()`
+
+When using [`addWrapperHOC()`](../README.md#addwrapperhoc) to include a higher-order component in a component chain, rather than
+trying to "honestly" type the higher-order component (which can be tricky and makes it hard for Typescript to understand how it
+modifies the props object for the rest of the chain), you're expected to use the provided `PropAddingHOC` helper to describe the
+additional props (if any) added by the HOC:
+```typescript
+import {withNavigation, NavigationInjectedProps} from 'react-navigation'
+import {PropAddingHOC, flowMax} from 'ad-hok'
+
+const MyComponent: FC = flowMax(
+  addWrapperHOC(withNavigation as PropAddingHOC<NavigationInjectedProps>),
+  addHandlers({
+    onPress: ({navigation}) => () => {
+      navigation.navigate('Home')
+    },
+  }),
+  ({onPress}) => <Button onPress={onPress}>Go home</Button>
+)
+```
+
+If you run up against the limitations of this approach (eg if the prop signature of your HOC is dynamic), please
+[file an issue](https://github.com/helixbass/ad-hok/issues) and we can help address your use case
+
+
 
 
 ## Footnotes
