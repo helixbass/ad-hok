@@ -2,6 +2,15 @@
 
 Ad-hok and Typescript play quite nicely together!
 
+## Table of Contents
+
+- [Installation](#installation)
+- [Declaring component types](#declaring-component-types)
+- [Declaring types for ad-hok helpers](#declaring-types-for-ad-hok-helpers)
+- [Tips](#tips)
+  * [Passing additional props to `addWrapper()`'s `render()` callback](#passing-additional-props-to-addwrappers-render-callback)
+  * [Inferring `addState()` state value types](#inferring-addstate-state-value-types)
+
 ## Installation
 
 If you're using version 0.1.1 or higher of ad-hok, it ships with its own Typescript typings.
