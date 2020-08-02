@@ -453,6 +453,13 @@ const Counter = flow(
 )
 ```
 
+`addReducer()` is a wrapper around a "static reducer". If you want to wrap a "reducer over props"
+(as described in [this article](https://overreacted.io/a-complete-guide-to-useeffect/#why-usereducer-is-the-cheat-mode-of-hooks)),
+you can use [`addReducerOverProps()`](https://github.com/helixbass/ad-hok-utils#addreduceroverprops) from
+[`ad-hok-utils`](https://github.com/helixbass/ad-hok-utils).
+It should be mentioned that [`addStateHandlers()`](#addstatehandlers) is similar to a reducer over props (in fact it's implemented
+using one) and is arguably more convenient/streamlined than a reducer is
+
 ### `addMemoBoundary()`
 
 ```js
