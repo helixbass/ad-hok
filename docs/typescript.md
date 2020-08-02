@@ -280,6 +280,8 @@ it infers a more generic index signature). If you're confident that your helper 
 I'd suggest looking at the source code of [`ad-hok-utils`](https://github.com/helixbass/ad-hok-utils)
 for various examples of how to type helpers
 
+
+
 ## Tips
 
 ### Passing additional props to `addWrapper()`'s `render()` callback
@@ -329,7 +331,7 @@ const MyComponent: FC = flowMax(
 )
 ```
 
-But in other cases Typescript can't infer the correct state value type:
+But in other cases Typescript can't just infer the correct state value type:
 ```typescript
 const MyBadComponent: FC<{names: string[]}> = flowMax(
   addDisplayName('MyBadComponent'),
@@ -358,7 +360,7 @@ You might imagine a generic syntax like this:
 ```typescript
 addState<number | null>('selectedIndex', 'setSelectedIndex', null)
 ```
-Unfortunately, that's not an option given how Typescript currently works<sup id="no-partial-inference">[1](#footnote-no-partial-inference</sup>
+Unfortunately, that's not an option given how Typescript currently works<sup id="no-partial-inference">[1](#footnote-no-partial-inference)</sup>
 
 One option is to cast the initial value:
 ```typescript
@@ -368,19 +370,22 @@ This works fine but is technically unsafe because you're casting in an unsafe wa
 
 So one way to safely achieve explicit typing of the state value is to use the callback-style initial value and annotate the return type:
 ```typescript
-addState('selectedIndex', 'setSelectedIndex', (): number | null +> null)
+addState('selectedIndex', 'setSelectedIndex', (): number | null => null)
 ```
 
 Or you could use an explicit-typing helper like `typedAs()`:
 ```typescript
+const typedAs = <TValue,>(value: TValue): TValue => value
 
+addState('selectedIndex', 'setSelectedIndex', typedAs<number | null>(null))
 ```
 
 
-
+## Footnotes
 
 <b id="footnote-no-partial-inference">1</b> Specifically, Typescript doesn't support explicitly supplying some
-generics while inferring others. See eg https://github.com/microsoft/TypeScript/pull/26349 [↩](#no-partial-inference)
+generics while inferring others (and we still need to infer eg `TProps`). See eg https://github.com/microsoft/TypeScript/pull/26349
+[[back](#no-partial-inference)]
 
 
 
