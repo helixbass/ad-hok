@@ -10,6 +10,7 @@ Ad-hok and Typescript play quite nicely together!
 - [Tips](#tips)
   * [Passing additional props to `addWrapper()`'s `render()` callback](#passing-additional-props-to-addwrappers-render-callback)
   * [Inferring `addState()` state value types](#inferring-addstate-state-value-types)
+  * [Explicitly annotate handler param types](#explicitly-annotate-handler-param-types)
 
 ## Installation
 
@@ -388,6 +389,93 @@ const typedAs = <TValue,>(value: TValue): TValue => value
 
 addState('selectedIndex', 'setSelectedIndex', typedAs<number | null>(null))
 ```
+
+### Explicitly annotate handler param types
+
+Due to the way that `addHandlers()` and `addStateHandlers()` are typed, if you don't type-annotate the "inner" handler function
+params, Typescript will silently allow them to be implicitly `any`-typed:
+```typescript
+const MyBadComponent: FC = flowMax(
+  addStateHandlers(
+    {
+      count: 0,
+    },
+    {
+      incrementBy: ({count}) => (by) => ({
+        // by is implicitly any
+        count: count + by,
+      }),
+    }
+  ),
+  addHandlers({
+    alertName: ({count}) => (name) => {
+      // name is implicitly any
+      window.alert(`${name.toUpperCase()}, the count is ${count}`)
+    },
+  }),
+  ({incrementBy, alertName}) => (
+    <div>
+      <button
+        onClick={() => {
+          alertName({name: 'Larry'}) // uh-oh, this will crash at runtime
+        }}
+      >
+        Tell me
+      </button>
+      <button
+        onClick={() => {
+          incrementBy('5') // uh-oh, this won't do what we want
+        }}
+      >
+        Increase
+      </button>
+    </div>
+  )
+)
+```
+
+So you should always explicitly annotate the types of "inner" handler function params:
+```typescript
+const MyBetterComponent: FC = flowMax(
+  addStateHandlers(
+    {
+      count: 0,
+    },
+    {
+      incrementBy: ({count}) => (by: number) => ({
+        count: count + by,
+      }),
+    }
+  ),
+  addHandlers({
+    alertName: ({count}) => (name: string) => {
+      window.alert(`${name.toUpperCase()}, the count is ${count}`)
+    },
+  }),
+  ({incrementBy, alertName}) => (
+    <div>
+      <button
+        onClick={() => {
+          alertName({name: 'Larry'}) // Argument of type '{ name: string; }' is not assignable to parameter of type 'string'.
+        }}
+      >
+        Tell me
+      </button>
+      <button
+        onClick={() => {
+          incrementBy('5') // Argument of type '"5"' is not assignable to parameter of type 'number'.
+        }}
+      >
+        Increase
+      </button>
+    </div>
+  )
+)
+```
+
+Since this is easy to forget to do, [`eslint-plugin-ad-hok`](https://github.com/helixbass/eslint-plugin-ad-hok) includes an
+`annotate-handler-param-types` rule that's included in its `recommended-typescript` config that will flag "inner" handler
+function params without an explicit type annotation
 
 
 ## Footnotes
