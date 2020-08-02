@@ -208,6 +208,73 @@ const addPersonalizedGreetingOnMount: AddPersonalizedGreetingOnMount = addEffect
 }, [])
 ```
 
+#### Dynamic prop names
+
+Often, helpers take the name of an incoming prop and/or the name of a prop to add as arguments:
+```typescript
+type AddDoubled = <
+  TPropName extends string,
+  // describe the constraint on incoming TProps:
+  TProps extends {
+    [propName in TPropName]: number
+  },
+  TAddedPropName extends string
+>(
+  propName: TPropName,
+  addedPropName: TAddedPropName
+) => (
+  props: TProps
+) => TProps &
+  {
+    [addedPropName in TAddedPropName]: number
+  }
+  
+// or, using the CurriedPropsAdder helper type:
+
+type AddDoubled = <
+  TPropName extends string,
+  TProps extends {
+    [propName in TPropName]: number
+  },
+  TAddedPropName extends string
+>(
+  propName: TPropName,
+  addedPropName: TAddedPropName
+) => CurriedPropsAdder<
+  TProps,
+  {
+    [addedPropName in TAddedPropName]: number
+  }
+>
+
+const addDoubled: AddDoubled = (propName, addedPropName) =>
+  flowMax(
+    addProps(
+      ({[propName]: propValue}) =>
+        ({
+          [addedPropName]: propValue * 2,
+        } as {
+          [addPropName in typeof addedPropName]: number
+        }),
+      [propName]
+    )
+  )
+
+const MyComponent: FC = flowMax(
+  addProps({
+    foo: 2,
+  }),
+  addDoubled('foo', 'doubledFoo'),
+  ({foo, doubledFoo}) => <div>{doubledFoo} is twice as much as {foo}</div>
+)
+```
+Notice how Typescript needed a little help to be convinced that our added props matched the declared type (otherwise
+it infers a more generic index signature). If you're confident that your helper is implemented correctly, it's also
+"safe" to just use `as any` to silence type errors like this - the declared helper type (eg here `AddDoubled`) "wins" so the
+`any`-typing will only be "locally scoped" to the internals of the helper definition
+
+
+
 #### Further reading
 
 I'd suggest looking at the source code of [`ad-hok-utils`](https://github.com/helixbass/ad-hok-utils)
