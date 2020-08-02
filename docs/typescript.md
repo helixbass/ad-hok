@@ -312,3 +312,77 @@ const MyComponent: FC = flowMax(
   ({width, height}) => <div>The dimensions are {width}x{height}</div>
 )
 ```
+
+### Inferring `addState()` state value types
+
+Often, Typescript can infer the type of a state value correctly from the initial state value:
+```typescript
+const MyComponent: FC = flowMax(
+  addState('count', 'setCount', 0), // infers number
+  addState('shouldShow', 'setShouldShow', false), // infers boolean
+  ({count, setCount, shouldShow, setShouldShow}) =>
+    <div>
+      {shouldShow && <p>The count is {count}</p>}
+      <button onClick={() => setShouldShow(!shouldShow)}>toggle</button>
+      <button onClick={() => setCount(5)}>change count</button>
+    </div>
+)
+```
+
+But in other cases Typescript can't infer the correct state value type:
+```typescript
+const MyBadComponent: FC<{names: string[]}> = flowMax(
+  addDisplayName('MyBadComponent'),
+  addState('selectedIndex', 'setSelectedIndex', null),
+  ({names, selectedIndex, setSelectedIndex}) => (
+    <div>
+      {names.map((name, index) => (
+        <div key={index}>
+          {name} {selectedIndex === index ? 'is selected' : 'is not selected'}
+          <button
+            onClick={() => {
+              setSelectedIndex(index) // Argument of type 'number' is not assignable to parameter of type '((prevState: null) => null) | null'.
+            }}
+          >
+            select
+          </button>
+        </div>
+      ))}
+    </div>
+  )
+)
+```
+
+We have a couple options for telling Typescript what the correct type is for the state value.
+You might imagine a generic syntax like this:
+```typescript
+addState<number | null>('selectedIndex', 'setSelectedIndex', null)
+```
+Unfortunately, that's not an option given how Typescript currently works<sup id="no-partial-inference">[1](#footnote-no-partial-inference</sup>
+
+One option is to cast the initial value:
+```typescript
+addState('selectedIndex', 'setSelectedIndex', null as number | null)
+```
+This works fine but is technically unsafe because you're casting in an unsafe way
+
+So one way to safely achieve explicit typing of the state value is to use the callback-style initial value and annotate the return type:
+```typescript
+addState('selectedIndex', 'setSelectedIndex', (): number | null +> null)
+```
+
+Or you could use an explicit-typing helper like `typedAs()`:
+```typescript
+
+```
+
+
+
+
+<b id="footnote-no-partial-inference">1</b> Specifically, Typescript doesn't support explicitly supplying some
+generics while inferring others. See eg https://github.com/microsoft/TypeScript/pull/26349 [↩](#no-partial-inference)
+
+
+
+
+
