@@ -369,7 +369,7 @@ You might imagine a generic syntax like this:
 ```typescript
 addState<number | null>('selectedIndex', 'setSelectedIndex', null)
 ```
-Unfortunately, that's not an option given how Typescript currently works<sup id="no-partial-inference">[1](#footnote-no-partial-inference)</sup>
+Unfortunately, that's not an option given how Typescript currently works<sup name="no-partial-inference">[1](#footnote-no-partial-inference)</sup>
 
 One option is to cast the initial value:
 ```typescript
