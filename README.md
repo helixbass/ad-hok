@@ -29,6 +29,7 @@ ad-hok is a set of helpers that let you use React [hooks](https://reactjs.org/do
   * [addWrapper()](#addwrapper)
   * [addWrapperHOC()](#addwrapperhoc)
   * [flowMax()](#flowmax)
+- [ad-hok-utils](#ad-hok-utils)
 - [Bonus: usage in non-React contexts](#bonus-use-ad-hokflowmax-in-non-react-contexts)
 - [Motivation](#motivation)
 - [React hooks equivalents](#react-hooks-equivalents)
@@ -743,6 +744,12 @@ addEffect(
 ```
 
 The callback won't be called on the initial render so you can always safely assume that `oldProps` exists
+
+
+## ad-hok-utils
+
+For additional useful ad-hok helpers, check out [`ad-hok-utils`](https://github.com/helixbass/ad-hok-utils)
+
 
 ## Bonus: use `ad-hok`/`flowMax()` in non-React contexts
 
