@@ -12,6 +12,8 @@ Ad-hok and Typescript play quite nicely together!
   * [Inferring `addState()` state value types](#inferring-addstate-state-value-types)
   * [Explicitly annotate handler param types](#explicitly-annotate-handler-param-types)
   * [How to type `addWrapperHOC()`](#how-to-type-addwrapperhoc)
+  * [Narrowing prop types across a `branch()`](#narrowing-prop-types-across-a-branch)
+
 
 ## Installation
 
@@ -503,6 +505,50 @@ const MyComponent: FC = flowMax(
 If you run up against the limitations of this approach (eg if the prop signature of your HOC is dynamic), please
 [file an issue](https://github.com/helixbass/ad-hok/issues) and we can help address your use case
 
+
+
+### Narrowing prop types across a `branch()`
+
+
+Typescript is generally quite good at following control flow and correspondingly "narrowing" types eg inside an
+`if` branch. So we may tend to expect it to be equally smart at following control flow across an "aborting" `branch()`
+(ie one that `renderNothing()`'s or `returns()`). But Typescript doesn't adjust the prop types following a `branch()`
+by default
+
+So we can make use of some helpers from [`ad-hok-utils`](https://github.com/helixbass/ad-hok-utils) to handle the
+common cases or give us the ability to manually instruct Typescript of the updated prop types
+
+The most common use case for prop-type-narrowing with `branch()` is that we want to abort rendering (possibly showing
+eg a loading spinner) if certain props are missing (by some definition of "missing"). If that "missing" condition is
+nullishness, we can use [`branchIfNullish()`](https://github.com/helixbass/ad-hok-utils#branchifnullish):
+```typescript
+const MyComponent: FC<{name?: string, id: string | null}> = flowMax(
+  branchIfNullish(['name', 'id']),
+  addProps(({id, name}) => ({
+    combined: `${id.toUpperCase()} ${name.toUpperCase}`,
+  })),
+  ({combined}) => <div>{combined}</div>
+)
+```
+Notice how the types of `id` and `name` have been refined to `string` after the `branch()`, which corresponds to the runtime
+behavior of `branchIfNullish()` (it will "abort" if either `name` or `id` is nullish)
+
+The other variants of "missing" that `ad-hok-utils` has helpers for out-of-the-box are falsiness
+([`branchIfFalsy()`](https://github.com/helixbass/ad-hok-utils#branchiffalsy)) and [`isEmpty()`](https://lodash.com/docs/4.17.15#isEmpty)
+([`branchIfEmpty()`](https://github.com/helixbass/ad-hok-utils#branchifempty))
+
+For prop-type narrowing that doesn't fit into one of these boxes, we can fall back to using
+[`declarePropTypesNarrowing()`](https://github.com/helixbass/ad-hok-utils#declareproptypesnarrowing) manually after the `branch()`:
+```typescript
+const MyComponent: FC<{value: string | Date}> = flowax(
+  branch(({value}) => isDate(value), returns(({value}) => <FormattedDate date={value} />)),
+  declarePropTypesNarrowing<{value: string}>(),
+  addProps(({value}) => ({
+    valueUppercase: value.toUpperCase()
+  })),
+  ({valueUppercase}) => <div>{valueUppercase}</div>
+)
+```
 
 
 
