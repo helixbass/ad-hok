@@ -28,6 +28,7 @@ ad-hok is a set of helpers that let you use React [hooks](https://reactjs.org/do
   * [addPropTypes()](#addproptypes)
   * [addWrapper()](#addwrapper)
   * [addWrapperHOC()](#addwrapperhoc)
+  * [addDisplayName()](#adddisplayname)
   * [flowMax()](#flowmax)
 - [ad-hok-utils](#ad-hok-utils)
 - [Bonus: usage in non-React contexts](#bonus-use-ad-hokflowmax-in-non-react-contexts)
@@ -63,6 +64,9 @@ In your `.babelrc` (or `babel.config.js`):
 ```
 "plugins": ["transform-react-display-name-pipe"]
 ```
+
+Alternatively, you can use [`addDisplayName()`](#adddisplayname) in your components to specify component display names
+
 
 ## Basic usage
 
@@ -693,6 +697,31 @@ const BackButton = flowMax(
 
 <BackButton>Back</BackButton>
 ```
+
+
+
+### `addDisplayName()`
+
+```js
+addDisplayName(
+  displayName: string
+): Function
+```
+
+Allows specifying a `displayName` for the component
+
+Doesn't wrap any hooks, just a convenience helper
+
+For example:
+
+```js
+const MyComponent = flowMax(
+  addDisplayName('MyComponent'),
+  ({message}) => <div>{message}</div>
+)
+```
+
+
 
 ### `flowMax()`
 
