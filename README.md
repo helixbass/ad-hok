@@ -750,7 +750,7 @@ const Message = flowMax(
 
 Several helpers accept an optional "dependencies" argument specifying conditions under which that helper should "re-run" (eg recompute its values, or retrigger its effect). This is conceptually parallel to e.g. [`useEffect()`](https://reactjs.org/docs/hooks-reference.html#conditionally-firing-an-effect)'s or [`useMemo()`](https://reactjs.org/docs/hooks-reference.html#usememo)'s dependencies argument
 
-This dependencies argument cah either be specified as a simple declarative "dependencies list" of props, or as a callback comparing old vs new props
+This dependencies argument can either be specified as a simple declarative "dependencies list" of props, or as a callback comparing old vs new props
 
 A "dependencies list" is an array of strings that are Lodash [`get()`](https://lodash.com/docs/4.17.15#get)-style "paths" into the props object. The helper re-runs whenever any of the corresponding values in the props object change _identity_
 
