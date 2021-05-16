@@ -18,7 +18,6 @@ type AddHandlersType = <TCreators extends HandlerCreators<TProps>, TProps>(
 >
 
 const addHandlers: AddHandlersType = (handlers, dependencies) => (props) => {
-  type TProps = typeof props
   type TCreators = typeof handlers
   const createHandlerProps = () =>
     mapValues((createHandler) => createHandler(props), handlers) as {
