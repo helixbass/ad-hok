@@ -20,9 +20,9 @@ const isSimpleDependenciesArray = (
 
 type CreateEffectAdderType = (
   effectHook: typeof useEffect | typeof useLayoutEffect,
-) => <TProps>(
+) => <TProps, TDependencies extends string>(
   callback: (props: TProps) => () => void | (() => void | undefined),
-  dependencies?: DependenciesArgument<TProps>,
+  dependencies?: DependenciesArgument<TProps, TDependencies>,
 ) => CurriedUnchangedProps<TProps>
 
 export type AddEffectType = ReturnType<CreateEffectAdderType>

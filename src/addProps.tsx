@@ -8,10 +8,11 @@ import {
 
 type AddPropsType = <
   TProps extends {},
-  TAdditionalProps extends {[key: string]: any}
+  TAdditionalProps extends {[key: string]: any},
+  TDependencies extends string
 >(
   createProps: ValueOrFunctionOfProps<TAdditionalProps, TProps>,
-  dependencies?: DependenciesArgument<TProps>,
+  dependencies?: DependenciesArgument<TProps, TDependencies>,
 ) => CurriedPropsAdder<TProps, TAdditionalProps>
 
 const addProps: AddPropsType = (updater, dependencies) => (props) => {

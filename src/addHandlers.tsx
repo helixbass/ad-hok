@@ -7,9 +7,13 @@ export interface HandlerCreators<TProps> {
   [key: string]: (props: TProps) => (...args: any[]) => any
 }
 
-type AddHandlersType = <TCreators extends HandlerCreators<TProps>, TProps>(
+type AddHandlersType = <
+  TCreators extends HandlerCreators<TProps>,
+  TProps,
+  TDependencies extends string
+>(
   handlerCreators: TCreators,
-  dependencies?: DependenciesArgument<TProps>,
+  dependencies?: DependenciesArgument<TProps, TDependencies>,
 ) => CurriedPropsAdder<
   TProps,
   {

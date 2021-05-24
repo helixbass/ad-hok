@@ -19,8 +19,8 @@ const compareDependenciesArray = <TProps,>(dependencies: string[]) => (
     dependencies,
   )
 
-export const addMemoBoundary = <TProps,>(
-  dependencies?: DependenciesArgument<TProps>,
+export const addMemoBoundary = <TProps, TDependencies extends string>(
+  dependencies?: DependenciesArgument<TProps, TDependencies>,
 ): ((Component: ComponentType<TProps>) => FC<TProps>) => {
   const compareFunc =
     isFunction(dependencies) || dependencies == null
@@ -30,8 +30,8 @@ export const addMemoBoundary = <TProps,>(
   return addWrapperHOC(memo<TProps>(compareFunc))
 }
 
-type AddMemoBoundaryType = <TProps>(
-  dependencies?: DependenciesArgument<TProps>,
+type AddMemoBoundaryType = <TProps, TDependencies extends string>(
+  dependencies?: DependenciesArgument<TProps, TDependencies>,
 ) => CurriedUnchangedProps<TProps>
 
 const addMemoBoundaryPublishedType = addMemoBoundary as AddMemoBoundaryType
