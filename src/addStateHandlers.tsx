@@ -5,7 +5,7 @@ import mapValues from './utils/mapValues'
 import useMemoized from './utils/useMemoized'
 import {ValueOrFunctionOfProps, CurriedPropsAdder} from './helperTypes'
 
-interface StateUpdaters<TProps, TState> {
+interface StateUpdaters<TProps extends {}, TState extends {}> {
   [key: string]: (
     state: TState,
     props: TProps,
@@ -14,8 +14,8 @@ interface StateUpdaters<TProps, TState> {
 
 type AddStateHandlersType = <
   Updaters extends StateUpdaters<TProps, TState>,
-  TProps,
-  TState
+  TProps extends {},
+  TState extends {}
 >(
   initialState: ValueOrFunctionOfProps<TState, TProps>,
   stateUpdaters: Updaters,
@@ -68,8 +68,8 @@ const addStateHandlers: AddStateHandlersType = (initial, handlers) => (
 
 type AddStateHandlersPublishedType = <
   Updaters extends StateUpdaters<TProps, TState>,
-  TProps,
-  TState
+  TProps extends {},
+  TState extends {}
 >(
   initialState: ValueOrFunctionOfProps<TState, TProps>,
   stateUpdaters: Updaters,

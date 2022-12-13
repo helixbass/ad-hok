@@ -6,20 +6,19 @@ import isFunction from './utils/isFunction'
 import some from './utils/some'
 import {CurriedUnchangedProps, DependenciesArgument} from './helperTypes'
 
-const memo = <TProps,>(
+const memo = <TProps extends {}>(
   compare: ((prevProps: TProps, props: TProps) => boolean) | undefined,
 ) => (Component: ComponentType<TProps>) => React.memo(Component, compare)
 
-const compareDependenciesArray = <TProps,>(dependencies: string[]) => (
-  prevProps: TProps,
-  props: TProps,
-) =>
+const compareDependenciesArray = <TProps extends {}>(
+  dependencies: string[],
+) => (prevProps: TProps, props: TProps) =>
   !some(
     (dependency) => get(dependency, prevProps) !== get(dependency, props),
     dependencies,
   )
 
-export const addMemoBoundary = <TProps,>(
+export const addMemoBoundary = <TProps extends {}>(
   dependencies?: DependenciesArgument<TProps>,
 ): ((Component: ComponentType<TProps>) => FC<TProps>) => {
   const compareFunc =
@@ -30,7 +29,7 @@ export const addMemoBoundary = <TProps,>(
   return addWrapperHOC(memo<TProps>(compareFunc))
 }
 
-type AddMemoBoundaryType = <TProps>(
+type AddMemoBoundaryType = <TProps extends {}>(
   dependencies?: DependenciesArgument<TProps>,
 ) => CurriedUnchangedProps<TProps>
 

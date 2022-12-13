@@ -7,11 +7,11 @@ const markerPropertyName = '__ad-hok-addWrapperHOC'
 export const isAddWrapperHOC = (func: Function): boolean =>
   markerPropertyName in func
 
-export type PropAddingHOC<TAddedProps> = (
+export type PropAddingHOC<TAddedProps extends {}> = (
   Component: ComponentType<any>,
 ) => ComponentType<any>
 
-export const addWrapperHOC = <TProps,>(
+export const addWrapperHOC = <TProps extends {}>(
   hoc: (Component: ComponentType<TProps>) => ComponentType<any>,
   {displayName = 'addWrapperHOC()'} = {},
 ): ((Component: ComponentType<TProps>) => FC<TProps>) => {
@@ -25,7 +25,7 @@ export const addWrapperHOC = <TProps,>(
   return ret
 }
 
-type AddWrapperHOCType = <AddedProps, TProps>(
+type AddWrapperHOCType = <AddedProps extends {}, TProps extends {}>(
   hoc: PropAddingHOC<AddedProps>,
 ) => CurriedPropsAdder<TProps, AddedProps>
 

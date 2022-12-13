@@ -5,7 +5,7 @@ import {ValueOrFunctionOfProps, CurriedPropsAdder} from './helperTypes'
 type AddDefaultPropsType = <
   TProps extends {},
   // TAdditionalProps extends Partial<TProps>
-  TAdditionalProps
+  TAdditionalProps extends {}
 >(
   createProps: ValueOrFunctionOfProps<TAdditionalProps, TProps>,
 ) => CurriedPropsAdder<TProps, TAdditionalProps>

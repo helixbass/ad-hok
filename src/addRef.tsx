@@ -4,7 +4,7 @@ import isFunction from './utils/isFunction'
 import useMemoized from './utils/useMemoized'
 import {ValueOrFunctionOfProps, CurriedPropsAdder} from './helperTypes'
 
-type AddRefType = <TRefName extends string, TRefValue, TProps>(
+type AddRefType = <TRefName extends string, TRefValue, TProps extends {}>(
   refName: TRefName,
   initialValue?: ValueOrFunctionOfProps<TRefValue, TProps>,
 ) => CurriedPropsAdder<
@@ -14,7 +14,11 @@ type AddRefType = <TRefName extends string, TRefValue, TProps>(
   }
 >
 
-const addRef: AddRefType = <TRefName extends string, TRefValue, TProps>(
+const addRef: AddRefType = <
+  TRefName extends string,
+  TRefValue,
+  TProps extends {}
+>(
   name: TRefName,
   initialValue:
     | TRefValue
