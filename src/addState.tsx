@@ -8,7 +8,7 @@ type AddStateType = <
   TState,
   TStateName extends string,
   TStateUpdaterName extends string,
-  TProps
+  TProps extends {}
 >(
   stateName: TStateName,
   stateUpdaterName: TStateUpdaterName,

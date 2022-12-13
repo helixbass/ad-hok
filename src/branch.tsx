@@ -4,7 +4,7 @@ import flowMax from './flowMax'
 import {markerPropertyName} from './branch-avoid-circular-dependency'
 import {CurriedUnchangedProps, CurriedPropsAdder} from './helperTypes'
 
-export const branch = <TProps, TAdditionalProps>(
+export const branch = <TProps extends {}, TAdditionalProps extends {}>(
   test: (props: TProps) => boolean,
   consequent: (props: TProps) => TProps & TAdditionalProps,
   alternate: (props: TProps) => TProps & TAdditionalProps = (props) =>
@@ -51,12 +51,12 @@ export const branch = <TProps, TAdditionalProps>(
   return ret
 }
 
-type BranchOneBranchType = <TProps>(
+type BranchOneBranchType = <TProps extends {}>(
   test: (props: TProps) => boolean,
   left: (props: TProps) => any,
 ) => CurriedUnchangedProps<TProps>
 
-type BranchTwoBranchType = <TRightProps, TProps>(
+type BranchTwoBranchType = <TRightProps extends {}, TProps extends {}>(
   test: (props: TProps) => boolean,
   left: (props: TProps) => any,
   right: (props: TProps) => TRightProps,

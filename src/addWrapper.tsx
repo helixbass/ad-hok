@@ -7,20 +7,20 @@ const markerPropertyName = '__ad-hok-addWrapper'
 export const isAddWrapper = (func: Function): boolean =>
   markerPropertyName in func
 
-export type AddWrapperRenderCallback<TAdditionalProps> = (
+export type AddWrapperRenderCallback<TAdditionalProps extends {}> = (
   additionalProps?: TAdditionalProps,
 ) => ReactElement | null
 
-type AddWrapperCallback<TAdditionalProps, TProps> = (
+type AddWrapperCallback<TAdditionalProps extends {}, TProps extends {}> = (
   render: AddWrapperRenderCallback<TAdditionalProps>,
   props: TProps,
 ) => ReactElement | null
 
-type AddWrapperPublishedType = <TAdditionalProps, TProps>(
+type AddWrapperPublishedType = <TAdditionalProps extends {}, TProps extends {}>(
   callback: AddWrapperCallback<TAdditionalProps, TProps>,
 ) => CurriedPropsAdder<TProps, TAdditionalProps>
 
-export const addWrapper = <TProps, TAdditionalProps>(
+export const addWrapper = <TProps extends {}, TAdditionalProps extends {}>(
   callback: AddWrapperCallback<TAdditionalProps, TProps>,
 ): ((
   Component: ComponentType<TProps & TAdditionalProps>,

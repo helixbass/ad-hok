@@ -4,7 +4,7 @@ import isFunction from './utils/isFunction'
 import useMemoized from './utils/useMemoized'
 import {ValueOrFunctionOfProps} from './helperTypes'
 
-type AddReducerType = <TState, TAction, TProps>(
+type AddReducerType = <TState extends {}, TAction, TProps extends {}>(
   reducer: Reducer<TState, TAction>,
   initialState: ValueOrFunctionOfProps<TState, TProps>,
 ) => (
